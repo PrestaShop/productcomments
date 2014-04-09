@@ -527,7 +527,7 @@ class ProductComments extends Module
 			),
 			'date_add' => array(
 				'title' => $this->l('Posted on'),
-				'type' => 'text',
+				'type' => 'date',
 			),
 		);
 	}
