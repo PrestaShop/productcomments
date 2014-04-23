@@ -73,7 +73,7 @@ class ProductCommentsDefaultModuleFrontController extends ModuleFrontController
 		$errors = array();
 		// Validation
 		if (!Validate::isInt(Tools::getValue('id_product')))
-			$errors[] = $module_instance->l('ID product is incorrect', 'default');
+			$errors[] = $module_instance->l('Product ID is incorrect', 'default');
 		if (!Tools::getValue('title') || !Validate::isGenericName(Tools::getValue('title')))
 			$errors[] = $module_instance->l('Title is incorrect', 'default');
 		if (!Tools::getValue('content') || !Validate::isMessage(Tools::getValue('content')))
@@ -81,7 +81,7 @@ class ProductCommentsDefaultModuleFrontController extends ModuleFrontController
 		if (!$id_customer && (!Tools::isSubmit('customer_name') || !Tools::getValue('customer_name') || !Validate::isGenericName(Tools::getValue('customer_name'))))
 			$errors[] = $module_instance->l('Customer name is incorrect', 'default');
 		if (!$this->context->customer->id && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'))
-			$errors[] = $module_instance->l('You must be logged in order to send a comment', 'default');
+			$errors[] = $module_instance->l('You must be connected in order to send a comment', 'default');
 		if (!count(Tools::getValue('criterion')))
 			$errors[] = $module_instance->l('You must give a rating', 'default');
 
@@ -129,7 +129,7 @@ class ProductCommentsDefaultModuleFrontController extends ModuleFrontController
 			else
 			{
 				$result = false;
-				$errors[] = $module_instance->l('You should wait').' '.Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME').' '.$module_instance->l('seconds before posting a new comment');
+				$errors[] = $module_instance->l('Please wait before posting another comment').' '.Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME').' '.$module_instance->l('seconds before posting a new comment');
 			}
 		}
 		else
