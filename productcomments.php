@@ -54,7 +54,7 @@ class ProductComments extends Module
 		$this->secure_key = Tools::encrypt($this->name);
 
 		$this->displayName = $this->l('Product Comments');
-		$this->description = $this->l('Allows users to post reviews.');
+		$this->description = $this->l('Allows users to post reviews and rate products on specific criteria.');
 	}
 
 	public function install($keep = true)
@@ -305,7 +305,7 @@ class ProductComments extends Module
 						'label' => $this->l('Minimum time between 2 comments from the same user'),
 						'name' => 'PRODUCT_COMMENTS_MINIMAL_TIME',
 						'class' => 'fixed-width-xs',
-						'desc' => $this->l('In seconds'),
+						'suffix' => 'seconds',
 					),
 				),
 			'submit' => array(
@@ -510,7 +510,7 @@ class ProductComments extends Module
 				'type' => 'text',
 			),
 			'grade' => array(
-				'title' => $this->l('Rate'),
+				'title' => $this->l('Rating'),
 				'type' => 'text',
 			),
 			'customer_name' => array(
@@ -554,13 +554,13 @@ class ProductComments extends Module
 			$field_category_tree = array(
 									'type' => 'categories_select',
 									'name' => 'categoryBox',
-									'label' => $this->l('Criterion will be restricted to the following categories:'),
+									'label' => $this->l('Criterion will be restricted to the following categories'),
 									'category_tree' => $this->initCategoriesAssociation(null, $id_criterion),
 								);
 		else
 			$field_category_tree = array(
 							'type' => 'categories',
-							'label' => $this->l('Criterion will be restricted to the following categories:'),
+							'label' => $this->l('Criterion will be restricted to the following categories'),
 							'name' => 'categoryBox',
 							'desc' => $this->l('Mark the box(es) of categories to which this criterion applies.'),
 							'tree' => array(
@@ -619,7 +619,7 @@ class ProductComments extends Module
 					$field_category_tree,
 					array(
 						'type' => 'products',
-						'label' => $this->l('Criterion will be restricted to the following products:'),
+						'label' => $this->l('Criterion will be restricted to the following products'),
 						'name' => 'ids_product',
 						'values' => $product_table_values,
 					),
