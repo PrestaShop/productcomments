@@ -238,11 +238,6 @@ class ProductComments extends Module
 
 		$this->_setBaseUrl();
 		$this->_productCommentsCriterionTypes = ProductCommentCriterion::getTypes();
-		//$this->_checkModerateComment();
-		//$this->_checkReportedComment();
-		//$this->_checkCriterion();
-		//$this->_updateApplicationCriterion();
-		//$this->_checkDeleteComment();
 
 		$this->context->controller->addJs($this->_path.'js/moderate.js');
 
