@@ -137,7 +137,7 @@ class ProductComments extends Module
 			Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int)Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
 			Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int)Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
 			Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int)Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
-			$this->_html .= '<div class="conf confirm">'.$this->l('Settings updated').'</div>';
+			$this->_html .= '<div class="conf confirm alert alert-success">'.$this->l('Settings updated').'</div>';
 		}
 		elseif (Tools::isSubmit('productcomments'))
 		{
@@ -184,14 +184,17 @@ class ProductComments extends Module
 						foreach ($products as $product)
 							$criterion->addProduct((int)$product);
 			}
-			$criterion->save();
+			if ($criterion->save())
+				Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules').'&configure='.$this->name.'&conf=4');
+			else
+				$this->_html .= '<div class="conf confirm alert alert-danger">'.$this->l('The criterion could not be saved').'</div>';
 		}
 		elseif (Tools::isSubmit('deleteproductcommentscriterion'))
 		{
 			$productCommentCriterion = new ProductCommentCriterion((int)Tools::getValue('id_product_comment_criterion'));
 			if ($productCommentCriterion->id)
 				if ($productCommentCriterion->delete())
-					$this->_html .= '<div class="conf confirm">'.$this->l('Criterion deleted').'</div>';
+					$this->_html .= '<div class="conf confirm alert alert-success">'.$this->l('Criterion deleted').'</div>';
 		}
 		elseif (Tools::isSubmit('statusproductcommentscriterion'))
 		{
