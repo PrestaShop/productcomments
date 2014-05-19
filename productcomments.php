@@ -347,7 +347,7 @@ class ProductComments extends Module
 
 			if (version_compare(_PS_VERSION_, '1.6', '<'))
 			{
-				$return .= "<h1>".$this->l('Moderate Comments')."</h1>";
+				$return .= "<h1>".$this->l('Comments waiting for approval')."</h1>";
 				$actions = array('enable', 'delete');
 			}
 			else
@@ -361,7 +361,7 @@ class ProductComments extends Module
 			$helper->module = $this;
 			$helper->listTotal = count($comments);
 			$helper->identifier = 'id_product_comment';
-			$helper->title = $this->l('Moderate Comments');
+			$helper->title = $this->l('Comments waiting for approval');
 			$helper->table = $this->name;
 			$helper->token = Tools::getAdminTokenLite('AdminModules');
 			$helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
@@ -465,7 +465,7 @@ class ProductComments extends Module
 		$helper->module = $this;
 		$helper->listTotal = count($comments);
 		$helper->identifier = 'id_product_comment';
-		$helper->title = $this->l('Moderate Comments');
+		$helper->title = $this->l('Approved Comments');
 		$helper->table = $this->name;
 		$helper->token = Tools::getAdminTokenLite('AdminModules');
 		$helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
@@ -520,7 +520,7 @@ class ProductComments extends Module
 				'type' => 'text',
 			),
 			'date_add' => array(
-				'title' => $this->l('Posted on'),
+				'title' => $this->l('Time of publication'),
 				'type' => 'date',
 			),
 		);
@@ -560,7 +560,7 @@ class ProductComments extends Module
 							'type' => 'categories',
 							'label' => $this->l('Criterion will be restricted to the following categories'),
 							'name' => 'categoryBox',
-							'desc' => $this->l('Mark the box(es) of categories to which this criterion applies.'),
+							'desc' => $this->l('Mark the boxes of categories to which this criterion applies.'),
 							'tree' => array(
 								'use_search' => false,
 								'id' => 'categoryBox',
@@ -601,13 +601,13 @@ class ProductComments extends Module
 					array(
 						'type' => 'text',
 						'lang' => true,
-						'label' => $this->l('Name'),
+						'label' => $this->l('Criterion name'),
 						'name' => 'name',
 					),
 					array(
 						'type' => 'select',
 						'name' => 'id_product_comment_criterion_type',
-						'label' => $this->l('Apply to'),
+						'label' => $this->l('Application scope of the criterion'),
 						'options' => array(
 										'query' => $query,
 										'id' => 'id',
@@ -617,7 +617,7 @@ class ProductComments extends Module
 					$field_category_tree,
 					array(
 						'type' => 'products',
-						'label' => $this->l('Criterion will be restricted to the following products'),
+						'label' => $this->l('The criterion will be restricted to the following products'),
 						'name' => 'ids_product',
 						'values' => $product_table_values,
 					),
