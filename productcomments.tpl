@@ -28,7 +28,7 @@ var confirm_report_message = '{l s='Are you sure you want report this comment?' 
 var secure_key = '{$secure_key}';
 var productcomments_url_rewrite = '{$productcomments_url_rewriting_activated}';
 var productcomment_added = '{l s='Your comment has been added!' mod='productcomments' js=1}';
-var productcomment_added_moderation = '{l s='Your comment has been added and will be available once approved by a moderator' mod='productcomments' js=1}';
+var productcomment_added_moderation = '{l s='Your comment has been sumbitted and will be available once approved by a moderator.' mod='productcomments' js=1}';
 var productcomment_title = '{l s='New comment' mod='productcomments' js=1}';
 var productcomment_ok = '{l s='OK' mod='productcomments' js=1}';
 var moderation_active = {$moderation_active};
@@ -119,7 +119,7 @@ var moderation_active = {$moderation_active};
 					<ul id="criterions_list">
 					{foreach from=$criterions item='criterion'}
 						<li>
-							<label>{$criterion.name|escape:'html':'UTF-8'}:</label>
+							<label>{$criterion.name|escape:'html':'UTF-8'}</label>
 							<div class="star_content">
 								<input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion|round}]" value="1" />
 								<input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion|round}]" value="2" />
@@ -133,14 +133,14 @@ var moderation_active = {$moderation_active};
 					</ul>
 				{/if}
 
-				<label for="comment_title">{l s='Title' mod='productcomments'}: <sup class="required">*</sup></label>
+				<label for="comment_title">{l s='Review title' mod='productcomments'} <sup class="required">*</sup></label>
 				<input id="comment_title" name="title" type="text" value=""/>
 
-				<label for="content">{l s='Comment' mod='productcomments'}: <sup class="required">*</sup></label>
+				<label for="content">{l s='Comment' mod='productcomments'} <sup class="required">*</sup></label>
 				<textarea id="content" name="content"></textarea>
 
 				{if $allow_guests == true && !$logged}
-				<label>{l s='Your name' mod='productcomments'}: <sup class="required">*</sup></label>
+				<label>{l s='Your name' mod='productcomments'} <sup class="required">*</sup></label>
 				<input id="commentCustomerName" name="customer_name" type="text" value=""/>
 				{/if}
 
