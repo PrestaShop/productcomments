@@ -168,6 +168,23 @@ class ProductComment extends ObjectModel
 		($validate == '1' ? ' AND pc.`validate` = 1' : '')));
 	}
 
+	public static function getRatings($id_product)
+	{
+		$validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
+
+		$sql = 'SELECT (SUM(pc.`grade`) / COUNT(pc.`grade`)) AS avg,
+				MIN(pc.`grade`) AS min,
+				MAX(pc.`grade`) AS max
+			FROM `'._DB_PREFIX_.'product_comment` pc
+			WHERE pc.`id_product` = '.(int)$id_product.'
+			AND pc.`deleted` = 0'.
+			($validate == '1' ? ' AND pc.`validate` = 1' : '');
+
+
+		return Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+
+	}
+
 	public static function getAverageGrade($id_product)
 	{
 		$validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');

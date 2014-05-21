@@ -223,7 +223,7 @@ class ProductComments extends Module
 	{
 		include_once(dirname(__FILE__).'/ProductComment.php');
 		include_once(dirname(__FILE__).'/ProductCommentCriterion.php');
-		
+
 		$this->_html  = '';
 		if (Tools::isSubmit('updateproductcommentscriterion'))
 			$this->_html .= $this->renderCriterionForm((int)Tools::getValue('id_product_comment_criterion'));
@@ -352,7 +352,7 @@ class ProductComments extends Module
 			}
 			else
 				$actions = array('approve', 'delete');
-			
+
 			$helper = new HelperList();
 			$helper->shopLinkType = '';
 			$helper->simple_header = true;
@@ -373,7 +373,7 @@ class ProductComments extends Module
 		$comments = ProductComment::getReportedComments();
 
 		$fields_list = $this->getStandardFieldList();
-		
+
 		if (version_compare(_PS_VERSION_, '1.6', '<'))
 		{
 			$return .= "<h1>".$this->l('Reported Comments')."</h1>";
@@ -404,7 +404,7 @@ class ProductComments extends Module
 
 	public function renderCriterionList()
 	{
-		
+
 		include_once(dirname(__FILE__).'/ProductCommentCriterion.php');
 
 		$criterions = ProductCommentCriterion::getCriterions($this->context->language->id, false, false);
@@ -495,7 +495,7 @@ class ProductComments extends Module
 					'id_product_comment_criterion' => $criterion->id,
 				);
 	}
-	
+
 	public function getStandardFieldList()
 	{
 		return array(
@@ -751,9 +751,10 @@ class ProductComments extends Module
 
 		$average = ProductComment::getAverageGrade((int)$params['product']['id_product']);
 		$this->smarty->assign(array(
-								   'product' => $params['product'],
-								   'averageTotal' => round($average['grade']),
-								   'nbComments' => (int)(ProductComment::getCommentNumber((int)$params['product']['id_product']))
+									'product' => $params['product'],
+									'averageTotal' => round($average['grade']),
+									'ratings' => ProductComment::getRatings((int)$params['product']['id_product']),
+									'nbComments' => (int)(ProductComment::getCommentNumber((int)$params['product']['id_product']))
 							  ));
 		return $this->display(__FILE__, 'productcomments_reviews.tpl', $this->getCacheId((int)$params['product']['id_product']));
 	}
@@ -783,6 +784,7 @@ class ProductComments extends Module
 			'criterions' => ProductCommentCriterion::getByProduct((int)Tools::getValue('id_product'), $this->context->language->id),
 			'action_url' => '',
 			'averageTotal' => round($average['grade']),
+			'ratings' => ProductComment::getRatings((int)Tools::getValue('id_product')),
 			'too_early' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
 			'nbComments' => (int)(ProductComment::getCommentNumber((int)Tools::getValue('id_product')))
 	   ));
