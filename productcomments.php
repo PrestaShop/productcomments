@@ -503,6 +503,10 @@ class ProductComments extends Module
 				'title' => $this->l('ID'),
 				'type' => 'text',
 			),
+			'title' => array(
+				'title' => $this->l('Comment title'),
+				'type' => 'text',
+			),
 			'content' => array(
 				'title' => $this->l('Comment'),
 				'type' => 'text',
@@ -510,6 +514,7 @@ class ProductComments extends Module
 			'grade' => array(
 				'title' => $this->l('Rating'),
 				'type' => 'text',
+				'suffix' => '/5',
 			),
 			'customer_name' => array(
 				'title' => $this->l('Author'),
