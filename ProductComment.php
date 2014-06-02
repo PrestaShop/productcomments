@@ -168,6 +168,23 @@ class ProductComment extends ObjectModel
 		($validate == '1' ? ' AND pc.`validate` = 1' : '')));
 	}
 
+	public static function getRatings($id_product)
+	{
+		$validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
+
+		$sql = 'SELECT (SUM(pc.`grade`) / COUNT(pc.`grade`)) AS avg,
+				MIN(pc.`grade`) AS min,
+				MAX(pc.`grade`) AS max
+			FROM `'._DB_PREFIX_.'product_comment` pc
+			WHERE pc.`id_product` = '.(int)$id_product.'
+			AND pc.`deleted` = 0'.
+			($validate == '1' ? ' AND pc.`validate` = 1' : '');
+
+
+		return Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+
+	}
+
 	public static function getAverageGrade($id_product)
 	{
 		$validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
@@ -253,7 +270,7 @@ class ProductComment extends ObjectModel
 	public static function getByValidate($validate = '0', $deleted = false)
 	{
 		$sql  = '
-			SELECT pc.`id_product_comment`, pc.`id_product`, IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`
+			SELECT pc.`id_product_comment`, pc.`id_product`, IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, pc.`title`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`
 			FROM `'._DB_PREFIX_.'product_comment` pc
 			LEFT JOIN `'._DB_PREFIX_.'customer` c ON (c.`id_customer` = pc.`id_customer`)
 			LEFT JOIN `'._DB_PREFIX_.'product_lang` pl ON (pl.`id_product` = pc.`id_product` AND pl.`id_lang` = '.(int)Context::getContext()->language->id.Shop::addSqlRestrictionOnLang('pl').')
