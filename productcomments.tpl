@@ -87,7 +87,7 @@ var moderation_active = {$moderation_active};
 			<a id="new_comment_tab_btn" class="open-comment-form" href="#new_comment_form">{l s='Be the first to write your review' mod='productcomments'} !</a>
 		</p>
 		{else}
-		<p class="align_center">{l s='No customer comments for the moment.' mod='productcomments'}</p>
+		<p class="align_center">{l s='No customer reviews for the moment.' mod='productcomments'}</p>
 		{/if}
 	{/if}	
 	</div>

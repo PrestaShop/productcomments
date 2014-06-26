@@ -265,7 +265,7 @@ class ProductComments extends Module
 					array(
 						'type' => 'switch',
 						'is_bool' => true, //retro compat 1.5
-						'label' => $this->l('All comments must be validated by an employee'),
+						'label' => $this->l('All reviews must be validated by an employee'),
 						'name' => 'PRODUCT_COMMENTS_MODERATE',
 						'values' => array(
 										array(
@@ -283,7 +283,7 @@ class ProductComments extends Module
 					array(
 						'type' => 'switch',
 						'is_bool' => true, //retro compat 1.5
-						'label' => $this->l('Allow guest comments'),
+						'label' => $this->l('Allow guest reviews'),
 						'name' => 'PRODUCT_COMMENTS_ALLOW_GUESTS',
 						'values' => array(
 										array(
@@ -300,7 +300,7 @@ class ProductComments extends Module
 					),
 					array(
 						'type' => 'text',
-						'label' => $this->l('Minimum time between 2 comments from the same user'),
+						'label' => $this->l('Minimum time between 2 reviews from the same user'),
 						'name' => 'PRODUCT_COMMENTS_MINIMAL_TIME',
 						'class' => 'fixed-width-xs',
 						'suffix' => 'seconds',
@@ -347,7 +347,7 @@ class ProductComments extends Module
 
 			if (version_compare(_PS_VERSION_, '1.6', '<'))
 			{
-				$return .= "<h1>".$this->l('Comments waiting for approval')."</h1>";
+				$return .= "<h1>".$this->l('Reviews waiting for approval')."</h1>";
 				$actions = array('enable', 'delete');
 			}
 			else
@@ -361,7 +361,7 @@ class ProductComments extends Module
 			$helper->module = $this;
 			$helper->listTotal = count($comments);
 			$helper->identifier = 'id_product_comment';
-			$helper->title = $this->l('Comments waiting for approval');
+			$helper->title = $this->l('Reviews waiting for approval');
 			$helper->table = $this->name;
 			$helper->token = Tools::getAdminTokenLite('AdminModules');
 			$helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
@@ -376,7 +376,7 @@ class ProductComments extends Module
 
 		if (version_compare(_PS_VERSION_, '1.6', '<'))
 		{
-			$return .= "<h1>".$this->l('Reported Comments')."</h1>";
+			$return .= "<h1>".$this->l('Reported Reviews')."</h1>";
 			$actions = array('enable', 'delete');
 		}
 		else
@@ -390,7 +390,7 @@ class ProductComments extends Module
 		$helper->module = $this;
 		$helper->listTotal = count($comments);
 		$helper->identifier = 'id_product_comment';
-		$helper->title = $this->l('Reported Comments');
+		$helper->title = $this->l('Reported Reviews');
 		$helper->table = $this->name;
 		$helper->token = Tools::getAdminTokenLite('AdminModules');
 		$helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
@@ -440,7 +440,7 @@ class ProductComments extends Module
 		);
 		$helper->module = $this;
 		$helper->identifier = 'id_product_comment_criterion';
-		$helper->title = $this->l('Comment Criterions');
+		$helper->title = $this->l('Review Criterions');
 		$helper->table = $this->name.'criterion';
 		$helper->token = Tools::getAdminTokenLite('AdminModules');
 		$helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
@@ -465,7 +465,7 @@ class ProductComments extends Module
 		$helper->module = $this;
 		$helper->listTotal = count($comments);
 		$helper->identifier = 'id_product_comment';
-		$helper->title = $this->l('Approved Comments');
+		$helper->title = $this->l('Approved Reviews');
 		$helper->table = $this->name;
 		$helper->token = Tools::getAdminTokenLite('AdminModules');
 		$helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
@@ -504,11 +504,11 @@ class ProductComments extends Module
 				'type' => 'text',
 			),
 			'title' => array(
-				'title' => $this->l('Comment title'),
+				'title' => $this->l('Review title'),
 				'type' => 'text',
 			),
 			'content' => array(
-				'title' => $this->l('Comment'),
+				'title' => $this->l('Review'),
 				'type' => 'text',
 			),
 			'grade' => array(
