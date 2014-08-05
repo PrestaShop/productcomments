@@ -127,6 +127,11 @@ class ProductComments extends Module
 			`'._DB_PREFIX_.'product_comment_usefulness`,
 			`'._DB_PREFIX_.'product_comment_report`');
 	}
+	
+	public function getCacheId($id_product = null)
+	{
+		return parent::getCacheId().'|'.(int)$id_product;
+	}
 
 	protected function _postProcess()
 	{
@@ -752,16 +757,19 @@ class ProductComments extends Module
 
 	public function hookDisplayProductListReviews($params)
 	{
-		require_once(dirname(__FILE__).'/ProductComment.php');
-
-		$average = ProductComment::getAverageGrade((int)$params['product']['id_product']);
-		$this->smarty->assign(array(
-									'product' => $params['product'],
-									'averageTotal' => round($average['grade']),
-									'ratings' => ProductComment::getRatings((int)$params['product']['id_product']),
-									'nbComments' => (int)(ProductComment::getCommentNumber((int)$params['product']['id_product']))
-							  ));
-		return $this->display(__FILE__, 'productcomments_reviews.tpl', $this->getCacheId((int)$params['product']['id_product']));
+		$id_product = (int)$params['product']['id_product'];
+		if (!$this->isCached('productcomments_reviews.tpl', $this->getCacheId($id_product)))
+		{
+			require_once(dirname(__FILE__).'/ProductComment.php');
+			$average = ProductComment::getAverageGrade($id_product);
+			$this->smarty->assign(array(
+				'product' => $params['product'],
+				'averageTotal' => round($average['grade']),
+				'ratings' => ProductComment::getRatings($id_product),
+				'nbComments' => (int)ProductComment::getCommentNumber($id_product)
+			));
+		}
+		return $this->display(__FILE__, 'productcomments_reviews.tpl', $this->getCacheId($id_product));
 	}
 
 	public function hookDisplayRightColumnProduct($params)
@@ -904,8 +912,13 @@ class ProductComments extends Module
 		if (count($list_grades) < 1)
 			return false;
 
-		$this->context->smarty->assign(array('grades' => $list_grades,	'product_grades' => $list_product_grades, 'list_ids_product' => $params['list_ids_product'],
-											'list_product_average' => $list_product_average, 'product_comments' => $list_product_comment));
+		$this->context->smarty->assign(array(
+			'grades' => $list_grades,
+			'product_grades' => $list_product_grades,
+			'list_ids_product' => $params['list_ids_product'],
+			'list_product_average' => $list_product_average,
+			'product_comments' => $list_product_comment
+		));
 
 		return $this->display(__FILE__, '/products-comparison.tpl');
 	}
