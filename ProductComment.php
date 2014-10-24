@@ -305,10 +305,14 @@ class ProductComment extends ObjectModel
 	{
 		if (!Validate::isUnsignedId($this->id))
 			return false;
-		return (Db::getInstance()->execute('
+
+		$success = (Db::getInstance()->execute('
 		UPDATE `'._DB_PREFIX_.'product_comment` SET
 		`validate` = '.(int)$validate.'
 		WHERE `id_product_comment` = '.(int)$this->id));
+
+		Hook::exec('actionObjectProductCommentValidateAfter', array('object' => $this));
+		return $success;
 	}
 
 	/**
