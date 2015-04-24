@@ -31,7 +31,7 @@ require_once(dirname(__FILE__).'/ProductCommentCriterion.php');
 include_once(dirname(__FILE__).'/ProductComment.php');
 include_once(dirname(__FILE__).'/productcomments.php');
 
-$productCom = new productcomments();
+$productCom = Module::getInstanceByName('productcomments');
 
 if (Tools::getValue('action') && Tools::getValue('id_product_comment') && Context::getContext()->cookie->id_customer)
 {
