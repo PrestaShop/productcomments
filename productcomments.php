@@ -31,12 +31,12 @@ class ProductComments extends Module
 {
 	const INSTALL_SQL_FILE = 'install.sql';
 
-	private $_html = '';
-	private $_postErrors = array();
-	private $_filters = array();
+	protected $_html = '';
+	protected $_postErrors = array();
+	protected $_filters = array();
 
-	private $_productCommentsCriterionTypes = array();
-	private $_baseUrl;
+	protected $_productCommentsCriterionTypes = array();
+	protected $_baseUrl;
 
 	public function __construct()
 	{
@@ -249,7 +249,7 @@ class ProductComments extends Module
 		return $this->_html;
 	}
 
-	private function _setBaseUrl()
+	protected function _setBaseUrl()
 	{
 		$this->_baseUrl = 'index.php?';
 		foreach ($_GET as $k => $value)
@@ -678,7 +678,7 @@ class ProductComments extends Module
 		return $helper->generateForm(array($fields_form_1));
 	}
 
-	private function _checkDeleteComment()
+	protected function _checkDeleteComment()
 	{
 		$action = Tools::getValue('delete_action');
 		if (empty($action) === false)
@@ -703,7 +703,7 @@ class ProductComments extends Module
 		}
 	}
 
-	private function _setFilters()
+	protected function _setFilters()
 	{
 		$this->_filters = array(
 							'page' => (string)Tools::getValue('submitFilter'.$this->name),
