@@ -127,7 +127,7 @@ class ProductComments extends Module
 			`'._DB_PREFIX_.'product_comment_usefulness`,
 			`'._DB_PREFIX_.'product_comment_report`');
 	}
-	
+
 	public function getCacheId($id_product = null)
 	{
 		return parent::getCacheId().'|'.(int)$id_product;
@@ -885,6 +885,7 @@ class ProductComments extends Module
 
 		foreach ($params['list_ids_product'] as $id_product)
 		{
+			$id_product = (int)$id_product;
 			$grades = ProductComment::getAveragesByProduct($id_product, $this->context->language->id);
 			$criterions = ProductCommentCriterion::getByProduct($id_product, $this->context->language->id);
 			$grade_total = 0;
