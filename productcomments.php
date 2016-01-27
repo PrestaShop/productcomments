@@ -744,7 +744,7 @@ class ProductComments extends Module
 
 		$average = ProductComment::getAverageGrade((int)Tools::getValue('id_product'));
 
-		$this->context->smarty->assign(array(
+		$this->smarty->assign(array(
 											'allow_guests' => (int)Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
 											'comments' => ProductComment::getByProduct((int)(Tools::getValue('id_product'))),
 											'criterions' => ProductCommentCriterion::getByProduct((int)(Tools::getValue('id_product')), $this->context->language->id),
