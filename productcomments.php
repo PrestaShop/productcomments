@@ -55,6 +55,8 @@ class ProductComments extends Module
 
 		$this->displayName = $this->l('Product Comments');
 		$this->description = $this->l('Allows users to post reviews and rate products on specific criteria.');
+
+    $this->ps_versions_compliancy = array('min' => '1.6', 'max' => '1.6.99.99');
 	}
 
 	public function install($keep = true)
