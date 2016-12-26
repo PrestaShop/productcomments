@@ -460,7 +460,10 @@ class ProductComments extends Module
 	{
 		require_once(dirname(__FILE__).'/ProductComment.php');
 
-		$comments = ProductComment::getByValidate(1, false);
+        $comments = ProductComment::getByValidate(1, false);
+        if (empty(Configuration::get('PRODUCT_COMMENTS_MODERATE'))) {
+            $comments = array_merge($comments, ProductComment::getByValidate(0, false));
+        }
 
 		$fields_list = $this->getStandardFieldList();
 
