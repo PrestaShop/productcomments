@@ -456,7 +456,8 @@ class ProductComments extends Module
         require_once dirname(__FILE__).'/ProductComment.php';
 
         $comments = ProductComment::getByValidate(1, false);
-        if (empty(Configuration::get('PRODUCT_COMMENTS_MODERATE'))) {
+        $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
+        if (empty($moderate)) {
             $comments = array_merge($comments, ProductComment::getByValidate(0, false));
         }
 
