@@ -82,7 +82,7 @@ class ProductCommentsDefaultModuleFrontController extends ModuleFrontController
 			$errors[] = $module_instance->l('Customer name is incorrect', 'default');
 		if (!$this->context->customer->id && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'))
 			$errors[] = $module_instance->l('You must be connected in order to send a comment', 'default');
-		if (!count(Tools::getValue('criterion')))
+		if (!Tools::isSubmit('criterion') || !count(Tools::getValue('criterion')))
 			$errors[] = $module_instance->l('You must give a rating', 'default');
 
 		$product = new Product(Tools::getValue('id_product'));
