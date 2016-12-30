@@ -43,7 +43,7 @@
 		<td  width="{$width}%" class="{$classname} comparison_infos ajax_block_product" align="center">
 		{if isset($tab_grade[$id_product]) AND $tab_grade[$id_product]}
 			{section loop=6 step=1 start=1 name=average}
-				<input class="auto-submit-star" disabled="disabled" type="radio" name="{$grade_id}_{$id_product}_{$smarty.section.average.index}" {if isset($tab_grade[$id_product]) AND $tab_grade[$id_product]|round neq 0 and $smarty.section.average.index eq $tab_grade[$id_product]|round}checked="checked"{/if} />
+				<input class="auto-submit-star not_uniform" disabled="disabled" type="radio" name="{$grade_id}_{$id_product}_{$smarty.section.average.index}" {if isset($tab_grade[$id_product]) AND $tab_grade[$id_product]|round neq 0 and $smarty.section.average.index eq $tab_grade[$id_product]|round}checked="checked"{/if} />
 			{/section}
 		{else}
 			-
@@ -60,7 +60,7 @@
 	<td  width="{$width}%" class="{$classname} comparison_infos" align="center" >
 	{if isset($list_product_average[$id_product]) AND $list_product_average[$id_product]}
 		{section loop=6 step=1 start=1 name=average}
-			<input class="auto-submit-star" disabled="disabled" type="radio" name="average_{$id_product}" {if $list_product_average[$id_product]|round neq 0 and $smarty.section.average.index eq $list_product_average[$id_product]|round}checked="checked"{/if} />
+			<input class="auto-submit-star not_uniform" disabled="disabled" type="radio" name="average_{$id_product}" {if $list_product_average[$id_product]|round neq 0 and $smarty.section.average.index eq $list_product_average[$id_product]|round}checked="checked"{/if} />
 		{/section}	
 	{else}
 		-
