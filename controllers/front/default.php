@@ -109,12 +109,14 @@ class ProductCommentsDefaultModuleFrontController extends ModuleFrontController
 				$comment->save();
 
 				$grade_sum = 0;
-				foreach(Tools::getValue('criterion') as $id_product_comment_criterion => $grade)
-				{
-					$grade_sum += $grade;
-					$product_comment_criterion = new ProductCommentCriterion($id_product_comment_criterion);
-					if ($product_comment_criterion->id)
-						$product_comment_criterion->addGrade($comment->id, $grade);
+				if(Tools::getValue('criterion')) {
+					foreach(Tools::getValue('criterion') as $id_product_comment_criterion => $grade)
+					{
+						$grade_sum += $grade;
+						$product_comment_criterion = new ProductCommentCriterion($id_product_comment_criterion);
+						if ($product_comment_criterion->id)
+							$product_comment_criterion->addGrade($comment->id, $grade);
+					}
 				}
 
 				if (count(Tools::getValue('criterion')) >= 1)
