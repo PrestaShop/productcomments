@@ -701,6 +701,8 @@ class ProductComments extends Module
     /**
      *  Front hooks
      */
+
+
     public function hookHeader()
     {
         $this->page_name = Dispatcher::getInstance()->getController();
@@ -780,48 +782,6 @@ class ProductComments extends Module
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
     }
 
-    public function hookProductTabContent($params)
-    {
-        $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
-        $customerComment = ProductComment::getByCustomer((int) Tools::getValue('id_product'), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
-
-        $averages = ProductComment::getAveragesByProduct((int) Tools::getValue('id_product'), $this->context->language->id);
-        $averageTotal = 0;
-        foreach ($averages as $average) {
-            $averageTotal += (float) ($average);
-        }
-        $averageTotal = count($averages) ? ($averageTotal / count($averages)) : 0;
-
-        $product = $this->context->controller->getProduct();
-        $image = Product::getCover((int) Tools::getValue('id_product'));
-        $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
-
-        $this->context->smarty->assign(array(
-            'logged' => $this->context->customer->isLogged(true),
-            'action_url' => '',
-            'product' => $product,
-            'comments' => ProductComment::getByProduct((int) Tools::getValue('id_product'), 1, null, $this->context->cookie->id_customer),
-            'criterions' => ProductCommentCriterion::getByProduct((int) Tools::getValue('id_product'), $this->context->language->id),
-            'averages' => $averages,
-            'product_comment_path' => $this->_path,
-            'averageTotal' => $averageTotal,
-            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
-            'recently_posted' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
-            'delay' => Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME'),
-            'id_product_comment_form' => (int) Tools::getValue('id_product'),
-            'secure_key' => $this->secure_key,
-            'productcomment_cover' => (int) Tools::getValue('id_product').'-'.(int) $image['id_image'],
-            'productcomment_cover_image' => $cover_image,
-            'mediumSize' => Image::getSize(ImageType::getFormatedName('medium')),
-            'nbComments' => (int) ProductComment::getCommentNumber((int) Tools::getValue('id_product')),
-            'productcomments_controller_url' => $this->context->link->getModuleLink('productcomments'),
-            'productcomments_url_rewriting_activated' => Configuration::get('PS_REWRITING_SETTINGS', 0),
-            'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
-        ));
-
-        return $this->display(__FILE__, '/productcomments.tpl');
-    }
-
     public function hookDisplayProductListReviews($params)
     {
         $id_product = (int) $params['product']['id_product'];
@@ -851,8 +811,7 @@ class ProductComments extends Module
         $customerComment = ProductComment::getByCustomer($product->getId(), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
 
         $average = ProductComment::getAverageGrade((int) Tools::getValue('id_product'));
-        $product = $this->context->controller->getProduct();
-        $image = Product::getCover((int) Tools::getValue('id_product'));
+        $image = Product::getCover($product->getId());
         $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
 
         $this->context->smarty->assign(array(
