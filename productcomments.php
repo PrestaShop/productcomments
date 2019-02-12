@@ -776,6 +776,7 @@ class ProductComments extends Module
 
         $this->context->smarty->assign(array(
             'product' => $product,
+            'post_comment_url' => $this->context->link->getModuleLink('productcomments', 'PostComment'),
             'cover_image' => $cover_image,
             'criterions' => $criterions,
         ));

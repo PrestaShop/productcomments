@@ -24,8 +24,6 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-// Include Module
-include_once(dirname(__FILE__).'/../../productcomments.php');
 // Include Models
 include_once(dirname(__FILE__).'/../../ProductComment.php');
 include_once(dirname(__FILE__).'/../../ProductCommentCriterion.php');
@@ -62,8 +60,6 @@ class ProductCommentsDefaultModuleFrontController extends ModuleFrontController
 
 	protected function ajaxProcessAddComment()
 	{
-		$module_instance = new ProductComments();
-
 		$result = true;
 		$id_guest = 0;
 		$id_customer = $this->context->customer->id;
@@ -73,21 +69,21 @@ class ProductCommentsDefaultModuleFrontController extends ModuleFrontController
 		$errors = array();
 		// Validation
 		if (!Validate::isInt(Tools::getValue('id_product')))
-			$errors[] = $module_instance->l('Product ID is incorrect', 'default');
+			$errors[] = $this->l('Product ID is incorrect', 'default');
 		if (!Tools::getValue('title') || !Validate::isGenericName(Tools::getValue('title')))
-			$errors[] = $module_instance->l('Title is incorrect', 'default');
+			$errors[] = $this->l('Title is incorrect', 'default');
 		if (!Tools::getValue('content') || !Validate::isMessage(Tools::getValue('content')))
-			$errors[] = $module_instance->l('Comment is incorrect', 'default');
+			$errors[] = $this->l('Comment is incorrect', 'default');
 		if (!$id_customer && (!Tools::isSubmit('customer_name') || !Tools::getValue('customer_name') || !Validate::isGenericName(Tools::getValue('customer_name'))))
-			$errors[] = $module_instance->l('Customer name is incorrect', 'default');
+			$errors[] = $this->l('Customer name is incorrect', 'default');
 		if (!$this->context->customer->id && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'))
-			$errors[] = $module_instance->l('You must be connected in order to send a comment', 'default');
+			$errors[] = $this->l('You must be connected in order to send a comment', 'default');
 		if (!count(Tools::getValue('criterion')))
-			$errors[] = $module_instance->l('You must give a rating', 'default');
+			$errors[] = $this->l('You must give a rating', 'default');
 
 		$product = new Product(Tools::getValue('id_product'));
 		if (!$product->id)
-			$errors[] = $module_instance->l('Product not found', 'default');
+			$errors[] = $this->l('Product not found', 'default');
 
 		if (!count($errors))
 		{
@@ -129,7 +125,7 @@ class ProductCommentsDefaultModuleFrontController extends ModuleFrontController
 			else
 			{
 				$result = false;
-				$errors[] = $module_instance->l('Please wait before posting another comment', 'default').' '.Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME').' '.$module_instance->l('seconds before posting a new comment', 'default');
+				$errors[] = $this->l('Please wait before posting another comment', 'default').' '.Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME').' '.$this->l('seconds before posting a new comment', 'default');
 			}
 		}
 		else

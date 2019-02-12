@@ -90,6 +90,7 @@
   width: 100%;
   height: 44px;
   border: 1px solid #BFBFBF;
+  padding: 0 10px;
 }
 
 #post-product-comment-modal textarea {
@@ -97,6 +98,7 @@
   min-height: 80px;
   border: 1px solid #BFBFBF;
   margin-bottom: 10px;
+  padding: 10px 10px;
 }
 
 #post-product-comment-modal .btn-comment,
@@ -166,6 +168,17 @@
   color: #363A41;
   font-size: 14px;
   font-weight: bold;
+}
+
+#post-product-comment-form input.error,
+#post-product-comment-form textarea.error {
+  background-color: #f2dede;
+  border: solid 1px #ebcccc;
+}
+
+#post-product-comment-form input.valid,
+#post-product-comment-form textarea.valid {
+  border: solid 1px #d0e9c6;
 }
 
 /**

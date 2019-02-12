@@ -32,18 +32,52 @@ jQuery(document).ready(function () {
     showProductCommentModal();
   });
 
-  function showProductCommentModal()
-  {
-    let productModal = $('#post-product-comment-modal');
+  function showProductCommentModal() {
+    var productModal = $('#post-product-comment-modal');
     productModal.modal('show');
     productModal.on('hidden.bs.modal', function () {
       productModal.hide();
     });
   }
 
-  function initCommentModal()
-  {
+  function initCommentModal() {
     $('#post-product-comment-modal input.star').rating();
+    $('body').on('click', '.post-product-comment', function (event) {
+      event.preventDefault();
+      showProductCommentModal();
+    });
+
+    $('#post-product-comment-form').submit(function(event) {
+      event.preventDefault();
+      var formData = $(this).serializeArray();
+      if (!validateFormData(formData)) {
+        return;
+      }
+      $.post($(this).attr('action'), $(this).serialize(), function(result) {
+        console.log('success', result);
+      }).fail(function(result) {
+        console.log('fail', result);
+      });
+    });
+
+    function validateFormData(formData) {
+      var isValid = true;
+      formData.forEach(function(formField) {
+        const fieldSelector = '#post-product-comment-form [name="'+formField.name+'"]';
+        console.log(fieldSelector, formField.value);
+        if (!formField.value) {
+          $(fieldSelector).addClass('error');
+          $(fieldSelector).removeClass('valid');
+          isValid = false;
+        } else {
+          $(fieldSelector).removeClass('error');
+          $(fieldSelector).addClass('valid');
+        }
+      });
+
+      return isValid;
+    }
   }
+
   initCommentModal();
 });
