@@ -28,13 +28,13 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
+
 class ProductComments extends Module
 {
     const INSTALL_SQL_FILE = 'install.sql';
 
     private $_html = '';
-    private $_postErrors = array();
-    private $_filters = array();
 
     private $_productCommentsCriterionTypes = array();
     private $_baseUrl;
@@ -43,12 +43,10 @@ class ProductComments extends Module
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '3.6.1';
+        $this->version = '4.0.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
-
-        $this->_setFilters();
 
         parent::__construct();
 
@@ -57,7 +55,7 @@ class ProductComments extends Module
         $this->displayName = $this->l('Product Comments');
         $this->description = $this->l('Allows users to post reviews and rate products on specific criteria.');
 
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => '1.6.99.99');
+        $this->ps_versions_compliancy = array('min' => '1.7.5', 'max' => _PS_VERSION_);
     }
 
     public function install($keep = true)
@@ -79,12 +77,11 @@ class ProductComments extends Module
         }
 
         if (parent::install() == false ||
-            !$this->registerHook('productTab') ||
-            !$this->registerHook('extraProductComparison') ||
-            !$this->registerHook('productTabContent') ||
-            !$this->registerHook('header') ||
-            !$this->registerHook('displayRightColumnProduct') ||
-            !$this->registerHook('displayProductListReviews') ||
+            !$this->registerHook('displayFooterProduct') || //footer tab content: no more exists
+            !$this->registerHook('header') || //Adds css and javascript on front
+            !$this->registerHook('displayRightColumnProduct') || //Product right column (useful now that layout is full width?)
+            !$this->registerHook('displayProductListReviews') || //Product list miniature: exists
+            !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1)) {
@@ -100,12 +97,10 @@ class ProductComments extends Module
             !Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME') ||
-            !$this->unregisterHook('extraProductComparison') ||
             !$this->unregisterHook('displayRightColumnProduct') ||
-            !$this->unregisterHook('productTabContent') ||
+            !$this->unregisterHook('displayProductAdditionalInfo') ||
             !$this->unregisterHook('header') ||
-            !$this->unregisterHook('productTab') ||
-            !$this->unregisterHook('top') ||
+            !$this->unregisterHook('displayFooterProduct') ||
             !$this->unregisterHook('displayProductListReviews')) {
             return false;
         }
@@ -146,8 +141,6 @@ class ProductComments extends Module
 
     protected function _postProcess()
     {
-        $this->_setFilters();
-
         if (Tools::isSubmit('submitModerate')) {
             Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int) Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
             Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
@@ -679,246 +672,6 @@ class ProductComments extends Module
         return $helper->generateForm(array($fields_form_1));
     }
 
-    private function _checkDeleteComment()
-    {
-        $action = Tools::getValue('delete_action');
-        if (empty($action) === false) {
-            $product_comments = Tools::getValue('delete_id_product_comment');
-
-            if (count($product_comments)) {
-                require_once dirname(__FILE__).'/ProductComment.php';
-                if ($action == 'delete') {
-                    foreach ($product_comments as $id_product_comment) {
-                        if (!$id_product_comment) {
-                            continue;
-                        }
-                        $comment = new ProductComment((int) $id_product_comment);
-                        $comment->delete();
-                        ProductComment::deleteGrades((int) $id_product_comment);
-                    }
-                }
-            }
-        }
-    }
-
-    private function _setFilters()
-    {
-        $this->_filters = array(
-                            'page' => (string) Tools::getValue('submitFilter'.$this->name),
-                            'pagination' => (string) Tools::getValue($this->name.'_pagination'),
-                            'filter_id' => (string) Tools::getValue($this->name.'Filter_id_product_comment'),
-                            'filter_content' => (string) Tools::getValue($this->name.'Filter_content'),
-                            'filter_customer_name' => (string) Tools::getValue($this->name.'Filter_customer_name'),
-                            'filter_grade' => (string) Tools::getValue($this->name.'Filter_grade'),
-                            'filter_name' => (string) Tools::getValue($this->name.'Filter_name'),
-                            'filter_date_add' => (string) Tools::getValue($this->name.'Filter_date_add'),
-                        );
-    }
-
-    public function displayApproveLink($token, $id, $name = null)
-    {
-        $this->smarty->assign(array(
-            'href' => $this->context->link->getAdminLink('AdminModules').'&configure='.$this->name.'&module_name='.$this->name.'&approveComment='.$id,
-            'action' => $this->l('Approve'),
-        ));
-
-        return $this->display(__FILE__, 'views/templates/admin/list_action_approve.tpl');
-    }
-
-    public function displayNoabuseLink($token, $id, $name = null)
-    {
-        $this->smarty->assign(array(
-            'href' => $this->context->link->getAdminLink('AdminModules').'&configure='.$this->name.'&module_name='.$this->name.'&noabuseComment='.$id,
-            'action' => $this->l('Not abusive'),
-        ));
-
-        return $this->display(__FILE__, 'views/templates/admin/list_action_noabuse.tpl');
-    }
-
-    public function hookProductTab($params)
-    {
-        require_once dirname(__FILE__).'/ProductComment.php';
-        require_once dirname(__FILE__).'/ProductCommentCriterion.php';
-
-        $average = ProductComment::getAverageGrade((int) Tools::getValue('id_product'));
-
-        $this->context->smarty->assign(array(
-                                            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
-                                            'comments' => ProductComment::getByProduct((int) (Tools::getValue('id_product'))),
-                                            'criterions' => ProductCommentCriterion::getByProduct((int) (Tools::getValue('id_product')), $this->context->language->id),
-                                            'averageTotal' => round($average['grade']),
-                                            'nbComments' => (int) (ProductComment::getCommentNumber((int) (Tools::getValue('id_product')))),
-                                       ));
-
-        return $this->display(__FILE__, '/tab.tpl');
-    }
-
-    public function hookDisplayProductListReviews($params)
-    {
-        $id_product = (int) $params['product']['id_product'];
-        if (!$this->isCached('productcomments_reviews.tpl', $this->getCacheId($id_product))) {
-            require_once dirname(__FILE__).'/ProductComment.php';
-            $average = ProductComment::getAverageGrade($id_product);
-            $this->smarty->assign(array(
-                'product' => $params['product'],
-                'averageTotal' => round($average['grade']),
-                'ratings' => ProductComment::getRatings($id_product),
-                'nbComments' => (int) ProductComment::getCommentNumber($id_product),
-            ));
-        }
-
-        return $this->display(__FILE__, 'productcomments_reviews.tpl', $this->getCacheId($id_product));
-    }
-
-    public function hookDisplayRightColumnProduct($params)
-    {
-        require_once dirname(__FILE__).'/ProductComment.php';
-        require_once dirname(__FILE__).'/ProductCommentCriterion.php';
-
-        $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
-        $customerComment = ProductComment::getByCustomer((int) (Tools::getValue('id_product')), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
-
-        $average = ProductComment::getAverageGrade((int) Tools::getValue('id_product'));
-        $product = $this->context->controller->getProduct();
-        $image = Product::getCover((int) Tools::getValue('id_product'));
-        $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
-
-        $this->context->smarty->assign(array(
-            'id_product_comment_form' => (int) Tools::getValue('id_product'),
-            'product' => $product,
-            'secure_key' => $this->secure_key,
-            'logged' => $this->context->customer->isLogged(true),
-            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
-            'productcomment_cover' => (int) Tools::getValue('id_product').'-'.(int) $image['id_image'], // retro compat
-            'productcomment_cover_image' => $cover_image,
-            'mediumSize' => Image::getSize(ImageType::getFormatedName('medium')),
-            'criterions' => ProductCommentCriterion::getByProduct((int) Tools::getValue('id_product'), $this->context->language->id),
-            'action_url' => '',
-            'averageTotal' => round($average['grade']),
-            'ratings' => ProductComment::getRatings((int) Tools::getValue('id_product')),
-            'too_early' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
-            'nbComments' => (int) (ProductComment::getCommentNumber((int) Tools::getValue('id_product'))),
-       ));
-
-        return $this->display(__FILE__, '/productcomments-extra.tpl');
-    }
-
-    public function hookDisplayLeftColumnProduct($params)
-    {
-        return $this->hookDisplayRightColumnProduct($params);
-    }
-
-    public function hookProductTabContent($params)
-    {
-        $this->context->controller->addJS($this->_path.'js/jquery.rating.pack.js');
-        $this->context->controller->addJS($this->_path.'js/jquery.textareaCounter.plugin.js');
-        $this->context->controller->addJS($this->_path.'js/productcomments.js');
-
-        $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
-        $customerComment = ProductComment::getByCustomer((int) (Tools::getValue('id_product')), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
-
-        $averages = ProductComment::getAveragesByProduct((int) Tools::getValue('id_product'), $this->context->language->id);
-        $averageTotal = 0;
-        foreach ($averages as $average) {
-            $averageTotal += (float) ($average);
-        }
-        $averageTotal = count($averages) ? ($averageTotal / count($averages)) : 0;
-
-        $product = $this->context->controller->getProduct();
-        $image = Product::getCover((int) Tools::getValue('id_product'));
-        $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
-
-        $this->context->smarty->assign(array(
-            'logged' => $this->context->customer->isLogged(true),
-            'action_url' => '',
-            'product' => $product,
-            'comments' => ProductComment::getByProduct((int) Tools::getValue('id_product'), 1, null, $this->context->cookie->id_customer),
-            'criterions' => ProductCommentCriterion::getByProduct((int) Tools::getValue('id_product'), $this->context->language->id),
-            'averages' => $averages,
-            'product_comment_path' => $this->_path,
-            'averageTotal' => $averageTotal,
-            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
-            'too_early' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
-            'delay' => Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME'),
-            'id_product_comment_form' => (int) Tools::getValue('id_product'),
-            'secure_key' => $this->secure_key,
-            'productcomment_cover' => (int) Tools::getValue('id_product').'-'.(int) $image['id_image'],
-            'productcomment_cover_image' => $cover_image,
-            'mediumSize' => Image::getSize(ImageType::getFormatedName('medium')),
-            'nbComments' => (int) ProductComment::getCommentNumber((int) Tools::getValue('id_product')),
-            'productcomments_controller_url' => $this->context->link->getModuleLink('productcomments'),
-            'productcomments_url_rewriting_activated' => Configuration::get('PS_REWRITING_SETTINGS', 0),
-            'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
-       ));
-
-        $this->context->controller->pagination((int) ProductComment::getCommentNumber((int) Tools::getValue('id_product')));
-
-        return $this->display(__FILE__, '/productcomments.tpl');
-    }
-
-    public function hookHeader()
-    {
-        $this->context->controller->addCSS($this->_path.'productcomments.css', 'all');
-
-        $this->page_name = Dispatcher::getInstance()->getController();
-        if (in_array($this->page_name, array('product', 'productscomparison'))) {
-            $this->context->controller->addJS($this->_path.'js/jquery.rating.pack.js');
-            if (in_array($this->page_name, array('productscomparison'))) {
-                $this->context->controller->addjqueryPlugin('cluetip');
-                $this->context->controller->addJS($this->_path.'js/products-comparison.js');
-            }
-        }
-    }
-
-    public function hookExtraProductComparison($params)
-    {
-        require_once dirname(__FILE__).'/ProductComment.php';
-        require_once dirname(__FILE__).'/ProductCommentCriterion.php';
-
-        $list_grades = array();
-        $list_product_grades = array();
-        $list_product_average = array();
-        $list_product_comment = array();
-
-        foreach ($params['list_ids_product'] as $id_product) {
-            $id_product = (int) $id_product;
-            $grades = ProductComment::getAveragesByProduct($id_product, $this->context->language->id);
-            $criterions = ProductCommentCriterion::getByProduct($id_product, $this->context->language->id);
-            $grade_total = 0;
-            if (count($grades) > 0) {
-                foreach ($criterions as $criterion) {
-                    if (isset($grades[$criterion['id_product_comment_criterion']])) {
-                        $list_product_grades[$criterion['id_product_comment_criterion']][$id_product] = $grades[$criterion['id_product_comment_criterion']];
-                        $grade_total += (float) ($grades[$criterion['id_product_comment_criterion']]);
-                    } else {
-                        $list_product_grades[$criterion['id_product_comment_criterion']][$id_product] = 0;
-                    }
-
-                    if (!array_key_exists($criterion['id_product_comment_criterion'], $list_grades)) {
-                        $list_grades[$criterion['id_product_comment_criterion']] = $criterion['name'];
-                    }
-                }
-
-                $list_product_average[$id_product] = $grade_total / count($criterions);
-                $list_product_comment[$id_product] = ProductComment::getByProduct($id_product, 0, 3);
-            }
-        }
-
-        if (count($list_grades) < 1) {
-            return false;
-        }
-
-        $this->context->smarty->assign(array(
-            'grades' => $list_grades,
-            'product_grades' => $list_product_grades,
-            'list_ids_product' => $params['list_ids_product'],
-            'list_product_average' => $list_product_average,
-            'product_comments' => $list_product_comment,
-        ));
-
-        return $this->display(__FILE__, '/products-comparison.tpl');
-    }
-
     public function initCategoriesAssociation($id_root = null, $id_criterion = 0)
     {
         if (is_null($id_root)) {
@@ -943,5 +696,182 @@ class ProductComments extends Module
         $helper = new Helper();
 
         return $helper->renderCategoryTree($root_category, $selected_cat, 'categoryBox', false, true);
+    }
+
+    /**
+     *  Front hooks
+     */
+    public function hookHeader()
+    {
+        $this->page_name = Dispatcher::getInstance()->getController();
+        if (in_array($this->page_name, array('product', 'productscomparison'))) {
+            $this->context->controller->addCSS($this->_path.'/assets/css/productcomments.css', 'all');
+
+            $this->context->controller->addJS($this->_path.'js/jquery.rating.pack.js');
+            $this->context->controller->addJS($this->_path.'js/jquery.textareaCounter.plugin.js');
+            $this->context->controller->addJS($this->_path.'assets/js/post-comment.js');
+        }
+    }
+
+    public function hookDisplayFooterProduct($params)
+    {
+        return $this->renderProductCommentsList($params['product']) . $this->renderProductCommentModal($params['product']);
+    }
+
+    /**
+     * @param ProductLazyArray $product
+     *
+     * @return string
+     */
+    private function renderProductCommentsList($product)
+    {
+        require_once dirname(__FILE__).'/ProductComment.php';
+        require_once dirname(__FILE__).'/ProductCommentCriterion.php';
+
+        $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
+        $customerComment = ProductComment::getByCustomer($product->getId(), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
+
+        $averages = ProductComment::getAveragesByProduct($product->getId(), $this->context->language->id);
+        $averageTotal = 0;
+        foreach ($averages as $average) {
+            $averageTotal += (float) ($average);
+        }
+        $averageTotal = count($averages) ? ($averageTotal / count($averages)) : 0;
+
+        $this->context->smarty->assign(array(
+            'logged' => $this->context->customer->isLogged(true),
+            'action_url' => '',
+            'product' => $product,
+            'comments' => ProductComment::getByProduct($product->getId(), 1, null, $this->context->cookie->id_customer),
+            'criterions' => ProductCommentCriterion::getByProduct($product->getId(), $this->context->language->id),
+            'averages' => $averages,
+            'product_comment_path' => $this->_path,
+            'averageTotal' => $averageTotal,
+            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
+            'recently_posted' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
+            'delay' => Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME'),
+            'id_product_comment_form' => $product->getId(),
+            'secure_key' => $this->secure_key,
+            'nbComments' => (int) ProductComment::getCommentNumber($product->getId()),
+            'productcomments_controller_url' => $this->context->link->getModuleLink('productcomments'),
+            'productcomments_url_rewriting_activated' => Configuration::get('PS_REWRITING_SETTINGS', 0),
+            'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
+        ));
+
+        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-comments-list.tpl');
+    }
+
+    /**
+     * @param ProductLazyArray $product
+     *
+     * @return string
+     */
+    private function renderProductCommentModal($product)
+    {
+        $image = Product::getCover($product->getId());
+        $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
+
+        $this->context->smarty->assign(array(
+            'product' => $product,
+            'cover_image' => $cover_image,
+            'medium_size' => Image::getSize(ImageType::getFormatedName('medium')),
+        ));
+
+        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
+    }
+
+    public function hookProductTabContent($params)
+    {
+        $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
+        $customerComment = ProductComment::getByCustomer((int) Tools::getValue('id_product'), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
+
+        $averages = ProductComment::getAveragesByProduct((int) Tools::getValue('id_product'), $this->context->language->id);
+        $averageTotal = 0;
+        foreach ($averages as $average) {
+            $averageTotal += (float) ($average);
+        }
+        $averageTotal = count($averages) ? ($averageTotal / count($averages)) : 0;
+
+        $product = $this->context->controller->getProduct();
+        $image = Product::getCover((int) Tools::getValue('id_product'));
+        $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
+
+        $this->context->smarty->assign(array(
+            'logged' => $this->context->customer->isLogged(true),
+            'action_url' => '',
+            'product' => $product,
+            'comments' => ProductComment::getByProduct((int) Tools::getValue('id_product'), 1, null, $this->context->cookie->id_customer),
+            'criterions' => ProductCommentCriterion::getByProduct((int) Tools::getValue('id_product'), $this->context->language->id),
+            'averages' => $averages,
+            'product_comment_path' => $this->_path,
+            'averageTotal' => $averageTotal,
+            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
+            'recently_posted' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
+            'delay' => Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME'),
+            'id_product_comment_form' => (int) Tools::getValue('id_product'),
+            'secure_key' => $this->secure_key,
+            'productcomment_cover' => (int) Tools::getValue('id_product').'-'.(int) $image['id_image'],
+            'productcomment_cover_image' => $cover_image,
+            'mediumSize' => Image::getSize(ImageType::getFormatedName('medium')),
+            'nbComments' => (int) ProductComment::getCommentNumber((int) Tools::getValue('id_product')),
+            'productcomments_controller_url' => $this->context->link->getModuleLink('productcomments'),
+            'productcomments_url_rewriting_activated' => Configuration::get('PS_REWRITING_SETTINGS', 0),
+            'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
+        ));
+
+        return $this->display(__FILE__, '/productcomments.tpl');
+    }
+
+    public function hookDisplayProductListReviews($params)
+    {
+        $id_product = (int) $params['product']['id_product'];
+        if (!$this->isCached('productcomments_reviews.tpl', $this->getCacheId($id_product))) {
+            require_once dirname(__FILE__).'/ProductComment.php';
+            $average = ProductComment::getAverageGrade($id_product);
+            $this->smarty->assign(array(
+                'product' => $params['product'],
+                'averageTotal' => round($average['grade']),
+                'ratings' => ProductComment::getRatings($id_product),
+                'nbComments' => (int) ProductComment::getCommentNumber($id_product),
+            ));
+        }
+
+        return $this->display(__FILE__, 'productcomments_reviews.tpl', $this->getCacheId($id_product));
+    }
+
+    public function hookDisplayProductAdditionalInfo($params)
+    {
+        /** @var ProductLazyArray $product */
+        $product = $params['product'];
+
+        require_once dirname(__FILE__).'/ProductComment.php';
+        require_once dirname(__FILE__).'/ProductCommentCriterion.php';
+
+        $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
+        $customerComment = ProductComment::getByCustomer($product->getId(), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
+
+        $average = ProductComment::getAverageGrade((int) Tools::getValue('id_product'));
+        $product = $this->context->controller->getProduct();
+        $image = Product::getCover((int) Tools::getValue('id_product'));
+        $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
+
+        $this->context->smarty->assign(array(
+            'id_product_comment_form' => (int) Tools::getValue('id_product'),
+            'product' => $product,
+            'secure_key' => $this->secure_key,
+            'logged' => $this->context->customer->isLogged(true),
+            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
+            'productcomment_cover' => (int) Tools::getValue('id_product').'-'.(int) $image['id_image'], // retro compat
+            'productcomment_cover_image' => $cover_image,
+            'mediumSize' => Image::getSize(ImageType::getFormatedName('medium')),
+            'criterions' => ProductCommentCriterion::getByProduct((int) Tools::getValue('id_product'), $this->context->language->id),
+            'action_url' => '',
+            'averageTotal' => round($average['grade']),
+            'ratings' => ProductComment::getRatings((int) Tools::getValue('id_product')),
+            'recently_posted' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
+            'nbComments' => (int) (ProductComment::getCommentNumber((int) Tools::getValue('id_product'))),
+       ));
+
+        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
     }
 }

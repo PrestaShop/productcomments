@@ -1,0 +1,61 @@
+/**
+ *  Product comments CSS
+ */
+
+.product_comments_additional_info {
+  margin: 20px 0;
+}
+
+.plain-edit-button {
+  height: 36px;
+  border-radius: 2px;
+  background-color: #6C868E;
+  color: #FFFFFF;
+  font-size: 14px;
+  box-shadow: 2px 2px 4px 0 rgba(0,0,0,0.2);
+  padding: 8px;
+}
+
+.plain-edit-button .material-icons {
+  font-size: 20px;
+  margin-right: 7px;
+}
+
+.plain-edit-button:hover {
+  background-color: #FFFFFF;
+  color: #6C868E;
+}
+
+#post-product-comment-modal .modal-header {
+  border: none;
+}
+
+#post-product-comment-modal .modal-dialog {
+  width: calc(100% - 30px);
+  max-width: 64rem;
+}
+
+#product-comments-list-header {
+  padding: 20px 0;
+  color: #232323;
+}
+
+#product-comments-list-header .comments-nb {
+  padding-left: 0;
+}
+
+#product-comments-list-header .comments-nb  .material-icons {
+  margin-right: 3px;
+}
+
+#product-comments-list {
+  background-color: #FFFFFF;
+  padding: 26px 0;
+}
+
+#product-comments-list .post-product-comment {
+  margin: 0 auto;
+  display: block;
+  padding: 13px 16px;
+  height: 45px;
+}
