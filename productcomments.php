@@ -772,11 +772,12 @@ class ProductComments extends Module
     {
         $image = Product::getCover($product->getId());
         $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
+        $criterions = ProductCommentCriterion::getByProduct($product->getId(), $this->context->language->id);
 
         $this->context->smarty->assign(array(
             'product' => $product,
             'cover_image' => $cover_image,
-            'medium_size' => Image::getSize(ImageType::getFormatedName('medium')),
+            'criterions' => $criterions,
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
@@ -820,9 +821,6 @@ class ProductComments extends Module
             'secure_key' => $this->secure_key,
             'logged' => $this->context->customer->isLogged(true),
             'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
-            'productcomment_cover' => (int) Tools::getValue('id_product').'-'.(int) $image['id_image'], // retro compat
-            'productcomment_cover_image' => $cover_image,
-            'mediumSize' => Image::getSize(ImageType::getFormatedName('medium')),
             'criterions' => ProductCommentCriterion::getByProduct((int) Tools::getValue('id_product'), $this->context->language->id),
             'action_url' => '',
             'averageTotal' => round($average['grade']),

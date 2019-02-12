@@ -36,7 +36,7 @@
 		{/if}
 
 		{if ($recently_posted == false && ($logged || $allow_guests))}
-		<button class="btn plain-edit-button post-product-comment">
+		<button class="btn btn-comment post-product-comment">
       <i class="material-icons shopping-cart">edit</i>
       {l s='Write your review' mod='productcomments'}
     </button>

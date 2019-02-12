@@ -23,19 +23,27 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
+
 jQuery(document).ready(function () {
+  const $ = jQuery;
   console.log('init product comments');
-  jQuery('body').on('click', '.post-product-comment', function (event) {
+  $('body').on('click', '.post-product-comment', function (event) {
     event.preventDefault();
     showProductCommentModal();
   });
 
   function showProductCommentModal()
   {
-    let productModal = jQuery('#post-product-comment-modal');
+    let productModal = $('#post-product-comment-modal');
     productModal.modal('show');
     productModal.on('hidden.bs.modal', function () {
       productModal.hide();
     });
   }
+
+  function initCommentModal()
+  {
+    $('#post-product-comment-modal input.star').rating();
+  }
+  initCommentModal();
 });
