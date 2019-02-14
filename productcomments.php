@@ -28,6 +28,10 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 
 class ProductComments extends Module
