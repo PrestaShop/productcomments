@@ -23,7 +23,7 @@
  * International Registered Trademark & Property of PrestaShop SA
  *}
 
-<div id="post-product-comment-modal" class="modal fade" role="dialog" aria-hidden="true">
+<div id="post-product-comment-modal" class="modal fade product-comment-modal" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -70,11 +70,11 @@
                       <div class="criterion_rating">
                         <label>{$criterion.name|escape:'html':'UTF-8'}:</label>
                         <div class="star_content">
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion|round}]" value="1" />
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion|round}]" value="2" />
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion|round}]" value="3" />
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion|round}]" value="4" />
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion|round}]" value="5" checked="checked" />
+                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="1" />
+                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="2" />
+                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="3" />
+                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="4" />
+                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="5" checked="checked" />
                         </div>
                       </div>
                     </li>
@@ -140,6 +140,37 @@
             </div>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="product-comment-posted-modal" class="modal fade product-comment-modal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <i class="material-icons">check_circle</i>
+          {l s='Comment sent' mod='productcomments'}
+        </h2>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12  col-sm-12">
+            {if $moderation_active}
+              {l s='Your comment has been submitted and will be available once approved by a moderator.' mod='productcomments'}
+            {else}
+              {l s='Your comment has been added!' mod='productcomments'}
+            {/if}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12  col-sm-12 post-comment-buttons">
+            <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal" aria-label="{l s='OK' mod='productcomments'}">
+              {l s='OK' mod='productcomments'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

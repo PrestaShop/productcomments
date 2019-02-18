@@ -42,58 +42,63 @@
   height: 45px;
 }
 
+.btn-comment-huge {
+  padding: 13px 28px;
+  height: 45px;
+}
+
 /**
  *  Post comment modal
  */
-#post-product-comment-modal .modal-header {
+.product-comment-modal .modal-header {
   border: none;
   padding: 30px 30px 15px;
 }
 
-#post-product-comment-modal .modal-body {
+.product-comment-modal .modal-body {
   padding: 15px 30px 30px;
 }
 
-#post-product-comment-modal .modal-header h2 {
+.product-comment-modal .modal-header h2 {
   float: left;
   font-size: 20px;
 }
 
-#post-product-comment-modal .modal-dialog {
+.product-comment-modal .modal-dialog {
   width: calc(100% - 30px);
   max-width: 774px;
 }
 
-#post-product-comment-modal .modal-dialog h3 {
+.product-comment-modal .modal-dialog h3 {
   font-size: 14px;
 }
 
-#post-product-comment-modal .modal-dialog .product-flag {
+.product-comment-modal .modal-dialog .product-flag {
   font-size: 10px;
   line-height: 11px;
   margin-top: 3px;
   padding: 3px;
 }
 
-#post-product-comment-modal .modal-dialog .product-cover,
-#post-product-comment-modal .modal-dialog .product-cover img {
+.product-comment-modal .modal-dialog .product-cover,
+.product-comment-modal .modal-dialog .product-cover img {
   width: 99px;
   height: 99px;
 }
 
-#post-product-comment-modal label.form-label {
+.product-comment-modal label.form-label {
   font-size: 16px;
   margin: 10px 0;
 }
 
-#post-product-comment-modal input {
+.product-comment-modal input {
   width: 100%;
   height: 44px;
   border: 1px solid #BFBFBF;
   padding: 0 10px;
 }
 
-#post-product-comment-modal textarea {
+.product-comment-modal textarea {
   width: 100%;
   min-height: 80px;
   border: 1px solid #BFBFBF;
@@ -101,26 +106,37 @@
   padding: 10px 10px;
 }
 
-#post-product-comment-modal .btn-comment,
-#post-product-comment-modal .btn-comment-inverse {
+.product-comment-modal .btn-comment,
+.product-comment-modal .btn-comment-inverse {
   font-size: 16px;
   line-height: 16px;
   font-weight: bold;
 }
 
-#post-product-comment-modal .required {
+.product-comment-modal .required {
   font-size: 12px;
   margin-left: 5px;
 }
 
-#post-product-comment-modal .post-comment-buttons {
+.product-comment-modal .post-comment-buttons {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
 }
 
-#post-product-comment-modal .post-comment-buttons .btn-comment {
+.product-comment-modal .post-comment-buttons .btn-comment {
   margin-left: 15px;
+}
+
+#product-comment-posted-modal .post-comment-buttons {
+  margin-top: 30px;
+}
+
+#product-comment-posted-modal .modal-header .material-icons {
+  color: #40A85F;
+  font-size: 30px;
+  line-height: 25px;
+  margin-right: "px;
 }
 
 /**

@@ -26,25 +26,47 @@
 
 jQuery(document).ready(function () {
   const $ = jQuery;
-  console.log('init product comments');
   $('body').on('click', '.post-product-comment', function (event) {
     event.preventDefault();
-    showProductCommentModal();
+    showPostCommentModal();
   });
 
-  function showProductCommentModal() {
-    var productModal = $('#post-product-comment-modal');
-    productModal.modal('show');
-    productModal.on('hidden.bs.modal', function () {
-      productModal.hide();
-    });
+  const postCommentModal = $('#post-product-comment-modal');
+  postCommentModal.on('hidden.bs.modal', function () {
+    postCommentModal.modal('hide');
+    clearPostCommentForm();
+  });
+
+  const commentPostedModal = $('#product-comment-posted-modal');
+  commentPostedModal.on('hidden.bs.modal', function () {
+    commentPostedModal.modal('hide');
+  });
+
+  function showPostCommentModal() {
+    commentPostedModal.modal('hide');
+    postCommentModal.modal('show');
+  }
+
+  function showCommentPostedModal() {
+    postCommentModal.modal('hide');
+    clearPostCommentForm();
+    commentPostedModal.modal('show');
+  }
+
+  function clearPostCommentForm() {
+    $('#post-product-comment-form input').val('');
+    $('#post-product-comment-form input').removeClass('valid error');
+    $('#post-product-comment-form textarea').val('');
+    $('#post-product-comment-form textarea').removeClass('valid error');
+    $('#post-product-comment-form .star input').val(5);
+    $('#post-product-comment-form .star a[title="5"]').click();
   }
 
   function initCommentModal() {
     $('#post-product-comment-modal input.star').rating();
     $('body').on('click', '.post-product-comment', function (event) {
       event.preventDefault();
-      showProductCommentModal();
+      showPostCommentModal();
     });
 
     $('#post-product-comment-form').submit(function(event) {
@@ -53,8 +75,16 @@ jQuery(document).ready(function () {
       if (!validateFormData(formData)) {
         return;
       }
-      $.post($(this).attr('action'), $(this).serialize(), function(result) {
-        console.log('success', result);
+      $.post($(this).attr('action'), $(this).serialize(), function(jsonData) {
+        var jsonResponse = false;
+        try {
+          jsonResponse = JSON.parse(jsonData);
+        } catch (e) {
+        }
+        if (jsonResponse && jsonResponse.success) {
+          clearPostCommentForm();
+          showCommentPostedModal();
+        }
       }).fail(function(result) {
         console.log('fail', result);
       });
@@ -64,7 +94,6 @@ jQuery(document).ready(function () {
       var isValid = true;
       formData.forEach(function(formField) {
         const fieldSelector = '#post-product-comment-form [name="'+formField.name+'"]';
-        console.log(fieldSelector, formField.value);
         if (!formField.value) {
           $(fieldSelector).addClass('error');
           $(fieldSelector).removeClass('valid');
