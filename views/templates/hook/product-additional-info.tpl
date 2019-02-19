@@ -26,21 +26,27 @@
 
 {if $nbComments != 0 || ($recently_posted == false && ($logged || $allow_guests))}
 <div class="product_comments_additional_info">
-  {include file='module:productcomments/views/templates/hook/average-note-stars.tpl'}
-
-	<div class="comments_advices">
-		{if $nbComments != 0}
-		<a class="btn" href="#product-comments-list-header">
-      {l s='Read user reviews' mod='productcomments'} ({$nbComments})
-    </a>
-		{/if}
-
-		{if ($recently_posted == false && ($logged || $allow_guests))}
-		<button class="btn btn-comment post-product-comment">
-      <i class="material-icons shopping-cart">edit</i>
-      {l s='Write your review' mod='productcomments'}
-    </button>
-		{/if}
-	</div>
+  {if $nbComments == 0}
+    {if ($recently_posted == false && ($logged || $allow_guests))}
+      <button class="btn btn-comment post-product-comment">
+        <i class="material-icons shopping-cart">edit</i>
+        {l s='Write your review' mod='productcomments'}
+      </button>
+    {/if}
+  {else}
+    {include file='module:productcomments/views/templates/hook/average-note-stars.tpl'}
+    <div class="additional-links">
+      <a class="link-comment" href="#product-comments-list-header">
+        <i class="material-icons shopping-cart">chat</i>
+        {l s='Read user reviews' mod='productcomments'} ({$nbComments})
+      </a>
+      {if ($recently_posted == false && ($logged || $allow_guests))}
+        <a class="link-comment post-product-comment" href="#product-comments-list-header">
+          <i class="material-icons shopping-cart">edit</i>
+          {l s='Write your review' mod='productcomments'}
+        </a>
+      {/if}
+    </div>
+  {/if}
 </div>
 {/if}

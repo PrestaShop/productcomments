@@ -398,6 +398,44 @@ class ProductComments extends Module
         return $return;
     }
 
+    /**
+     * Method used by the HelperList to render the approve link
+     *
+     * @param $token
+     * @param $id
+     * @param null $name
+     *
+     * @return mixed
+     */
+    public function displayApproveLink($token, $id, $name = null)
+    {
+        $this->smarty->assign(array(
+            'href' => $this->context->link->getAdminLink('AdminModules').'&configure='.$this->name.'&module_name='.$this->name.'&approveComment='.$id,
+            'action' => $this->l('Approve'),
+        ));
+
+        return $this->display(__FILE__, 'views/templates/admin/list_action_approve.tpl');
+    }
+
+    /**
+     * Method used by the HelperList to render the approve link
+     *
+     * @param $token
+     * @param $id
+     * @param null $name
+     *
+     * @return mixed
+     */
+    public function displayNoabuseLink($token, $id, $name = null)
+    {
+        $this->smarty->assign(array(
+            'href' => $this->context->link->getAdminLink('AdminModules').'&configure='.$this->name.'&module_name='.$this->name.'&noabuseComment='.$id,
+            'action' => $this->l('Not abusive'),
+        ));
+
+        return $this->display(__FILE__, 'views/templates/admin/list_action_noabuse.tpl');
+    }
+
     public function renderCriterionList()
     {
         include_once dirname(__FILE__).'/ProductCommentCriterion.php';
@@ -712,6 +750,7 @@ class ProductComments extends Module
             $this->context->controller->addJS($this->_path.'js/jquery.rating.pack.js');
             $this->context->controller->addJS($this->_path.'js/jquery.textareaCounter.plugin.js');
             $this->context->controller->addJS($this->_path.'assets/js/post-comment.js');
+            $this->context->controller->addJS($this->_path.'assets/js/list-comments.js');
         }
     }
 
@@ -732,13 +771,7 @@ class ProductComments extends Module
 
         $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
         $customerComment = ProductComment::getByCustomer($product->getId(), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
-
-        $averages = ProductComment::getAveragesByProduct($product->getId(), $this->context->language->id);
-        $averageTotal = 0;
-        foreach ($averages as $average) {
-            $averageTotal += (float) ($average);
-        }
-        $averageTotal = count($averages) ? ($averageTotal / count($averages)) : 0;
+        $average = ProductComment::getAverageGrade($product->getId());
 
         $this->context->smarty->assign(array(
             'logged' => $this->context->customer->isLogged(true),
@@ -746,9 +779,8 @@ class ProductComments extends Module
             'product' => $product,
             'comments' => ProductComment::getByProduct($product->getId(), 1, null, $this->context->cookie->id_customer),
             'criterions' => ProductCommentCriterion::getByProduct($product->getId(), $this->context->language->id),
-            'averages' => $averages,
             'product_comment_path' => $this->_path,
-            'averageTotal' => $averageTotal,
+            'average_total' => $average['grade'],
             'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
             'recently_posted' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
             'delay' => Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME'),
@@ -758,6 +790,7 @@ class ProductComments extends Module
             'productcomments_controller_url' => $this->context->link->getModuleLink('productcomments'),
             'productcomments_url_rewriting_activated' => Configuration::get('PS_REWRITING_SETTINGS', 0),
             'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
+            'list_comments_url' => $this->context->link->getModuleLink('productcomments', 'ListComments'),
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-comments-list.tpl');
@@ -825,7 +858,7 @@ class ProductComments extends Module
             'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
             'criterions' => ProductCommentCriterion::getByProduct((int) Tools::getValue('id_product'), $this->context->language->id),
             'action_url' => '',
-            'averageTotal' => round($average['grade']),
+            'average_total' => round($average['grade']),
             'ratings' => ProductComment::getRatings((int) Tools::getValue('id_product')),
             'recently_posted' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
             'nbComments' => (int) (ProductComment::getCommentNumber((int) Tools::getValue('id_product'))),

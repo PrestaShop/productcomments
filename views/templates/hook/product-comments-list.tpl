@@ -35,63 +35,24 @@
   var moderation_active = {$moderation_active};
 </script>
 
-<div class="row" id="product-comments-list-header">
-  <div class="col-md-6 comments-nb">
-    <i class="material-icons shopping-cart">chat</i>
-    {l s='Comments' mod='productcomments'} ({$nbComments})
-  </div>
-  <div class="col-md-6">
+<div class="row">
+  <div class="col-md-12 col-sm-12" id="product-comments-list-header">
+    <div class="comments-nb">
+      <i class="material-icons shopping-cart">chat</i>
+      {l s='Comments' mod='productcomments'} ({$nbComments})
+    </div>
     {include file='module:productcomments/views/templates/hook/average-note-stars.tpl'}
   </div>
 </div>
 
-<div class="row" id="product-comments-list">
-  {if $nbComments > 0}
-    {foreach from=$comments item=comment}
-      {if $comment.content}
-        <div class="comment clearfix">
-          <div class="comment_author">
-            <span>{l s='Grade' mod='productcomments'}&nbsp</span>
-            <div class="star_content clearfix">
-              {section name="i" start=0 loop=5 step=1}
-                {if $comment.grade le $smarty.section.i.index}
-                  <div class="star"></div>
-                {else}
-                  <div class="star star_on"></div>
-                {/if}
-              {/section}
-            </div>
-            <div class="comment_author_infos">
-              <strong>{$comment.customer_name|escape:'html':'UTF-8'}</strong><br/>
-              <em>{dateFormat date=$comment.date_add|escape:'html':'UTF-8' full=0}</em>
-            </div>
-          </div>
-          <div class="comment_details">
-            <h4 class="title_block">{$comment.title}</h4>
-            <p>{$comment.content|escape:'html':'UTF-8'|nl2br}</p>
-            <ul>
-              {if $comment.total_advice > 0}
-                <li>{l s='%1$d out of %2$d people found this review useful.' sprintf=[$comment.total_useful,$comment.total_advice] mod='productcomments'}</li>
-              {/if}
-              {if $logged}
-                {if !$comment.customer_advice}
-                  <li>{l s='Was this comment useful to you?' mod='productcomments'}<button class="usefulness_btn" data-is-usefull="1" data-id-product-comment="{$comment.id_product_comment}">{l s='yes' mod='productcomments'}</button><button class="usefulness_btn" data-is-usefull="0" data-id-product-comment="{$comment.id_product_comment}">{l s='no' mod='productcomments'}</button></li>
-                {/if}
-                {if !$comment.customer_report}
-                  <li><span class="report_btn" data-id-product-comment="{$comment.id_product_comment}">{l s='Report abuse' mod='productcomments'}</span></li>
-                {/if}
-              {/if}
-            </ul>
-          </div>
-        </div>
-      {/if}
-    {/foreach}
-    {if (!$recently_posted && ($logged || $allow_guests))}
-      <p class="align_center">
-        <a id="new_comment_tab_btn" class="open-comment-form" href="#new_comment_form">{l s='Write your review' mod='productcomments'} !</a>
-      </p>
-    {/if}
-  {else}
-    {include file='module:productcomments/views/templates/hook/empty-list.tpl'}
-  {/if}
+{include file='module:productcomments/views/templates/hook/product-comment-item-prototype.tpl' assign="comment_prototype"}
+<div id="product-comments-list" data-list-comments-url="{$list_comments_url}" data-comment-item-prototype="{$comment_prototype|escape:'javascript'}">
+  {include file='module:productcomments/views/templates/hook/empty-product-comment.tpl'}
+  <div class="row" id="new_comment_link">
+    <div class="col-md-12 col-sm-12">
+      <a class="post-product-comment" href="#new_comment_link">
+        {l s='Write your review' mod='productcomments'} !
+      </a>
+    </div>
+  </div>
 </div>

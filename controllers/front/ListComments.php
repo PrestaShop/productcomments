@@ -27,39 +27,21 @@
 use PrestaShop\Module\ProductComment\Entity\ProductComment;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ProductCommentsPostCommentModuleFrontController extends ModuleFrontController
+class ProductCommentsListCommentsModuleFrontController extends ModuleFrontController
 {
     public function display()
     {
         $id_product = Tools::getValue('id_product');
-        $comment_title = Tools::getValue('comment_title');
-        $comment_content = Tools::getValue('comment_content');
-        $customer_name = Tools::getValue('customer_name');
-        $criterions = Tools::getValue('criterion');
-        $averageGrade = 0;
-        foreach ($criterions as $grade) {
-            $averageGrade += $grade;
-        }
-        $averageGrade /= count($criterions);
-
         /** @var EntityManagerInterface $entityManager */
-        $entityManager = $this->container->get('doctrine.orm.entity_manager');
-        $productComment = new ProductComment();
-        $productComment
-            ->setProductId($id_product)
-            ->setTitle($comment_title)
-            ->setContent($comment_content)
-            ->setCustomerName($customer_name)
-            ->setCustomerId(0)
-            ->setGrade($averageGrade)
-            ->setDateAdd(new \DateTime())
-        ;
-        $entityManager->persist($productComment);
-        $entityManager->flush();
+        $entityManager = $this->container->get('doctrine.orm.entity_manager')->getRepository(ProductComment::class);
+        $activeComments = $entityManager->findBy(['active' => true, 'id_product' => $id_product]);
 
-        $this->ajaxRender(json_encode([
-            'success' => true,
-            'product_comment' => $productComment->toArray(),
-        ]));
+        $commentsArray = [];
+        /** @var ProductComment $productComment */
+        foreach ($activeComments as $productComment) {
+            $commentsArray[] = $productComment->toArray();
+        }
+
+        $this->ajaxRender(json_encode($commentsArray));
     }
 }

@@ -2,10 +2,6 @@
  *  Product comments CSS
  */
 
-.product_comments_additional_info {
-  margin: 20px 0;
-}
-
 .btn-comment,
 .btn-comment-inverse {
   height: 36px;
@@ -45,6 +41,40 @@
 .btn-comment-huge {
   padding: 13px 28px;
   height: 45px;
+}
+
+.link-comment {
+  color: #232323;
+}
+
+.link-comment:hover, .link-comment:active {
+  text-decoration: underline;
+  color: #232323;
+}
+
+/**
+ * Additional product infos
+ */
+
+.product_comments_additional_info {
+  margin: 20px 0;
+  font-weight: 300;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.product_comments_additional_info .link-comment.post-product-comment {
+  border-left: 1px solid #979797;
+  padding-left: 12px;
+  margin-left: 12px;
+}
+
+.product_comments_additional_info .comments_note {
+  margin-right: 30px;
+  margin-bottom: 10px;
 }
 
 /**
@@ -157,7 +187,7 @@
   width: 20px;
   height: 20px;
   background: url(../img/stars.png) no-repeat 0 0 transparent;
-  flex: 1;
+  flex: auto  ;
   margin-left: 3px;
 }
 .star_content div.star_on,
@@ -167,6 +197,19 @@
 
 .star_content div.star_hover {
   cursor: pointer;
+}
+
+.grade_stars {
+  position: relative;
+  height: 20px;
+  min-width: 120px;
+  display: inline-block;
+}
+
+.grade_stars .star_content {
+  position: absolute;
+  top: 3px;
+  left: 0;
 }
 
 #post-product-comment-modal .star_content div.star a {
@@ -204,23 +247,29 @@
 #product-comments-list-header {
   padding: 20px 0;
   color: #232323;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
 #product-comments-list-header .comments-nb {
   padding-left: 0;
+  padding-top: 3px;
 }
 
 #product-comments-list-header .comments-nb  .material-icons {
   margin-right: 3px;
 }
 
-#product-comments-list {
-  background-color: #FFFFFF;
-  padding: 26px 0;
-  text-align: center;
-}
-
 #product-comments-list .btn-comment {
   margin: 0 auto;
   display: block;
+}
+
+.product-comment-list-item {
+  padding: 26px 0;
+  margin-bottom: 20px;
+  text-align: center;
+  background-color: #FFFFFF;
 }

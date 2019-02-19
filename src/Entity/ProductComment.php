@@ -311,4 +311,18 @@ class ProductComment
 
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'id_product' => $this->getProductId(),
+            'id_product_comment' => $this->getId(),
+            'title' => $this->getTitle(),
+            'content' => $this->getContent(),
+            'customer_name' => $this->getCustomerName(),
+        ];
+    }
 };
