@@ -38,7 +38,7 @@ class ProductComment
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(name="id_shop", type="integer")
+     * @ORM\Column(name="id_product_comment", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
@@ -81,7 +81,7 @@ class ProductComment
     /**
      * @var string
      *
-     * @ORM\Column(name="content", type="string", length=65535)
+     * @ORM\Column(name="content", type="text")
      */
     private $content;
 

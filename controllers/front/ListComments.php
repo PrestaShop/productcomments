@@ -34,7 +34,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
         $id_product = Tools::getValue('id_product');
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager')->getRepository(ProductComment::class);
-        $activeComments = $entityManager->findBy(['active' => true, 'id_product' => $id_product]);
+        $activeComments = $entityManager->findBy(['validate' => true, 'productId' => $id_product]);
 
         $commentsArray = [];
         /** @var ProductComment $productComment */
