@@ -25,7 +25,7 @@
 *}
 
 {if $nbComments != 0 || ($recently_posted == false && ($logged || $allow_guests))}
-<div class="product_comments_additional_info">
+<div class="product-comments-additional-info">
   {if $nbComments == 0}
     {if ($recently_posted == false && ($logged || $allow_guests))}
       <button class="btn btn-comment post-product-comment">
@@ -34,7 +34,7 @@
       </button>
     {/if}
   {else}
-    {include file='module:productcomments/views/templates/hook/average-note-stars.tpl'}
+    {include file='module:productcomments/views/templates/hook/average-grade-stars.tpl' grade=$average_total}
     <div class="additional-links">
       <a class="link-comment" href="#product-comments-list-header">
         <i class="material-icons shopping-cart">chat</i>

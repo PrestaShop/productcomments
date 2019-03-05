@@ -747,8 +747,8 @@ class ProductComments extends Module
         if (in_array($this->page_name, array('product', 'productscomparison'))) {
             $this->context->controller->addCSS($this->_path.'/assets/css/productcomments.css', 'all');
 
-            $this->context->controller->addJS($this->_path.'js/jquery.rating.pack.js');
             $this->context->controller->addJS($this->_path.'js/jquery.textareaCounter.plugin.js');
+            $this->context->controller->addJS($this->_path.'assets/js/jquery.rating.plugin.js');
             $this->context->controller->addJS($this->_path.'assets/js/post-comment.js');
             $this->context->controller->addJS($this->_path.'assets/js/list-comments.js');
         }

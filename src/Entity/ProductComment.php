@@ -323,6 +323,10 @@ class ProductComment
             'title' => $this->getTitle(),
             'content' => $this->getContent(),
             'customer_name' => $this->getCustomerName(),
+            'date_add' => $this->dateAdd->format(\DateTime::ATOM),
+            'grade' => 3.5,
+            'usefulness' => 3,
+            'total_usefulness' => 5,
         ];
     }
 };

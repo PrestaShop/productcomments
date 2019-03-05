@@ -24,14 +24,8 @@
  *}
 
 <script type="text/javascript">
-  var productcomments_controller_url = '{$productcomments_controller_url}';
   var confirm_report_message = '{l s='Are you sure that you want to report this comment?' mod='productcomments' js=1}';
   var secure_key = '{$secure_key}';
-  var productcomments_url_rewrite = '{$productcomments_url_rewriting_activated}';
-  var productcomment_added = '{l s='Your comment has been added!' mod='productcomments' js=1}';
-  var productcomment_added_moderation = '{l s='Your comment has been submitted and will be available once approved by a moderator.' mod='productcomments' js=1}';
-  var productcomment_title = '{l s='New comment' mod='productcomments' js=1}';
-  var productcomment_ok = '{l s='OK' mod='productcomments' js=1}';
   var moderation_active = {$moderation_active};
 </script>
 
@@ -41,18 +35,11 @@
       <i class="material-icons shopping-cart">chat</i>
       {l s='Comments' mod='productcomments'} ({$nbComments})
     </div>
-    {include file='module:productcomments/views/templates/hook/average-note-stars.tpl'}
+    {include file='module:productcomments/views/templates/hook/average-grade-stars.tpl' grade=$average_total}
   </div>
 </div>
 
 {include file='module:productcomments/views/templates/hook/product-comment-item-prototype.tpl' assign="comment_prototype"}
-<div id="product-comments-list" data-list-comments-url="{$list_comments_url}" data-comment-item-prototype="{$comment_prototype|escape:'javascript'}">
-  {include file='module:productcomments/views/templates/hook/empty-product-comment.tpl'}
-  <div class="row" id="new_comment_link">
-    <div class="col-md-12 col-sm-12">
-      <a class="post-product-comment" href="#new_comment_link">
-        {l s='Write your review' mod='productcomments'} !
-      </a>
-    </div>
-  </div>
+{include file='module:productcomments/views/templates/hook/empty-product-comment.tpl'}
+<div id="product-comments-list" class="row" data-list-comments-url="{$list_comments_url}" data-comment-item-prototype="{$comment_prototype|escape:'html_attr'}">
 </div>

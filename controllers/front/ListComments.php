@@ -36,12 +36,14 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
         $entityManager = $this->container->get('doctrine.orm.entity_manager')->getRepository(ProductComment::class);
         $activeComments = $entityManager->findBy(['validate' => true, 'productId' => $id_product]);
 
-        $commentsArray = [];
+        $responseArray = [
+            'comments' => [],
+        ];
         /** @var ProductComment $productComment */
         foreach ($activeComments as $productComment) {
-            $commentsArray[] = $productComment->toArray();
+            $responseArray['comments'][] = $productComment->toArray();
         }
 
-        $this->ajaxRender(json_encode($commentsArray));
+        $this->ajaxRender(json_encode($responseArray));
     }
 }

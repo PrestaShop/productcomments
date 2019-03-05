@@ -15,10 +15,10 @@
 
 #product_comments_block_extra a:hover {text-decoration: underline}
 
-#product_comments_block_extra .comments_note {margin-bottom:5px}
-#product_comments_block_extra .comments_note span,
-#product_comments_block_extra .star_content {float:left}
-#product_comments_block_extra .star_content {margin-top:2px}
+#product_comments_block_extra .comments-note {margin-bottom:5px}
+#product_comments_block_extra .comments-note span,
+#product_comments_block_extra .star-content {float:left}
+#product_comments_block_extra .star-content {margin-top:2px}
 
 #product_comments_block_extra div.star {background: url(img/star.gif) no-repeat scroll 0 0 transparent}
 
@@ -141,7 +141,7 @@
 	margin: 0 0 0 60px;
 }
 
-#new_comment_form #criterions_list .star_content {
+#new_comment_form #criterions_list .star-content {
 	float: right;
 	margin-right: 180px;
 }
@@ -168,10 +168,10 @@
 }
 #product_comments_block_tab div.comment div.comment_author span {font-weight:bold;}
 #product_comments_block_tab div.comment div.comment_author span,
-#product_comments_block_tab div.comment .star_content {
+#product_comments_block_tab div.comment .star-content {
 	float:left;
 }
-#product_comments_block_tab div.comment .star_content {margin: 0 0 0 5px}
+#product_comments_block_tab div.comment .star-content {margin: 0 0 0 5px}
 #product_comments_block_tab div.star,
 #product_comments_block_tab div.star_on {
 	background: url(img/star.gif) no-repeat 0 0 transparent

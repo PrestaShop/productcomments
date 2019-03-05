@@ -58,12 +58,11 @@ jQuery(document).ready(function () {
     $('#post-product-comment-form input').removeClass('valid error');
     $('#post-product-comment-form textarea').val('');
     $('#post-product-comment-form textarea').removeClass('valid error');
-    $('#post-product-comment-form .star input').val(5);
-    $('#post-product-comment-form .star a[title="5"]').click();
+    $('#post-product-comment-form .criterion-rating input').val(3).change();
   }
 
   function initCommentModal() {
-    $('#post-product-comment-modal input.star').rating();
+    $('#post-product-comment-modal .grade-stars').rating();
     $('body').on('click', '.post-product-comment', function (event) {
       event.preventDefault();
       showPostCommentModal();

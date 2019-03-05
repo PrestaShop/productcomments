@@ -23,7 +23,7 @@
  * International Registered Trademark & Property of PrestaShop SA
  *}
 
-<div class="product-comment-list-item">
+<div id="empty-product-comment" class="product-comment-list-item">
   {if (!$recently_posted && ($logged || $allow_guests))}
     <button class="btn btn-comment btn-comment-big post-product-comment">
       <i class="material-icons shopping-cart">edit</i>

@@ -26,10 +26,46 @@
 jQuery(document).ready(function () {
   const $ = jQuery;
   const commentsList = $('#product-comments-list');
+  const emptyProductComment = $('#empty-product-comment');
   const commentsListUrl = commentsList.data('list-comments-url');
-  console.log('list url', commentsListUrl);
+  const commentPrototype = commentsList.data('comment-item-prototype');
+
+  emptyProductComment.hide();
+  $('.grade-stars').rating();
 
   $.post(commentsListUrl, {id_product: 1}, function(result) {
-    console.log('list', result);
+    const jsonResponse = JSON.parse(result);
+    if (jsonResponse.comments && jsonResponse.comments.length > 0) {
+      populateComments(jsonResponse.comments);
+    } else {
+      commentsList.html('');
+      emptyProductComment.show();
+      commentsList.append(emptyProductComment);
+    }
   });
+
+  function populateComments(comments) {
+    commentsList.html('');
+    comments.forEach(addComment);
+  }
+
+  function addComment(comment) {
+    var commentTemplate = commentPrototype;
+    commentTemplate = commentTemplate.replace(/@COMMENT_ID@/, comment.id_product_comment);
+    commentTemplate = commentTemplate.replace(/@PRODUCT_ID@/, comment.id_product);
+    commentTemplate = commentTemplate.replace(/@CUSTOMER_NAME@/, comment.customer_name);
+    commentTemplate = commentTemplate.replace(/@COMMENT_DATE@/, comment.date_add);
+    commentTemplate = commentTemplate.replace(/@COMMENT_TITLE@/, comment.title);
+    commentTemplate = commentTemplate.replace(/@COMMENT_COMMENT@/, comment.content);
+    commentTemplate = commentTemplate.replace(/@COMMENT_USEFUL_ADVICES@/, comment.usefulness);
+    commentTemplate = commentTemplate.replace(/@COMMENT_NOT_USEFUL_ADVICES@/, comment.total_usefulness);
+    commentTemplate = commentTemplate.replace(/@COMMENT_TOTAL_ADVICES@/, (comment.total_usefulness - comment.usefulness));
+
+    const $comment = $(commentTemplate);
+    $('.grade-stars', $comment).rating({
+      value: comment.grade
+    });
+
+    commentsList.append($comment);
+  }
 });

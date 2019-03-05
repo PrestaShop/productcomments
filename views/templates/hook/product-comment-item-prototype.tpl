@@ -23,36 +23,32 @@
  * International Registered Trademark & Property of PrestaShop SA
  *}
 
-<div class="product-comment-list-item">
-  <div class="comment_author">
-    <span>{l s='Grade' mod='productcomments'}&nbsp</span>
-    {include file='module:productcomments/views/templates/hook/grade-stars.tpl' grade=5}
-    <div class="comment_author_infos">
-      <strong>@CUSTOMER_NAME@</strong><br/>
-      <em>@COMMENT_DATE@</em>
+<div class="product-comment-list-item row" data-product-comment-id="@COMMENT_ID@" data-product-id="@PRODUCT_ID@">
+  <div class="col-md-3 col-sm-3 comment-infos">
+    <div class="grade-stars"></div>
+    <div class="comment-date">
+      @COMMENT_DATE@
+    </div>
+    <div class="comment-author">
+      {l s='By %1$s' sprintf=['@CUSTOMER_NAME@'] mod='productcomments'}
     </div>
   </div>
-  <div class="comment_details">
-    <h4 class="title_block">@COMMENT_TITLE@</h4>
+
+  <div class="col-md-9 col-sm-9 comment-content">
+    <h4>@COMMENT_TITLE@</h4>
     <p>@COMMENT_COMMENT@</p>
-    <ul>
-      <li>
-        {l s='%0 out of %1 people found this review useful.' sprintf=['@COMMENT_USEFUL_ADVICES@','@COMMENT_TOTAL_ADVICES@'] mod='productcomments'}
-      </li>
-      <li>
-        {l s='Was this comment useful to you?' mod='productcomments'}
-        <button class="usefulness_btn" data-is-usefull="1" data-id-product-comment="@COMMENT_ID@">
-          {l s='yes' mod='productcomments'}
-        </button>
-        <button class="usefulness_btn" data-is-usefull="0" data-id-product-comment="@COMMENT_ID@">
-          {l s='no' mod='productcomments'}
-        </button>
-      </li>
-      <li>
-        <span class="report_btn" data-id-product-comment="@COMMENT_ID@">
-          {l s='Report abuse' mod='productcomments'}
-        </span>
-      </li>
-    </ul>
+    <div class="comment-buttons btn-group">
+      <a>
+        <i class="material-icons thumb_up">thumb_up</i>
+        @COMMENT_USEFUL_ADVICES@
+      </a>
+      <a>
+        <i class="material-icons thumb_down">thumb_down</i>
+        @COMMENT_NOT_USEFUL_ADVICES@
+      </a>
+      <a data-is-usefull="1" title="{l s='Report abuse' mod='productcomments'}">
+        <i class="material-icons outlined_flag">flag</i>
+      </a>
+    </div>
   </div>
 </div>

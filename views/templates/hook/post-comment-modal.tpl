@@ -67,14 +67,12 @@
                 <ul id="criterions_list">
                   {foreach from=$criterions item='criterion'}
                     <li>
-                      <div class="criterion_rating">
+                      <div class="criterion-rating">
                         <label>{$criterion.name|escape:'html':'UTF-8'}:</label>
-                        <div class="star_content">
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="1" />
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="2" />
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="3" />
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="4" />
-                          <input class="star" type="radio" name="criterion[{$criterion.id_product_comment_criterion}]" value="5" checked="checked" />
+                        <div
+                          class="grade-stars"
+                          data-grade="3"
+                          data-input="criterion[{$criterion.id_product_comment_criterion}]">
                         </div>
                       </div>
                     </li>
