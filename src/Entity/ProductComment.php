@@ -44,7 +44,7 @@ class ProductComment
      */
     private $id;
 
-	/**
+    /**
      * @var int
      *
      * @ORM\Column(name="id_product", type="integer")
@@ -77,7 +77,7 @@ class ProductComment
      *
      * @ORM\Column(name="title", type="string", length=64)
      */
-	private $title;
+    private $title;
 
     /**
      * @var string
@@ -86,7 +86,7 @@ class ProductComment
      */
     private $content;
 
-	/**
+    /**
      * @var int
      *
      * @ORM\Column(name="grade", type="integer")
@@ -112,7 +112,7 @@ class ProductComment
      *
      * @ORM\Column(name="date_add", type="datetime")
      */
-	private $dateAdd;
+    private $dateAdd;
 
     public function __construct()
     {
@@ -137,6 +137,7 @@ class ProductComment
 
     /**
      * @param int $productId
+     *
      * @return ProductComment
      */
     public function setProductId($productId)
@@ -156,6 +157,7 @@ class ProductComment
 
     /**
      * @param int $customerId
+     *
      * @return ProductComment
      */
     public function setCustomerId($customerId)
@@ -175,6 +177,7 @@ class ProductComment
 
     /**
      * @param int $guestId
+     *
      * @return ProductComment
      */
     public function setGuestId($guestId)
@@ -194,6 +197,7 @@ class ProductComment
 
     /**
      * @param string $customerName
+     *
      * @return ProductComment
      */
     public function setCustomerName($customerName)
@@ -213,6 +217,7 @@ class ProductComment
 
     /**
      * @param string $title
+     *
      * @return ProductComment
      */
     public function setTitle($title)
@@ -232,6 +237,7 @@ class ProductComment
 
     /**
      * @param string $content
+     *
      * @return ProductComment
      */
     public function setContent($content)
@@ -251,6 +257,7 @@ class ProductComment
 
     /**
      * @param int $grade
+     *
      * @return ProductComment
      */
     public function setGrade($grade)
@@ -270,6 +277,7 @@ class ProductComment
 
     /**
      * @param bool $validate
+     *
      * @return ProductComment
      */
     public function setValidate($validate)
@@ -289,6 +297,7 @@ class ProductComment
 
     /**
      * @param bool $deleted
+     *
      * @return ProductComment
      */
     public function setDeleted($deleted)
@@ -308,6 +317,7 @@ class ProductComment
 
     /**
      * @param \DateTime $dateAdd
+     *
      * @return ProductComment
      */
     public function setDateAdd($dateAdd)
@@ -334,4 +344,4 @@ class ProductComment
             'total_usefulness' => 5,
         ];
     }
-};
+}

@@ -29,7 +29,6 @@ if (!defined('_PS_VERSION_')) {
 }
 
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
-use Doctrine\ORM\EntityManagerInterface;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 
 class ProductComments extends Module
@@ -63,9 +62,9 @@ class ProductComments extends Module
     public function install($keep = true)
     {
         if ($keep) {
-            if (!file_exists(dirname(__FILE__).'/'.self::INSTALL_SQL_FILE)) {
+            if (!file_exists(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
                 return false;
-            } elseif (!$sql = file_get_contents(dirname(__FILE__).'/'.self::INSTALL_SQL_FILE)) {
+            } elseif (!$sql = file_get_contents(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
                 return false;
             }
             $sql = str_replace(array('PREFIX_', 'ENGINE_TYPE'), array(_DB_PREFIX_, _MYSQL_ENGINE_), $sql);
@@ -126,19 +125,19 @@ class ProductComments extends Module
     {
         return Db::getInstance()->execute('
 			DROP TABLE IF EXISTS
-			`'._DB_PREFIX_.'product_comment`,
-			`'._DB_PREFIX_.'product_comment_criterion`,
-			`'._DB_PREFIX_.'product_comment_criterion_product`,
-			`'._DB_PREFIX_.'product_comment_criterion_lang`,
-			`'._DB_PREFIX_.'product_comment_criterion_category`,
-			`'._DB_PREFIX_.'product_comment_grade`,
-			`'._DB_PREFIX_.'product_comment_usefulness`,
-			`'._DB_PREFIX_.'product_comment_report`');
+			`' . _DB_PREFIX_ . 'product_comment`,
+			`' . _DB_PREFIX_ . 'product_comment_criterion`,
+			`' . _DB_PREFIX_ . 'product_comment_criterion_product`,
+			`' . _DB_PREFIX_ . 'product_comment_criterion_lang`,
+			`' . _DB_PREFIX_ . 'product_comment_criterion_category`,
+			`' . _DB_PREFIX_ . 'product_comment_grade`,
+			`' . _DB_PREFIX_ . 'product_comment_usefulness`,
+			`' . _DB_PREFIX_ . 'product_comment_report`');
     }
 
     public function getCacheId($id_product = null)
     {
-        return parent::getCacheId().'|'.(int) $id_product;
+        return parent::getCacheId() . '|' . (int) $id_product;
     }
 
     protected function _postProcess()
@@ -147,7 +146,7 @@ class ProductComments extends Module
             Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int) Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
             Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
             Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int) Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
-            $this->_html .= '<div class="conf confirm alert alert-success">'.$this->l('Settings updated').'</div>';
+            $this->_html .= '<div class="conf confirm alert alert-success">' . $this->l('Settings updated') . '</div>';
         } elseif (Tools::isSubmit('productcomments')) {
             $id_product_comment = (int) Tools::getValue('id_product_comment');
             $comment = new ProductComment($id_product_comment);
@@ -165,7 +164,7 @@ class ProductComments extends Module
             $languages = Language::getLanguages();
             $name = array();
             foreach ($languages as $key => $value) {
-                $name[$value['id_lang']] = Tools::getValue('name_'.$value['id_lang']);
+                $name[$value['id_lang']] = Tools::getValue('name_' . $value['id_lang']);
             }
             $criterion->name = $name;
 
@@ -192,15 +191,15 @@ class ProductComments extends Module
                 }
             }
             if ($criterion->save()) {
-                Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules').'&configure='.$this->name.'&conf=4');
+                Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&conf=4');
             } else {
-                $this->_html .= '<div class="conf confirm alert alert-danger">'.$this->l('The criterion could not be saved').'</div>';
+                $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->l('The criterion could not be saved') . '</div>';
             }
         } elseif (Tools::isSubmit('deleteproductcommentscriterion')) {
             $productCommentCriterion = new ProductCommentCriterion((int) Tools::getValue('id_product_comment_criterion'));
             if ($productCommentCriterion->id) {
                 if ($productCommentCriterion->delete()) {
-                    $this->_html .= '<div class="conf confirm alert alert-success">'.$this->l('Criterion deleted').'</div>';
+                    $this->_html .= '<div class="conf confirm alert alert-success">' . $this->l('Criterion deleted') . '</div>';
                 }
             }
         } elseif (Tools::isSubmit('statusproductcommentscriterion')) {
@@ -209,7 +208,7 @@ class ProductComments extends Module
                 $criterion->active = (int) (!$criterion->active);
                 $criterion->save();
             }
-            Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules').'&configure='.$this->name.'&tab_module='.$this->tab.'&conf=4&module_name='.$this->name);
+            Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&conf=4&module_name=' . $this->name);
         } elseif ($id_product_comment = (int) Tools::getValue('approveComment')) {
             $comment = new ProductComment($id_product_comment);
             $comment->validate();
@@ -222,8 +221,8 @@ class ProductComments extends Module
 
     public function getContent()
     {
-        include_once dirname(__FILE__).'/ProductComment.php';
-        include_once dirname(__FILE__).'/ProductCommentCriterion.php';
+        include_once dirname(__FILE__) . '/ProductComment.php';
+        include_once dirname(__FILE__) . '/ProductCommentCriterion.php';
 
         $this->_html = '';
         if (Tools::isSubmit('updateproductcommentscriterion')) {
@@ -239,7 +238,7 @@ class ProductComments extends Module
         $this->_setBaseUrl();
         $this->_productCommentsCriterionTypes = ProductCommentCriterion::getTypes();
 
-        $this->context->controller->addJs($this->_path.'js/moderate.js');
+        $this->context->controller->addJs($this->_path . 'js/moderate.js');
 
         return $this->_html;
     }
@@ -249,7 +248,7 @@ class ProductComments extends Module
         $this->_baseUrl = 'index.php?';
         foreach ($_GET as $k => $value) {
             if (!in_array($k, array('deleteCriterion', 'editCriterion'))) {
-                $this->_baseUrl .= $k.'='.$value.'&';
+                $this->_baseUrl .= $k . '=' . $value . '&';
             }
         }
         $this->_baseUrl = rtrim($this->_baseUrl, '&');
@@ -325,7 +324,7 @@ class ProductComments extends Module
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitProducCommentsConfiguration';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false).'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = array(
             'fields_value' => $this->getConfigFieldsValues(),
@@ -338,7 +337,7 @@ class ProductComments extends Module
 
     public function renderModerateLists()
     {
-        require_once dirname(__FILE__).'/ProductComment.php';
+        require_once dirname(__FILE__) . '/ProductComment.php';
         $return = null;
 
         if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
@@ -347,7 +346,7 @@ class ProductComments extends Module
             $fields_list = $this->getStandardFieldList();
 
             if (version_compare(_PS_VERSION_, '1.6', '<')) {
-                $return .= '<h1>'.$this->l('Reviews waiting for approval').'</h1>';
+                $return .= '<h1>' . $this->l('Reviews waiting for approval') . '</h1>';
                 $actions = array('enable', 'delete');
             } else {
                 $actions = array('approve', 'delete');
@@ -364,7 +363,7 @@ class ProductComments extends Module
             $helper->title = $this->l('Reviews waiting for approval');
             $helper->table = $this->name;
             $helper->token = Tools::getAdminTokenLite('AdminModules');
-            $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+            $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
             //$helper->tpl_vars = array('priority' => array($this->l('High'), $this->l('Medium'), $this->l('Low')));
 
             $return .= $helper->generateList($comments, $fields_list);
@@ -375,7 +374,7 @@ class ProductComments extends Module
         $fields_list = $this->getStandardFieldList();
 
         if (version_compare(_PS_VERSION_, '1.6', '<')) {
-            $return .= '<h1>'.$this->l('Reported Reviews').'</h1>';
+            $return .= '<h1>' . $this->l('Reported Reviews') . '</h1>';
             $actions = array('enable', 'delete');
         } else {
             $actions = array('delete', 'noabuse');
@@ -392,7 +391,7 @@ class ProductComments extends Module
         $helper->title = $this->l('Reported Reviews');
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
         //$helper->tpl_vars = array('priority' => array($this->l('High'), $this->l('Medium'), $this->l('Low')));
 
         $return .= $helper->generateList($comments, $fields_list);
@@ -412,7 +411,7 @@ class ProductComments extends Module
     public function displayApproveLink($token, $id, $name = null)
     {
         $this->smarty->assign(array(
-            'href' => $this->context->link->getAdminLink('AdminModules').'&configure='.$this->name.'&module_name='.$this->name.'&approveComment='.$id,
+            'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&approveComment=' . $id,
             'action' => $this->l('Approve'),
         ));
 
@@ -431,7 +430,7 @@ class ProductComments extends Module
     public function displayNoabuseLink($token, $id, $name = null)
     {
         $this->smarty->assign(array(
-            'href' => $this->context->link->getAdminLink('AdminModules').'&configure='.$this->name.'&module_name='.$this->name.'&noabuseComment='.$id,
+            'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&noabuseComment=' . $id,
             'action' => $this->l('Not abusive'),
         ));
 
@@ -440,7 +439,7 @@ class ProductComments extends Module
 
     public function renderCriterionList()
     {
-        include_once dirname(__FILE__).'/ProductCommentCriterion.php';
+        include_once dirname(__FILE__) . '/ProductCommentCriterion.php';
 
         $criterions = ProductCommentCriterion::getCriterions($this->context->language->id, false, false);
 
@@ -470,15 +469,15 @@ class ProductComments extends Module
         $helper->actions = array('edit', 'delete');
         $helper->show_toolbar = true;
         $helper->toolbar_btn['new'] = array(
-            'href' => $this->context->link->getAdminLink('AdminModules').'&configure='.$this->name.'&module_name='.$this->name.'&updateproductcommentscriterion',
+            'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&updateproductcommentscriterion',
             'desc' => $this->l('Add New Criterion', null, null, false),
         );
         $helper->module = $this;
         $helper->identifier = 'id_product_comment_criterion';
         $helper->title = $this->l('Review Criteria');
-        $helper->table = $this->name.'criterion';
+        $helper->table = $this->name . 'criterion';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
         //$helper->tpl_vars = array('priority' => array($this->l('High'), $this->l('Medium'), $this->l('Low')));
 
         return $helper->generateList($criterions, $fields_list);
@@ -486,7 +485,7 @@ class ProductComments extends Module
 
     public function renderCommentsList()
     {
-        require_once dirname(__FILE__).'/ProductComment.php';
+        require_once dirname(__FILE__) . '/ProductComment.php';
 
         $comments = ProductComment::getByValidate(1, false);
         $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
@@ -507,7 +506,7 @@ class ProductComments extends Module
         $helper->title = $this->l('Approved Reviews');
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
         //$helper->tpl_vars = array('priority' => array($this->l('High'), $this->l('Medium'), $this->l('Low')));
 
         return $helper->generateList($comments, $fields_list);
@@ -701,7 +700,7 @@ class ProductComments extends Module
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitEditCriterion';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false).'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = array(
             'fields_value' => $this->getCriterionFieldsValues($id_criterion),
@@ -741,18 +740,16 @@ class ProductComments extends Module
     /**
      *  Front hooks
      */
-
-
     public function hookHeader()
     {
         $this->page_name = Dispatcher::getInstance()->getController();
         if (in_array($this->page_name, array('product', 'productscomparison'))) {
-            $this->context->controller->addCSS($this->_path.'/assets/css/productcomments.css', 'all');
+            $this->context->controller->addCSS($this->_path . '/assets/css/productcomments.css', 'all');
 
-            $this->context->controller->addJS($this->_path.'js/jquery.textareaCounter.plugin.js');
-            $this->context->controller->addJS($this->_path.'assets/js/jquery.rating.plugin.js');
-            $this->context->controller->addJS($this->_path.'assets/js/post-comment.js');
-            $this->context->controller->addJS($this->_path.'assets/js/list-comments.js');
+            $this->context->controller->addJS($this->_path . 'js/jquery.textareaCounter.plugin.js');
+            $this->context->controller->addJS($this->_path . 'assets/js/jquery.rating.plugin.js');
+            $this->context->controller->addJS($this->_path . 'assets/js/post-comment.js');
+            $this->context->controller->addJS($this->_path . 'assets/js/list-comments.js');
         }
     }
 
@@ -768,8 +765,8 @@ class ProductComments extends Module
      */
     private function renderProductCommentsList($product)
     {
-        require_once dirname(__FILE__).'/ProductComment.php';
-        require_once dirname(__FILE__).'/ProductCommentCriterion.php';
+        require_once dirname(__FILE__) . '/ProductComment.php';
+        require_once dirname(__FILE__) . '/ProductCommentCriterion.php';
 
         $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
         $customerComment = ProductComment::getByCustomer($product->getId(), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
@@ -827,7 +824,7 @@ class ProductComments extends Module
     {
         $id_product = (int) $params['product']['id_product'];
         if (!$this->isCached('productcomments_reviews.tpl', $this->getCacheId($id_product))) {
-            require_once dirname(__FILE__).'/ProductComment.php';
+            require_once dirname(__FILE__) . '/ProductComment.php';
             $average = ProductComment::getAverageGrade($id_product);
             $this->smarty->assign(array(
                 'product' => $params['product'],
@@ -845,8 +842,8 @@ class ProductComments extends Module
         /** @var ProductLazyArray $product */
         $product = $params['product'];
 
-        require_once dirname(__FILE__).'/ProductComment.php';
-        require_once dirname(__FILE__).'/ProductCommentCriterion.php';
+        require_once dirname(__FILE__) . '/ProductComment.php';
+        require_once dirname(__FILE__) . '/ProductCommentCriterion.php';
 
         $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
         $customerComment = ProductComment::getByCustomer($product->getId(), (int) $this->context->cookie->id_customer, true, (int) $id_guest);

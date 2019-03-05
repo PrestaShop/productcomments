@@ -30,5 +30,4 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class ProductCommentController extends Controller
 {
-
 }

@@ -23,7 +23,6 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-
 use PrestaShop\Module\ProductComment\Entity\ProductComment;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentGrade;
@@ -66,6 +65,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
     /**
      * @param ProductComment $productComment
      * @param array $criterions
+     *
      * @throws Exception
      */
     private function addCommentGrades(ProductComment $productComment, array $criterions)

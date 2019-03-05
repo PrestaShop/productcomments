@@ -26,7 +26,6 @@
 
 namespace PrestaShop\Module\ProductComment\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -80,6 +79,7 @@ class ProductCommentCriterion
 
     /**
      * @param int $type
+     *
      * @return ProductCommentCriterion
      */
     public function setType($type)
@@ -99,6 +99,7 @@ class ProductCommentCriterion
 
     /**
      * @param bool $active
+     *
      * @return ProductCommentCriterion
      */
     public function setActive($active)

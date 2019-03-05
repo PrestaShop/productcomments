@@ -37,12 +37,12 @@ use Tools;
 class ProductCommentCriterionRepository
 {
     /**
-     * @var Connection the Database connection.
+     * @var Connection the Database connection
      */
     private $connection;
 
     /**
-     * @var string the Database prefix.
+     * @var string the Database prefix
      */
     private $databasePrefix;
 
@@ -61,6 +61,7 @@ class ProductCommentCriterionRepository
      * @param int $idLang
      *
      * @return array
+     *
      * @throws \PrestaShopException
      */
     public function getByProduct($product, $idLang)
@@ -76,12 +77,12 @@ class ProductCommentCriterionRepository
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->select('pcc.id_product_comment_criterion, pccl.name')
-            ->from($this->databasePrefix.'product_comment_criterion', 'pcc')
-            ->leftJoin('pcc', $this->databasePrefix.'product_comment_criterion_lang', 'pccl', 'pcc.id_product_comment_criterion = pccl.id_product_comment_criterion')
-            ->leftJoin('pcc', $this->databasePrefix.'product_comment_criterion_product', 'pccp', 'pcc.id_product_comment_criterion = pccp.id_product_comment_criterion')
-            ->leftJoin('pcc', $this->databasePrefix.'product_comment_criterion_category', 'pccc', 'pcc.id_product_comment_criterion = pccc.id_product_comment_criterion')
-            ->leftJoin('pccc', $this->databasePrefix.'category', 'c', 'pccc.id_category = c.id_category')
-            ->leftJoin('c', $this->databasePrefix.'category_product', 'cp', 'c.id_category = cp.id_category')
+            ->from($this->databasePrefix . 'product_comment_criterion', 'pcc')
+            ->leftJoin('pcc', $this->databasePrefix . 'product_comment_criterion_lang', 'pccl', 'pcc.id_product_comment_criterion = pccl.id_product_comment_criterion')
+            ->leftJoin('pcc', $this->databasePrefix . 'product_comment_criterion_product', 'pccp', 'pcc.id_product_comment_criterion = pccp.id_product_comment_criterion')
+            ->leftJoin('pcc', $this->databasePrefix . 'product_comment_criterion_category', 'pccc', 'pcc.id_product_comment_criterion = pccc.id_product_comment_criterion')
+            ->leftJoin('pccc', $this->databasePrefix . 'category', 'c', 'pccc.id_category = c.id_category')
+            ->leftJoin('c', $this->databasePrefix . 'category_product', 'cp', 'c.id_category = cp.id_category')
             ->andWhere($qb->expr()->orX(
                 $qb->expr()->eq('pcc.id_product_comment_criterion_type', ':catalog_type'),
                 $qb->expr()->eq('pccp.id_product', ':id_product'),
@@ -91,7 +92,7 @@ class ProductCommentCriterionRepository
             ->andWhere('pcc.active = :active')
             ->setParameter('catalog_type', ProductCommentCriterion::ENTIRE_CATALOG_TYPE)
             ->setParameter('active', 1)
-            ->setParameter('id_product',$idProduct)
+            ->setParameter('id_product', $idProduct)
             ->setParameter('id_lang', $idLang)
             ->addGroupBy('pcc.id_product_comment_criterion')
         ;
