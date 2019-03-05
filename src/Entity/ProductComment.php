@@ -26,11 +26,12 @@
 
 namespace PrestaShop\Module\ProductComment\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="PrestaShop\Module\ProductComment\Repository\ProductCommentRepository")
+ * @ORM\Entity()
  */
 class ProductComment
 {
@@ -106,13 +107,17 @@ class ProductComment
      */
     private $deleted = 0;
 
-	/** @var string Object creation date */
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_add", type="datetime")
      */
 	private $dateAdd;
+
+    public function __construct()
+    {
+        $this->criterions = new ArrayCollection();
+    }
 
     /**
      * @return int

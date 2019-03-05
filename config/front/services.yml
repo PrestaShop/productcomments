@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        public: true
+
+    product_comment_criterion_repository:
+        class: PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository
+        arguments:
+           - '@doctrine.dbal.default_connection'
+           - '%database_prefix%'

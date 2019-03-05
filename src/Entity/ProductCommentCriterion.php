@@ -26,11 +26,12 @@
 
 namespace PrestaShop\Module\ProductComment\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository")
+ * @ORM\Entity()
  */
 class ProductCommentCriterion
 {

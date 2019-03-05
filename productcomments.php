@@ -29,6 +29,8 @@ if (!defined('_PS_VERSION_')) {
 }
 
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
+use Doctrine\ORM\EntityManagerInterface;
+use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 
 class ProductComments extends Module
 {
@@ -805,7 +807,10 @@ class ProductComments extends Module
     {
         $image = Product::getCover($product->getId());
         $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
-        $criterions = ProductCommentCriterion::getByProduct($product->getId(), $this->context->language->id);
+
+        /** @var ProductCommentCriterionRepository $criterionRepository */
+        $criterionRepository = $this->context->controller->getContainer()->get('product_comment_criterion_repository');
+        $criterions = $criterionRepository->getByProduct($product, $this->context->language->id);
 
         $this->context->smarty->assign(array(
             'product' => $product,
