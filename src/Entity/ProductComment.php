@@ -30,7 +30,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="PrestaShop\Module\ProductComment\Repository\ProductCommentRepository")
  */
 class ProductComment
 {
@@ -324,7 +324,7 @@ class ProductComment
             'content' => $this->getContent(),
             'customer_name' => $this->getCustomerName(),
             'date_add' => $this->dateAdd->format(\DateTime::ATOM),
-            'grade' => 3.5,
+            'grade' => $this->grade,
             'usefulness' => 3,
             'total_usefulness' => 5,
         ];

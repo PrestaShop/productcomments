@@ -25,6 +25,8 @@
  */
 
 use PrestaShop\Module\ProductComment\Entity\ProductComment;
+use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
+use PrestaShop\Module\ProductComment\Entity\ProductCommentGrade;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProductCommentsPostCommentModuleFrontController extends ModuleFrontController
@@ -36,14 +38,11 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $comment_content = Tools::getValue('comment_content');
         $customer_name = Tools::getValue('customer_name');
         $criterions = Tools::getValue('criterion');
-        $averageGrade = 0;
-        foreach ($criterions as $grade) {
-            $averageGrade += $grade;
-        }
-        $averageGrade /= count($criterions);
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
+
+        //Create product comment
         $productComment = new ProductComment();
         $productComment
             ->setProductId($id_product)
@@ -51,15 +50,41 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
             ->setContent($comment_content)
             ->setCustomerName($customer_name)
             ->setCustomerId(0)
-            ->setGrade($averageGrade)
             ->setDateAdd(new \DateTime())
         ;
         $entityManager->persist($productComment);
+        $this->addCommentGrades($productComment, $criterions);
+
         $entityManager->flush();
 
         $this->ajaxRender(json_encode([
             'success' => true,
             'product_comment' => $productComment->toArray(),
         ]));
+    }
+
+    /**
+     * @param ProductComment $productComment
+     * @param array $criterions
+     * @throws Exception
+     */
+    private function addCommentGrades(ProductComment $productComment, array $criterions)
+    {
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $this->container->get('doctrine.orm.entity_manager');
+        $criterionRepository = $entityManager->getRepository(ProductCommentCriterion::class);
+        $averageGrade = 0;
+        foreach ($criterions as $criterionId => $grade) {
+            $criterion = $criterionRepository->findOneById($criterionId);
+            $criterionGrade = new ProductCommentGrade(
+                $productComment,
+                $criterion,
+                $grade
+            );
+            $entityManager->persist($criterionGrade);
+            $averageGrade += $grade;
+        }
+        $averageGrade /= count($criterions);
+        $productComment->setGrade($averageGrade);
     }
 }

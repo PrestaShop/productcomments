@@ -33,7 +33,7 @@ jQuery(document).ready(function () {
   emptyProductComment.hide();
   $('.grade-stars').rating();
 
-  $.post(commentsListUrl, {id_product: 1}, function(result) {
+  $.get(commentsListUrl, {id_product: 1}, function(result) {
     const jsonResponse = JSON.parse(result);
     if (jsonResponse.comments && jsonResponse.comments.length > 0) {
       populateComments(jsonResponse.comments);

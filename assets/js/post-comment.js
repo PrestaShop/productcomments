@@ -54,8 +54,8 @@ jQuery(document).ready(function () {
   }
 
   function clearPostCommentForm() {
-    $('#post-product-comment-form input').val('');
-    $('#post-product-comment-form input').removeClass('valid error');
+    $('#post-product-comment-form input[type="text"]').val('');
+    $('#post-product-comment-form input[type="text"]').removeClass('valid error');
     $('#post-product-comment-form textarea').val('');
     $('#post-product-comment-form textarea').removeClass('valid error');
     $('#post-product-comment-form .criterion-rating input').val(3).change();
