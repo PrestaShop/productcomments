@@ -55,6 +55,8 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
 
             //todo: use cldr to format the date correctly
             $productComment['date_add'] = $dateAdd->format(\DateTime::ATOM);
+            $usefulness = $productCommentRepository->getProductCommentUsefulness($productComment['id_product_comment']);
+            $productComment = array_merge($productComment, $usefulness);
             $responseArray['comments'][] = $productComment;
         }
 

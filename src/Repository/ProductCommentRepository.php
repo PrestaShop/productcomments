@@ -28,11 +28,6 @@ namespace PrestaShop\Module\ProductComment\Repository;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
-use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
-use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
-use Product;
-use Validate;
-use Tools;
 
 class ProductCommentRepository
 {
@@ -75,22 +70,15 @@ class ProductCommentRepository
     }
 
     /**
-     * @param int|Product|ProductLazyArray $product
+     * @param int $productId
      * @param int $page
      * @param int $commentsPerPage
      * @param bool $validatedOnly
      *
      * @return array
-     * @throws \PrestaShopException
      */
-    public function paginate($product, $page, $commentsPerPage, $validatedOnly)
+    public function paginate($productId, $page, $commentsPerPage, $validatedOnly)
     {
-        $idProduct = is_object($product) ? $product->id : (int) $product;
-
-        if (!Validate::isUnsignedId($idProduct)) {
-            throw new \Exception(Tools::displayError());
-        }
-
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb
@@ -101,9 +89,10 @@ class ProductCommentRepository
             ->andWhere('pc.id_product = :id_product')
             ->andWhere('pc.deleted = :deleted')
             ->setParameter('deleted', 0)
-            ->setParameter('id_product', $idProduct)
+            ->setParameter('id_product', $productId)
             ->setMaxResults($commentsPerPage)
             ->setFirstResult(($page - 1) * $commentsPerPage)
+            ->addGroupBy('pc.id_product_comment')
         ;
 
         if ($validatedOnly) {
@@ -117,20 +106,44 @@ class ProductCommentRepository
     }
 
     /**
-     * @param int|Product|ProductLazyArray $product
+     * @param int $productCommentId
+     *
+     * @return array
+     */
+    public function getProductCommentUsefulness($productCommentId)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->addSelect('pcu.usefulness')
+            ->from($this->databasePrefix . 'product_comment_usefulness', 'pcu')
+            ->andWhere('pcu.id_product_comment = :id_product_comment')
+            ->setParameter('id_product_comment', $productCommentId)
+        ;
+
+        $usefulnessInfos = [
+            'usefulness' => 0,
+            'total_usefulness' => 0,
+        ];
+        $customerAppreciations = $qb->execute()->fetchAll();
+        foreach ($customerAppreciations as $customerAppreciation) {
+            if ((int) $customerAppreciation['usefulness']) {
+                $usefulnessInfos['usefulness']++;
+            }
+            $usefulnessInfos['total_usefulness']++;
+        }
+
+        return $usefulnessInfos;
+    }
+
+    /**
+     * @param int $productId
      * @param bool $validatedOnly
      *
      * @return float
-     * @throws \PrestaShopException
      */
-    public function getAverageGrade($product, $validatedOnly)
+    public function getAverageGrade($productId, $validatedOnly)
     {
-        $idProduct = is_object($product) ? $product->id : (int) $product;
-
-        if (!Validate::isUnsignedId($idProduct)) {
-            throw new \Exception(Tools::displayError());
-        }
-
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb
@@ -139,7 +152,7 @@ class ProductCommentRepository
             ->andWhere('pc.id_product = :id_product')
             ->andWhere('pc.deleted = :deleted')
             ->setParameter('deleted', 0)
-            ->setParameter('id_product', $idProduct)
+            ->setParameter('id_product', $productId)
         ;
 
         if ($validatedOnly) {
@@ -153,20 +166,13 @@ class ProductCommentRepository
     }
 
     /**
-     * @param int|Product|ProductLazyArray $product
+     * @param int $productId
      * @param bool $validatedOnly
      *
      * @return int
-     * @throws \PrestaShopException
      */
-    public function getCommentsNumber($product, $validatedOnly)
+    public function getCommentsNumber($productId, $validatedOnly)
     {
-        $idProduct = is_object($product) ? $product->id : (int) $product;
-
-        if (!Validate::isUnsignedId($idProduct)) {
-            throw new \Exception(Tools::displayError());
-        }
-
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb
@@ -175,7 +181,7 @@ class ProductCommentRepository
             ->andWhere('pc.id_product = :id_product')
             ->andWhere('pc.deleted = :deleted')
             ->setParameter('deleted', 0)
-            ->setParameter('id_product', $idProduct)
+            ->setParameter('id_product', $productId)
         ;
 
         if ($validatedOnly) {
@@ -189,36 +195,22 @@ class ProductCommentRepository
     }
 
     /**
-     * @param $product
-     * @param $cookie
+     * @param int $productId
+     * @param int $idCustomer
+     * @param int $idGuest
      *
      * @return bool
-     * @throws \PrestaShopException
      */
-    /**
-     * @param $product
-     * @param $idCustomer
-     * @param $idGuest
-     *
-     * @return bool
-     * @throws \PrestaShopException
-     */
-    public function isPostAllowed($product, $idCustomer, $idGuest)
+    public function isPostAllowed($productId, $idCustomer, $idGuest)
     {
-        $idProduct = is_object($product) ? $product->id : (int) $product;
-
-        if (!Validate::isUnsignedId($idProduct)) {
-            throw new \Exception(Tools::displayError());
-        }
-
         if (!$idCustomer && !$this->guestCommentsAllowed) {
             $postAllowed = false;
         } else {
             $lastCustomerComment = null;
             if ($idCustomer) {
-                $lastCustomerComment = $this->getLastCustomerComment($idProduct, $idCustomer);
+                $lastCustomerComment = $this->getLastCustomerComment($productId, $idCustomer);
             } elseif ($idGuest) {
-                $lastCustomerComment = $this->getLastGuestComment($idProduct, $idGuest);
+                $lastCustomerComment = $this->getLastGuestComment($productId, $idGuest);
             }
             $postAllowed = null === $lastCustomerComment
                 || !isset($lastCustomerComment['date_add'])
@@ -230,41 +222,32 @@ class ProductCommentRepository
     }
 
     /**
-     * @param int|Product|ProductLazyArray $product $product
+     * @param int $productId
      * @param int $idCustomer
      *
      * @return array
-     * @throws \PrestaShopException
      */
-    public function getLastCustomerComment($product, $idCustomer)
+    public function getLastCustomerComment($productId, $idCustomer)
     {
-        $idProduct = is_object($product) ? $product->id : (int) $product;
-
-        if (!Validate::isUnsignedId($idProduct)) {
-            throw new \Exception(Tools::displayError());
-        }
-
-        return $this->getLastComment(['id_product' => $idProduct, 'id_customer' => $idCustomer]);
+        return $this->getLastComment(['id_product' => $productId, 'id_customer' => $idCustomer]);
     }
 
     /**
-     * @param int|Product|ProductLazyArray $product $product
+     * @param int $productId
      * @param int $idGuest
      *
      * @return array
-     * @throws \PrestaShopException
      */
-    public function getLastGuestComment($product, $idGuest)
+    public function getLastGuestComment($productId, $idGuest)
     {
-        $idProduct = is_object($product) ? $product->id : (int) $product;
-
-        if (!Validate::isUnsignedId($idProduct)) {
-            throw new \Exception(Tools::displayError());
-        }
-
-        return $this->getLastComment(['id_product' => $idProduct, 'id_guest' => $idGuest]);
+        return $this->getLastComment(['id_product' => $productId, 'id_guest' => $idGuest]);
     }
 
+    /**
+     * @param array $criteria
+     *
+     * @return array
+     */
     private function getLastComment(array $criteria)
     {
         /** @var QueryBuilder $qb */

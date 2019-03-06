@@ -28,10 +28,21 @@ jQuery(document).ready(function () {
   const commentsList = $('#product-comments-list');
   const emptyProductComment = $('#empty-product-comment');
   const commentsListUrl = commentsList.data('list-comments-url');
+  const updateCommentUsefulnessUrl = commentsList.data('update-comment-usefulness-url');
   const commentPrototype = commentsList.data('comment-item-prototype');
 
   emptyProductComment.hide();
   $('.grade-stars').rating();
+
+  const updateCommentPostErrorModal = $('#update-comment-usefulness-post-error');
+  updateCommentPostErrorModal.on('hidden.bs.modal', function () {
+    updateCommentPostErrorModal.modal('hide');
+  });
+
+  function showUpdatePostCommentErrorModal(errorMessage) {
+    $('#update-comment-usefulness-post-error-message').html(errorMessage);
+    updateCommentPostErrorModal.modal('show');
+  }
 
   function paginateComments(page) {
     $.get(commentsListUrl, {page: page}, function(result) {
@@ -70,15 +81,43 @@ jQuery(document).ready(function () {
     commentTemplate = commentTemplate.replace(/@COMMENT_TITLE@/, comment.title);
     commentTemplate = commentTemplate.replace(/@COMMENT_COMMENT@/, comment.content);
     commentTemplate = commentTemplate.replace(/@COMMENT_USEFUL_ADVICES@/, comment.usefulness);
-    commentTemplate = commentTemplate.replace(/@COMMENT_NOT_USEFUL_ADVICES@/, comment.total_usefulness);
-    commentTemplate = commentTemplate.replace(/@COMMENT_TOTAL_ADVICES@/, (comment.total_usefulness - comment.usefulness));
+    commentTemplate = commentTemplate.replace(/@COMMENT_NOT_USEFUL_ADVICES@/, (comment.total_usefulness - comment.usefulness));
+    commentTemplate = commentTemplate.replace(/@COMMENT_TOTAL_ADVICES@/, comment.total_usefulness);
 
     const $comment = $(commentTemplate);
     $('.grade-stars', $comment).rating({
       value: comment.grade
     });
+    $('.useful-review', $comment).click(function() {
+      updateCommentUsefulness($comment, comment.id_product_comment, 1);
+    });
+    $('.not-useful-review', $comment).click(function() {
+      updateCommentUsefulness($comment, comment.id_product_comment, 0);
+    });
 
     commentsList.append($comment);
+  }
+
+  function updateCommentUsefulness($comment, commentId, usefulness) {
+    $.post(updateCommentUsefulnessUrl, {id_product_comment: commentId, usefulness: usefulness}, function(jsonResponse){
+      var jsonData = false;
+      try {
+        jsonData = JSON.parse(jsonResponse);
+      } catch (e) {
+      }
+      if (jsonData) {
+        if (jsonData.success) {
+          $('.useful-review-value', $comment).html(jsonData.usefulness);
+          $('.not-useful-review-value', $comment).html(jsonData.total_usefulness - jsonData.usefulness);
+        } else {
+          showUpdatePostCommentErrorModal(jsonData.error);
+        }
+      } else {
+        showUpdatePostCommentErrorModal('Sorry, your review appreciation could not be sent.');
+      }
+    }).fail(function() {
+      showUpdatePostCommentErrorModal('Sorry, your review appreciation could not be sent.');
+    });
   }
 
   paginateComments(1);

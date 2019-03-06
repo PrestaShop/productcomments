@@ -811,6 +811,7 @@ class ProductComments extends Module
             'average_grade' => $averageGrade,
             'nb_comments' => $commentsNb,
             'list_comments_url' => $this->context->link->getModuleLink('productcomments', 'ListComments', ['id_product' => $product->getId()]),
+            'update_comment_usefulness_url' => $this->context->link->getModuleLink('productcomments', 'UpdateCommentUsefulness'),
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-comments-list.tpl');

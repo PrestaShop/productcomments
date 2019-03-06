@@ -34,7 +34,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
 {
     public function display()
     {
-        if (!$this->context->cookie->id_customer && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')) {
+        if (!(int) $this->context->cookie->id_customer && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')) {
             $this->ajaxRender(json_encode([
                 'success' => false,
                 'error' => $this->trans('You need to be logged in to post your review.'),

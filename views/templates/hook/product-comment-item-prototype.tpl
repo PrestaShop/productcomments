@@ -38,13 +38,13 @@
     <h4>@COMMENT_TITLE@</h4>
     <p>@COMMENT_COMMENT@</p>
     <div class="comment-buttons btn-group">
-      <a>
+      <a class="useful-review">
         <i class="material-icons thumb_up">thumb_up</i>
-        @COMMENT_USEFUL_ADVICES@
+        <span class="useful-review-value">@COMMENT_USEFUL_ADVICES@</span>
       </a>
-      <a>
+      <a class="not-useful-review">
         <i class="material-icons thumb_down">thumb_down</i>
-        @COMMENT_NOT_USEFUL_ADVICES@
+        <span class="not-useful-review-value">@COMMENT_NOT_USEFUL_ADVICES@</span>
       </a>
       <a data-is-usefull="1" title="{l s='Report abuse' mod='productcomments'}">
         <i class="material-icons outlined_flag">flag</i>
