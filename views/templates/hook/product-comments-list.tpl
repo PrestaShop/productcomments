@@ -39,5 +39,18 @@
 
 {include file='module:productcomments/views/templates/hook/product-comment-item-prototype.tpl' assign="comment_prototype"}
 {include file='module:productcomments/views/templates/hook/empty-product-comment.tpl'}
-<div id="product-comments-list" class="row" data-list-comments-url="{$list_comments_url}" data-comment-item-prototype="{$comment_prototype|escape:'html_attr'}">
+<div class="row">
+  <div class="col-md-12 col-sm-12" id="product-comments-list" data-list-comments-url="{$list_comments_url}" data-comment-item-prototype="{$comment_prototype|escape:'html_attr'}">
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-sm-12" id="product-comments-list-footer">
+    {if $post_allowed}
+      <button class="btn btn-comment btn-comment-big post-product-comment">
+        <i class="material-icons shopping-cart">edit</i>
+        {l s='Write your review' mod='productcomments'}
+      </button>
+    {/if}
+    <div id="product-comments-list-pagination"></div>
+  </div>
 </div>

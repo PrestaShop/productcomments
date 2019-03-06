@@ -76,6 +76,48 @@ class ProductCommentRepository
 
     /**
      * @param int|Product|ProductLazyArray $product
+     * @param int $page
+     * @param int $commentsPerPage
+     * @param bool $validatedOnly
+     *
+     * @return array
+     * @throws \PrestaShopException
+     */
+    public function paginate($product, $page, $commentsPerPage, $validatedOnly)
+    {
+        $idProduct = is_object($product) ? $product->id : (int) $product;
+
+        if (!Validate::isUnsignedId($idProduct)) {
+            throw new \Exception(Tools::displayError());
+        }
+
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->addSelect('pc.id_product, pc.id_product_comment, pc.title, pc.content, pc.customer_name, pc.date_add, pc.grade')
+            ->addSelect('c.firstname, c.lastname')
+            ->from($this->databasePrefix . 'product_comment', 'pc')
+            ->leftJoin('pc', $this->databasePrefix.'customer', 'c', 'pc.id_customer = c.id_customer')
+            ->andWhere('pc.id_product = :id_product')
+            ->andWhere('pc.deleted = :deleted')
+            ->setParameter('deleted', 0)
+            ->setParameter('id_product', $idProduct)
+            ->setMaxResults($commentsPerPage)
+            ->setFirstResult(($page - 1) * $commentsPerPage)
+        ;
+
+        if ($validatedOnly) {
+            $qb
+                ->andWhere('pc.validate = :validate')
+                ->setParameter('validate', 1)
+            ;
+        }
+
+        return $qb->execute()->fetchAll();
+    }
+
+    /**
+     * @param int|Product|ProductLazyArray $product
      * @param bool $validatedOnly
      *
      * @return float
@@ -95,6 +137,8 @@ class ProductCommentRepository
             ->select('SUM(pc.grade) / COUNT(pc.grade) AS averageGrade')
             ->from($this->databasePrefix . 'product_comment', 'pc')
             ->andWhere('pc.id_product = :id_product')
+            ->andWhere('pc.deleted = :deleted')
+            ->setParameter('deleted', 0)
             ->setParameter('id_product', $idProduct)
         ;
 
@@ -129,6 +173,8 @@ class ProductCommentRepository
             ->select('COUNT(pc.id_product_comment) AS commentNb')
             ->from($this->databasePrefix . 'product_comment', 'pc')
             ->andWhere('pc.id_product = :id_product')
+            ->andWhere('pc.deleted = :deleted')
+            ->setParameter('deleted', 0)
             ->setParameter('id_product', $idProduct)
         ;
 
@@ -226,6 +272,8 @@ class ProductCommentRepository
         $qb
             ->select('pc.*')
             ->from($this->databasePrefix . 'product_comment', 'pc')
+            ->andWhere('pc.deleted = :deleted')
+            ->setParameter('deleted', 0)
             ->addOrderBy('pc.date_add', 'DESC')
             ->setMaxResults(1)
         ;

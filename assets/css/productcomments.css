@@ -353,3 +353,48 @@
 .product-list-reviews .comments-nb {
   margin-left: 10px;
 }
+
+#product-comments-list-footer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#product-comments-list-pagination {
+  height: 32px;
+}
+
+#product-comments-list-pagination ul {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+#product-comments-list-pagination ul li span {
+  height: 32px;
+  width: 24px;
+  margin: 0 5px;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  font-size: 20px;
+  line-height: 32px;
+  color: #6C868E;
+}
+
+#product-comments-list-pagination ul li.active span,
+#product-comments-list-pagination ul li span.next i,
+#product-comments-list-pagination ul li span.prev i {
+  font-weight: bold;
+}
+
+#product-comments-list-pagination ul li.disabled span {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+#product-comments-list-pagination ul li.active span {
+  cursor: not-allowed;
+}

@@ -79,13 +79,13 @@ class ProductComments extends Module
         }
 
         if (parent::install() == false ||
-            !$this->registerHook('displayFooterProduct') || //footer tab content: no more exists
+            !$this->registerHook('displayFooterProduct') || //Product page footer
             !$this->registerHook('header') || //Adds css and javascript on front
-            !$this->registerHook('displayRightColumnProduct') || //Product right column (useful now that layout is full width?)
-            !$this->registerHook('displayProductListReviews') || //Product list miniature: exists
+            !$this->registerHook('displayProductListReviews') || //Product list miniature
             !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
+            !Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1)) {
             return false;
         }
@@ -97,9 +97,9 @@ class ProductComments extends Module
     {
         if (!parent::uninstall() || ($keep && !$this->deleteTables()) ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') ||
+            !Configuration::deleteByName('PRODUCT_COMMENTS_COMMENTS_PER_PAGE') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME') ||
-            !$this->unregisterHook('displayRightColumnProduct') ||
             !$this->unregisterHook('displayProductAdditionalInfo') ||
             !$this->unregisterHook('header') ||
             !$this->unregisterHook('displayFooterProduct') ||
@@ -146,6 +146,7 @@ class ProductComments extends Module
         if (Tools::isSubmit('submitModerate')) {
             Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int) Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
             Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
+            Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', (int) Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'));
             Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int) Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
             $this->_html .= '<div class="conf confirm alert alert-success">' . $this->l('Settings updated') . '</div>';
         } elseif (Tools::isSubmit('productcomments')) {
@@ -306,6 +307,13 @@ class ProductComments extends Module
                         'name' => 'PRODUCT_COMMENTS_MINIMAL_TIME',
                         'class' => 'fixed-width-xs',
                         'suffix' => 'seconds',
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Number of comments per page'),
+                        'name' => 'PRODUCT_COMMENTS_COMMENTS_PER_PAGE',
+                        'class' => 'fixed-width-xs',
+                        'suffix' => 'comments',
                     ),
                 ),
             'submit' => array(
@@ -519,6 +527,7 @@ class ProductComments extends Module
             'PRODUCT_COMMENTS_MODERATE' => Tools::getValue('PRODUCT_COMMENTS_MODERATE', Configuration::get('PRODUCT_COMMENTS_MODERATE')),
             'PRODUCT_COMMENTS_ALLOW_GUESTS' => Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS', Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')),
             'PRODUCT_COMMENTS_MINIMAL_TIME' => Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME', Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')),
+            'PRODUCT_COMMENTS_COMMENTS_PER_PAGE' => Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE')),
         );
     }
 
@@ -746,7 +755,8 @@ class ProductComments extends Module
         $jsList = [];
         $cssList = [];
         if ($this->context->controller instanceof ProductControllerCore ||
-            $this->context->controller instanceof ProductListingFrontControllerCore) {
+            $this->context->controller instanceof ProductListingFrontControllerCore ||
+            $this->context->controller instanceof IndexController) {
             $cssList[] = $this->_path . '/assets/css/productcomments.css';
             $jsList[] = $this->_path . 'assets/js/jquery.rating.plugin.js';
         }
@@ -754,6 +764,7 @@ class ProductComments extends Module
             $jsList[] = $this->_path . 'js/jquery.textareaCounter.plugin.js';
             $jsList[] = $this->_path . 'assets/js/post-comment.js';
             $jsList[] = $this->_path . 'assets/js/list-comments.js';
+            $jsList[] = $this->_path . 'assets/js/jquery.simplePagination.js';
         }
         foreach ($cssList as $cssUrl) {
             $this->context->controller->addCSS($cssUrl, 'all');

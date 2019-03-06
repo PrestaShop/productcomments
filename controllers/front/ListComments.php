@@ -24,32 +24,38 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-use PrestaShop\Module\ProductComment\Entity\ProductComment;
-use Doctrine\ORM\EntityManagerInterface;
+use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 
 class ProductCommentsListCommentsModuleFrontController extends ModuleFrontController
 {
     public function display()
     {
         $idProduct = Tools::getValue('id_product');
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = $this->container->get('doctrine.orm.entity_manager')->getRepository(ProductComment::class);
+        $page = Tools::getValue('page', 1);
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
-        $criteria = [
-            'productId' => $idProduct,
-            'deleted' => 0,
-        ];
-        if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
-            $criteria['validate'] = true;
-        }
-        $productComments = $entityManager->findBy($criteria);
+        $productComments = $productCommentRepository->paginate(
+            $idProduct,
+            $page,
+            Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'),
+            Configuration::get('PRODUCT_COMMENTS_MODERATE')
+        );
+        $productCommentsNb = $productCommentRepository->getCommentsNumber($idProduct, Configuration::get('PRODUCT_COMMENTS_MODERATE'));
 
         $responseArray = [
+            'comments_nb' => $productCommentsNb,
+            'comments_per_page' => Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'),
             'comments' => [],
         ];
-        /** @var ProductComment $productComment */
+
         foreach ($productComments as $productComment) {
-            $responseArray['comments'][] = $productComment->toArray();
+            $dateAdd = new \DateTime($productComment['date_add'], new \DateTimeZone('UTC'));
+            $dateAdd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+
+            //todo: use cldr to format the date correctly
+            $productComment['date_add'] = $dateAdd->format(\DateTime::ATOM);
+            $responseArray['comments'][] = $productComment;
         }
 
         $this->ajaxRender(json_encode($responseArray));

@@ -33,16 +33,28 @@ jQuery(document).ready(function () {
   emptyProductComment.hide();
   $('.grade-stars').rating();
 
-  $.get(commentsListUrl, function(result) {
-    const jsonResponse = JSON.parse(result);
-    if (jsonResponse.comments && jsonResponse.comments.length > 0) {
-      populateComments(jsonResponse.comments);
-    } else {
-      commentsList.html('');
-      emptyProductComment.show();
-      commentsList.append(emptyProductComment);
-    }
-  });
+  function paginateComments(page) {
+    $.get(commentsListUrl, {page: page}, function(result) {
+      const jsonResponse = JSON.parse(result);
+      if (jsonResponse.comments && jsonResponse.comments.length > 0) {
+        populateComments(jsonResponse.comments);
+        $('#product-comments-list-pagination').pagination({
+          currentPage: page,
+          items: jsonResponse.comments_nb,
+          itemsOnPage: jsonResponse.comments_per_page,
+          cssStyle: '',
+          prevText: '<i class="material-icons">chevron_left</i>',
+          nextText: '<i class="material-icons">chevron_right</i>',
+          useAnchors: false,
+          onPageClick: paginateComments
+        });
+      } else {
+        commentsList.html('');
+        emptyProductComment.show();
+        commentsList.append(emptyProductComment);
+      }
+    });
+  }
 
   function populateComments(comments) {
     commentsList.html('');
@@ -68,4 +80,6 @@ jQuery(document).ready(function () {
 
     commentsList.append($comment);
   }
+
+  paginateComments(1);
 });

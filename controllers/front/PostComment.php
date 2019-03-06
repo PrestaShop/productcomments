@@ -73,7 +73,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
             ->setCustomerName($customer_name)
             ->setCustomerId($this->context->cookie->id_customer)
             ->setGuestId($this->context->cookie->id_guest)
-            ->setDateAdd(new \DateTime())
+            ->setDateAdd(new \DateTime('now', new \DateTimeZone('UTC')))
         ;
         $entityManager->persist($productComment);
         $this->addCommentGrades($productComment, $criterions);

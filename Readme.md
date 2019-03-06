@@ -45,3 +45,15 @@ This module is released under the [Academic Free License 3.0][AFL-3.0]
 [3]: https://help.github.com/articles/using-pull-requests
 [AFL-3.0]: https://opensource.org/licenses/AFL-3.0
 
+### Update dependency
+
+The only dependency for this modul (for now) is https://github.com/flaviusmatis/simplePagination.js.git
+You can install/update it by launching the command
+
+```
+# yarn install
+```
+
+(We use yarn because this library is not served as a package for npm).
+
+This will install the library js in assets/js folder.
