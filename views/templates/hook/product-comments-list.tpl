@@ -25,17 +25,15 @@
 
 <script type="text/javascript">
   var confirm_report_message = '{l s='Are you sure that you want to report this comment?' mod='productcomments' js=1}';
-  var secure_key = '{$secure_key}';
-  var moderation_active = {$moderation_active};
 </script>
 
 <div class="row">
   <div class="col-md-12 col-sm-12" id="product-comments-list-header">
     <div class="comments-nb">
       <i class="material-icons shopping-cart">chat</i>
-      {l s='Comments' mod='productcomments'} ({$nbComments})
+      {l s='Comments' mod='productcomments'} ({$nb_comments})
     </div>
-    {include file='module:productcomments/views/templates/hook/average-grade-stars.tpl' grade=$average_total}
+    {include file='module:productcomments/views/templates/hook/average-grade-stars.tpl' grade=$average_grade}
   </div>
 </div>
 

@@ -739,67 +739,80 @@ class ProductComments extends Module
     }
 
     /**
-     *  Front hooks
+     *  Inject the needed javascript and css files in the appropriate pages
      */
     public function hookHeader()
     {
-        $this->page_name = Dispatcher::getInstance()->getController();
-        if (in_array($this->page_name, array('product', 'productscomparison'))) {
-            $this->context->controller->addCSS($this->_path . '/assets/css/productcomments.css', 'all');
-
-            $this->context->controller->addJS($this->_path . 'js/jquery.textareaCounter.plugin.js');
-            $this->context->controller->addJS($this->_path . 'assets/js/jquery.rating.plugin.js');
-            $this->context->controller->addJS($this->_path . 'assets/js/post-comment.js');
-            $this->context->controller->addJS($this->_path . 'assets/js/list-comments.js');
+        $page_name = Dispatcher::getInstance()->getController();
+        $jsList = [];
+        $cssList = [];
+        if (in_array($page_name, array('product', 'index', 'catalog'))) {
+            $cssList[] = $this->_path . '/assets/css/productcomments.css';
+            $jsList[] = $this->_path . 'assets/js/jquery.rating.plugin.js';
+        }
+        if (in_array($page_name, array('product'))) {
+            $jsList[] = $this->_path . 'js/jquery.textareaCounter.plugin.js';
+            $jsList[] = $this->_path . 'assets/js/post-comment.js';
+            $jsList[] = $this->_path . 'assets/js/list-comments.js';
+        }
+        foreach ($cssList as $cssUrl) {
+            $this->context->controller->addCSS($cssUrl, 'all');
+        }
+        foreach ($jsList as $jsUrl) {
+            $this->context->controller->addJS($jsUrl);
         }
     }
 
+    /**
+     * Display the comment list with the post modal at the bottom of the page
+     *
+     * @param $params
+     *
+     * @return string
+     * @throws PrestaShopException
+     * @throws SmartyException
+     */
     public function hookDisplayFooterProduct($params)
     {
         return $this->renderProductCommentsList($params['product']) . $this->renderProductCommentModal($params['product']);
     }
 
     /**
-     * @param ProductLazyArray $product
+     * Used to render the product comments list
+     *
+     * @param $product
      *
      * @return string
+     * @throws PrestaShopException
+     * @throws SmartyException
      */
     private function renderProductCommentsList($product)
     {
-        require_once dirname(__FILE__) . '/ProductComment.php';
-        require_once dirname(__FILE__) . '/ProductCommentCriterion.php';
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
-        $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
-        $customerComment = ProductComment::getByCustomer($product->getId(), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
-        $average = ProductComment::getAverageGrade($product->getId());
+        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $isPostAllowed = $productCommentRepository->isPostAllowed($product->getId(), (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
         $this->context->smarty->assign(array(
-            'logged' => $this->context->customer->isLogged(true),
-            'action_url' => '',
-            'product' => $product,
-            'comments' => ProductComment::getByProduct($product->getId(), 1, null, $this->context->cookie->id_customer),
-            'criterions' => ProductCommentCriterion::getByProduct($product->getId(), $this->context->language->id),
-            'product_comment_path' => $this->_path,
-            'average_total' => $average['grade'],
-            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
-            'recently_posted' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
-            'delay' => Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME'),
-            'id_product_comment_form' => $product->getId(),
-            'secure_key' => $this->secure_key,
-            'nbComments' => (int) ProductComment::getCommentNumber($product->getId()),
-            'productcomments_controller_url' => $this->context->link->getModuleLink('productcomments'),
-            'productcomments_url_rewriting_activated' => Configuration::get('PS_REWRITING_SETTINGS', 0),
-            'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
-            'list_comments_url' => $this->context->link->getModuleLink('productcomments', 'ListComments'),
+            'post_allowed' => $isPostAllowed,
+            'average_grade' => $averageGrade,
+            'nb_comments' => $commentsNb,
+            'list_comments_url' => $this->context->link->getModuleLink('productcomments', 'ListComments', ['id_product' => $product->getId()]),
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-comments-list.tpl');
     }
 
     /**
+     * Used to render the product modal
+     *
      * @param ProductLazyArray $product
      *
      * @return string
+     * @throws PrestaShopException
+     * @throws SmartyException
      */
     private function renderProductCommentModal($product)
     {
@@ -811,8 +824,8 @@ class ProductComments extends Module
         $criterions = $criterionRepository->getByProduct($product, $this->context->language->id);
 
         $this->context->smarty->assign(array(
-            'product' => $product,
-            'post_comment_url' => $this->context->link->getModuleLink('productcomments', 'PostComment'),
+            'logged' => (bool) $this->context->cookie->id_customer,
+            'post_comment_url' => $this->context->link->getModuleLink('productcomments', 'PostComment', ['id_product' => $product->getId()]),
             'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
             'cover_image' => $cover_image,
             'criterions' => $criterions,
@@ -830,27 +843,30 @@ class ProductComments extends Module
      */
     public function hookDisplayProductListReviews($params)
     {
-        $id_product = (int) $params['product']['id_product'];
-        if (!$this->isCached('productcomments_reviews.tpl', $this->getCacheId($id_product))) {
-            require_once dirname(__FILE__) . '/ProductComment.php';
-            $average = ProductComment::getAverageGrade($id_product);
-            $this->smarty->assign(array(
-                'product' => $params['product'],
-                'averageTotal' => round($average['grade']),
-                'ratings' => ProductComment::getRatings($id_product),
-                'nbComments' => (int) ProductComment::getCommentNumber($id_product),
-            ));
-        }
+        /** @var ProductLazyArray $product */
+        $product = $params['product'];
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
-        return $this->display(__FILE__, 'productcomments_reviews.tpl', $this->getCacheId($id_product));
+        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+
+        $this->context->smarty->assign(array(
+            'product' => $product,
+            'average_grade' => $averageGrade,
+            'nb_comments' => $commentsNb,
+        ));
+
+        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-list-reviews.tpl');
     }
 
     /**
-     * Display average not and buttons in the product page under checkout and share buttons
+     * Display average grade and buttons in the product page under checkout and share buttons
      *
      * @param $params
      *
      * @return string
+     * @throws PrestaShopException
      * @throws SmartyException
      */
     public function hookDisplayProductAdditionalInfo($params)
@@ -860,13 +876,13 @@ class ProductComments extends Module
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
-        $average = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $isPostAllowed = $productCommentRepository->isPostAllowed($product->getId(), (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
         $this->context->smarty->assign(array(
-            'average_total' => $average,
-            'nbComments' => $commentsNb,
+            'average_grade' => $averageGrade,
+            'nb_comments' => $commentsNb,
             'post_allowed' => $isPostAllowed,
         ));
 

@@ -23,13 +23,16 @@
  * International Registered Trademark & Property of PrestaShop SA
  *}
 
-<div id="empty-product-comment" class="product-comment-list-item">
-  {if $post_allowed}
-    <button class="btn btn-comment btn-comment-big post-product-comment">
-      <i class="material-icons shopping-cart">edit</i>
-      {l s='Be the first to write your review' mod='productcomments'}
-    </button>
-  {else}
-    {l s='No customer reviews for the moment.' mod='productcomments'}
-  {/if}
-</div>
+{if $nb_comments != 0}
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+      const $ = jQuery;
+      $('#product-list-reviews-{$product.id} .grade-stars').rating({ showCommentsNb: true });
+    });
+  </script>
+
+  <div id="product-list-reviews-{$product.id}" class="product-list-reviews">
+    <div class="grade-stars" data-comments-nb="{$nb_comments}" data-grade="{$average_grade}"></div>
+    <div class="comments-nb">({$nb_comments})</div>
+  </div>
+{/if}

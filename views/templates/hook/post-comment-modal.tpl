@@ -83,7 +83,7 @@
           </div>
 
           <div class="row">
-            {if $allow_guests == true && !$logged}
+            {if !$logged}
               <div class="col-md-8 col-sm-8">
                 <label class="form-label" for="comment_title">{l s='Title' mod='productcomments'}<sup class="required">*</sup></label>
               </div>
@@ -98,7 +98,7 @@
           </div>
 
           <div class="row">
-            {if $allow_guests == true && !$logged}
+            {if !$logged}
               <div class="col-md-8 col-sm-8">
                 <input name="comment_title" type="text" value=""/>
               </div>
@@ -125,7 +125,6 @@
 
           <div class="row">
             <div class="col-md-6 col-sm-6">
-              <input id="id_product_comment_send" name="id_product" type="hidden" value='{$id_product_comment_form}' />
               <p class="required"><sup>*</sup> {l s='Required fields' mod='productcomments'}</p>
             </div>
             <div class="col-md-6 col-sm-6 post-comment-buttons">
