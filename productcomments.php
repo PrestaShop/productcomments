@@ -746,7 +746,7 @@ class ProductComments extends Module
         $page_name = Dispatcher::getInstance()->getController();
         $jsList = [];
         $cssList = [];
-        if (in_array($page_name, array('product', 'index', 'catalog'))) {
+        if (in_array($page_name, array('product', 'index', 'catalog', 'category'))) {
             $cssList[] = $this->_path . '/assets/css/productcomments.css';
             $jsList[] = $this->_path . 'assets/js/jquery.rating.plugin.js';
         }
