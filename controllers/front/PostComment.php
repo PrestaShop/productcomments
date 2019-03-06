@@ -23,20 +23,43 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
+
 use PrestaShop\Module\ProductComment\Entity\ProductComment;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentGrade;
 use Doctrine\ORM\EntityManagerInterface;
+use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 
 class ProductCommentsPostCommentModuleFrontController extends ModuleFrontController
 {
     public function display()
     {
+        if (!$this->context->cookie->id_customer && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')) {
+            $this->ajaxRender(json_encode([
+                'success' => false,
+                'error' => $this->trans('You need to be logged in to post your review.'),
+            ]));
+
+            return false;
+        }
+
         $id_product = Tools::getValue('id_product');
         $comment_title = Tools::getValue('comment_title');
         $comment_content = Tools::getValue('comment_content');
         $customer_name = Tools::getValue('customer_name');
         $criterions = Tools::getValue('criterion');
+
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
+        $isPostAllowed = $productCommentRepository->isPostAllowed($id_product, (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
+        if (!$isPostAllowed) {
+            $this->ajaxRender(json_encode([
+                'success' => false,
+                'error' => $this->trans('You are not allowed to post a review at the moment, please try again later.'),
+            ]));
+
+            return false;
+        }
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
@@ -48,7 +71,8 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
             ->setTitle($comment_title)
             ->setContent($comment_content)
             ->setCustomerName($customer_name)
-            ->setCustomerId(0)
+            ->setCustomerId($this->context->cookie->id_customer)
+            ->setGuestId($this->context->cookie->id_guest)
             ->setDateAdd(new \DateTime())
         ;
         $entityManager->persist($productComment);

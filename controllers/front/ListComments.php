@@ -23,6 +23,7 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
+
 use PrestaShop\Module\ProductComment\Entity\ProductComment;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -30,16 +31,24 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
 {
     public function display()
     {
-        $id_product = Tools::getValue('id_product');
+        $idProduct = Tools::getValue('id_product');
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager')->getRepository(ProductComment::class);
-        $activeComments = $entityManager->findBy(['validate' => true, 'productId' => $id_product]);
+
+        $criteria = [
+            'productId' => $idProduct,
+            'deleted' => 0,
+        ];
+        if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
+            $criteria['validate'] = true;
+        }
+        $productComments = $entityManager->findBy($criteria);
 
         $responseArray = [
             'comments' => [],
         ];
         /** @var ProductComment $productComment */
-        foreach ($activeComments as $productComment) {
+        foreach ($productComments as $productComment) {
             $responseArray['comments'][] = $productComment->toArray();
         }
 

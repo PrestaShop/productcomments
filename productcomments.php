@@ -30,6 +30,7 @@ if (!defined('_PS_VERSION_')) {
 
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
+use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 
 class ProductComments extends Module
 {
@@ -820,6 +821,13 @@ class ProductComments extends Module
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
     }
 
+    /**
+     * Display the review in the product miniatures
+     *
+     * @param $params
+     *
+     * @return string
+     */
     public function hookDisplayProductListReviews($params)
     {
         $id_product = (int) $params['product']['id_product'];
@@ -837,34 +845,30 @@ class ProductComments extends Module
         return $this->display(__FILE__, 'productcomments_reviews.tpl', $this->getCacheId($id_product));
     }
 
+    /**
+     * Display average not and buttons in the product page under checkout and share buttons
+     *
+     * @param $params
+     *
+     * @return string
+     * @throws SmartyException
+     */
     public function hookDisplayProductAdditionalInfo($params)
     {
         /** @var ProductLazyArray $product */
         $product = $params['product'];
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
-        require_once dirname(__FILE__) . '/ProductComment.php';
-        require_once dirname(__FILE__) . '/ProductCommentCriterion.php';
-
-        $id_guest = (!$id_customer = (int) $this->context->cookie->id_customer) ? (int) $this->context->cookie->id_guest : false;
-        $customerComment = ProductComment::getByCustomer($product->getId(), (int) $this->context->cookie->id_customer, true, (int) $id_guest);
-
-        $average = ProductComment::getAverageGrade((int) Tools::getValue('id_product'));
-        $image = Product::getCover($product->getId());
-        $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
+        $average = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $isPostAllowed = $productCommentRepository->isPostAllowed($product->getId(), (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
         $this->context->smarty->assign(array(
-            'id_product_comment_form' => (int) Tools::getValue('id_product'),
-            'product' => $product,
-            'secure_key' => $this->secure_key,
-            'logged' => $this->context->customer->isLogged(true),
-            'allow_guests' => (int) Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS'),
-            'criterions' => ProductCommentCriterion::getByProduct((int) Tools::getValue('id_product'), $this->context->language->id),
-            'action_url' => '',
-            'average_total' => round($average['grade']),
-            'ratings' => ProductComment::getRatings((int) Tools::getValue('id_product')),
-            'recently_posted' => ($customerComment && (strtotime($customerComment['date_add']) + Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')) > time()),
-            'nbComments' => (int) (ProductComment::getCommentNumber((int) Tools::getValue('id_product'))),
-       ));
+            'average_total' => $average,
+            'nbComments' => $commentsNb,
+            'post_allowed' => $isPostAllowed,
+        ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
     }

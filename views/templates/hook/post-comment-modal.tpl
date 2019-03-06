@@ -173,3 +173,29 @@
     </div>
   </div>
 </div>
+
+<div id="product-comment-post-error" class="modal fade product-comment-modal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <i class="material-icons">error</i>
+          {l s='Your review could not be sent' mod='productcomments'}
+        </h2>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div id="product-comment-post-error-message" class="col-md-12  col-sm-12">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12  col-sm-12 post-comment-buttons">
+            <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal" aria-label="{l s='OK' mod='productcomments'}">
+              {l s='OK' mod='productcomments'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

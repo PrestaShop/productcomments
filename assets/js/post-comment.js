@@ -42,15 +42,30 @@ jQuery(document).ready(function () {
     commentPostedModal.modal('hide');
   });
 
+  const commentPostErrorModal = $('#product-comment-post-error');
+  commentPostErrorModal.on('hidden.bs.modal', function () {
+    commentPostErrorModal.modal('hide');
+  });
+
   function showPostCommentModal() {
     commentPostedModal.modal('hide');
+    commentPostErrorModal.modal('hide');
     postCommentModal.modal('show');
   }
 
   function showCommentPostedModal() {
     postCommentModal.modal('hide');
+    commentPostErrorModal.modal('hide');
     clearPostCommentForm();
     commentPostedModal.modal('show');
+  }
+
+  function showPostErrorModal(errorMessage) {
+    postCommentModal.modal('hide');
+    commentPostedModal.modal('hide');
+    clearPostCommentForm();
+    $('#product-comment-post-error-message').html(errorMessage);
+    commentPostErrorModal.modal('show');
   }
 
   function clearPostCommentForm() {
@@ -68,43 +83,51 @@ jQuery(document).ready(function () {
       showPostCommentModal();
     });
 
-    $('#post-product-comment-form').submit(function(event) {
-      event.preventDefault();
-      var formData = $(this).serializeArray();
-      if (!validateFormData(formData)) {
-        return;
+    $('#post-product-comment-form').submit(submitCommentForm);
+  }
+
+  function submitCommentForm(event) {
+    event.preventDefault();
+    var formData = $(this).serializeArray();
+    if (!validateFormData(formData)) {
+      return;
+    }
+    $.post($(this).attr('action'), $(this).serialize(), function(jsonResponse) {
+      var jsonData = false;
+      try {
+        jsonData = JSON.parse(jsonResponse);
+      } catch (e) {
       }
-      $.post($(this).attr('action'), $(this).serialize(), function(jsonData) {
-        var jsonResponse = false;
-        try {
-          jsonResponse = JSON.parse(jsonData);
-        } catch (e) {
-        }
-        if (jsonResponse && jsonResponse.success) {
+      if (jsonData) {
+        if (jsonData.success) {
           clearPostCommentForm();
           showCommentPostedModal();
+        } else {
+          showPostErrorModal(jsonData.error);
         }
-      }).fail(function(result) {
-        console.log('fail', result);
-      });
+      } else {
+        showPostErrorModal('Sorry, your review could not be posted.');
+      }
+    }).fail(function(result) {
+      showPostErrorModal('Sorry, your review could not be posted.');
+    });
+  }
+
+  function validateFormData(formData) {
+    var isValid = true;
+    formData.forEach(function(formField) {
+      const fieldSelector = '#post-product-comment-form [name="'+formField.name+'"]';
+      if (!formField.value) {
+        $(fieldSelector).addClass('error');
+        $(fieldSelector).removeClass('valid');
+        isValid = false;
+      } else {
+        $(fieldSelector).removeClass('error');
+        $(fieldSelector).addClass('valid');
+      }
     });
 
-    function validateFormData(formData) {
-      var isValid = true;
-      formData.forEach(function(formField) {
-        const fieldSelector = '#post-product-comment-form [name="'+formField.name+'"]';
-        if (!formField.value) {
-          $(fieldSelector).addClass('error');
-          $(fieldSelector).removeClass('valid');
-          isValid = false;
-        } else {
-          $(fieldSelector).removeClass('error');
-          $(fieldSelector).addClass('valid');
-        }
-      });
-
-      return isValid;
-    }
+    return isValid;
   }
 
   initCommentModal();

@@ -66,7 +66,7 @@ class ProductCommentCriterionRepository
      */
     public function getByProduct($product, $idLang)
     {
-        $idProduct = is_int($product) ? $product : $product->id;
+        $idProduct = is_object($product) ? $product->id : (int) $product;
 
         if (!Validate::isUnsignedId($idProduct) ||
             !Validate::isUnsignedId($idLang)) {

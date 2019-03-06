@@ -158,14 +158,20 @@
   margin-left: 15px;
 }
 
-#product-comment-posted-modal .post-comment-buttons {
+#product-comment-posted-modal .post-comment-buttons,
+#product-comment-post-error .post-comment-buttons {
   margin-top: 30px;
 }
 
-#product-comment-posted-modal .modal-header .material-icons {
+#product-comment-posted-modal .modal-header .material-icons,
+#product-comment-post-error .modal-header .material-icons {
   color: #40A85F;
   font-size: 30px;
   line-height: 25px;
+}
+
+#product-comment-post-error .modal-header .material-icons {
+  color: #a94442;
 }
 
 /**

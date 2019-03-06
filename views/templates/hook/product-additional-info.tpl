@@ -27,7 +27,7 @@
 {if $nbComments != 0 || ($recently_posted == false && ($logged || $allow_guests))}
 <div class="product-comments-additional-info">
   {if $nbComments == 0}
-    {if ($recently_posted == false && ($logged || $allow_guests))}
+    {if $post_allowed}
       <button class="btn btn-comment post-product-comment">
         <i class="material-icons shopping-cart">edit</i>
         {l s='Write your review' mod='productcomments'}
@@ -40,7 +40,7 @@
         <i class="material-icons shopping-cart">chat</i>
         {l s='Read user reviews' mod='productcomments'} ({$nbComments})
       </a>
-      {if ($recently_posted == false && ($logged || $allow_guests))}
+      {if $post_allowed}
         <a class="link-comment post-product-comment" href="#product-comments-list-header">
           <i class="material-icons shopping-cart">edit</i>
           {l s='Write your review' mod='productcomments'}
