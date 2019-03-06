@@ -743,14 +743,14 @@ class ProductComments extends Module
      */
     public function hookHeader()
     {
-        $page_name = Dispatcher::getInstance()->getController();
         $jsList = [];
         $cssList = [];
-        if (in_array($page_name, array('product', 'index', 'catalog', 'category'))) {
+        if ($this->context->controller instanceof ProductControllerCore ||
+            $this->context->controller instanceof ProductListingFrontControllerCore) {
             $cssList[] = $this->_path . '/assets/css/productcomments.css';
             $jsList[] = $this->_path . 'assets/js/jquery.rating.plugin.js';
         }
-        if (in_array($page_name, array('product'))) {
+        if ($this->context->controller instanceof ProductControllerCore) {
             $jsList[] = $this->_path . 'js/jquery.textareaCounter.plugin.js';
             $jsList[] = $this->_path . 'assets/js/post-comment.js';
             $jsList[] = $this->_path . 'assets/js/list-comments.js';
