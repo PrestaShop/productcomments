@@ -29,19 +29,26 @@ jQuery(document).ready(function () {
   const emptyProductComment = $('#empty-product-comment');
   const commentsListUrl = commentsList.data('list-comments-url');
   const updateCommentUsefulnessUrl = commentsList.data('update-comment-usefulness-url');
+  const reportCommentUrl = commentsList.data('report-comment-url');
   const commentPrototype = commentsList.data('comment-item-prototype');
 
   emptyProductComment.hide();
   $('.grade-stars').rating();
 
   const updateCommentPostErrorModal = $('#update-comment-usefulness-post-error');
-  updateCommentPostErrorModal.on('hidden.bs.modal', function () {
-    updateCommentPostErrorModal.modal('hide');
-  });
+
+  const confirmAbuseModal = $('#report-comment-confirmation');
+  const reportCommentPostErrorModal = $('#report-comment-post-error');
+  const reportCommentPostedModal = $('#report-comment-posted');
 
   function showUpdatePostCommentErrorModal(errorMessage) {
     $('#update-comment-usefulness-post-error-message').html(errorMessage);
     updateCommentPostErrorModal.modal('show');
+  }
+
+  function showReportCommentErrorModal(errorMessage) {
+    $('#report-comment-post-error-message').html(errorMessage);
+    reportCommentPostErrorModal.modal('show');
   }
 
   function paginateComments(page) {
@@ -74,9 +81,13 @@ jQuery(document).ready(function () {
 
   function addComment(comment) {
     var commentTemplate = commentPrototype;
+    var customerName = comment.customer_name;
+    if (!customerName) {
+      customerName = comment.firstname+' '+comment.lastname;
+    }
     commentTemplate = commentTemplate.replace(/@COMMENT_ID@/, comment.id_product_comment);
     commentTemplate = commentTemplate.replace(/@PRODUCT_ID@/, comment.id_product);
-    commentTemplate = commentTemplate.replace(/@CUSTOMER_NAME@/, comment.customer_name);
+    commentTemplate = commentTemplate.replace(/@CUSTOMER_NAME@/, customerName);
     commentTemplate = commentTemplate.replace(/@COMMENT_DATE@/, comment.date_add);
     commentTemplate = commentTemplate.replace(/@COMMENT_TITLE@/, comment.title);
     commentTemplate = commentTemplate.replace(/@COMMENT_COMMENT@/, comment.content);
@@ -93,6 +104,9 @@ jQuery(document).ready(function () {
     });
     $('.not-useful-review', $comment).click(function() {
       updateCommentUsefulness($comment, comment.id_product_comment, 0);
+    });
+    $('.report-abuse', $comment).click(function() {
+      confirmCommentAbuse(comment.id_product_comment);
     });
 
     commentsList.append($comment);
@@ -118,6 +132,33 @@ jQuery(document).ready(function () {
     }).fail(function() {
       showUpdatePostCommentErrorModal('Sorry, your review appreciation could not be sent.');
     });
+  }
+
+  function confirmCommentAbuse(commentId) {
+    confirmAbuseModal.modal('show');
+    confirmAbuseModal.one('modal:confirm', function(event, confirm) {
+      if (!confirm) {
+        return;
+      }
+      $.post(reportCommentUrl, {id_product_comment: commentId}, function(jsonResponse){
+        var jsonData = false;
+        try {
+          jsonData = JSON.parse(jsonResponse);
+        } catch (e) {
+        }
+        if (jsonData) {
+          if (jsonData.success) {
+            reportCommentPostedModal.modal('show');
+          } else {
+            showReportCommentErrorModal(jsonData.error);
+          }
+        } else {
+          showReportCommentErrorModal('Sorry, your abuse report could not be sent.');
+        }
+      }).fail(function() {
+        showReportCommentErrorModal('Sorry, your abuse report could not be sent.');
+      });
+    })
   }
 
   paginateComments(1);

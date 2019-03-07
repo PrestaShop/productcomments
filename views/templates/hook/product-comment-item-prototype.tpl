@@ -46,7 +46,7 @@
         <i class="material-icons thumb_down">thumb_down</i>
         <span class="not-useful-review-value">@COMMENT_NOT_USEFUL_ADVICES@</span>
       </a>
-      <a data-is-usefull="1" title="{l s='Report abuse' mod='productcomments'}">
+      <a class="report-abuse" title="{l s='Report abuse' mod='productcomments'}">
         <i class="material-icons outlined_flag">flag</i>
       </a>
     </div>

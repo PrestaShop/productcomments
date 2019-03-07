@@ -142,59 +142,21 @@
   </div>
 </div>
 
-<div id="product-comment-posted-modal" class="modal fade product-comment-modal" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>
-          <i class="material-icons">check_circle</i>
-          {l s='Comment sent' mod='productcomments'}
-        </h2>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12  col-sm-12">
-            {if $moderation_active}
-              {l s='Your comment has been submitted and will be available once approved by a moderator.' mod='productcomments'}
-            {else}
-              {l s='Your comment has been added!' mod='productcomments'}
-            {/if}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12  col-sm-12 post-comment-buttons">
-            <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal" aria-label="{l s='OK' mod='productcomments'}">
-              {l s='OK' mod='productcomments'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+{* Comment posted modal *}
+{if $moderation_active}
+  {assign var='comment_posted_message' value={l s='Your comment has been submitted and will be available once approved by a moderator.' mod='productcomments'}}
+{else}
+  {assign var='comment_posted_message' value={l s='Your comment has been added!' mod='productcomments'}}
+{/if}
+{include file='module:productcomments/views/templates/hook/alert-modal.tpl'
+  modal_id='product-comment-posted-modal'
+  modal_title={l s='Review sent' mod='productcomments'}
+  modal_message=$comment_posted_message
+}
 
-<div id="product-comment-post-error" class="modal fade product-comment-modal" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>
-          <i class="material-icons">error</i>
-          {l s='Your review could not be sent' mod='productcomments'}
-        </h2>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div id="product-comment-post-error-message" class="col-md-12  col-sm-12">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12  col-sm-12 post-comment-buttons">
-            <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal" aria-label="{l s='OK' mod='productcomments'}">
-              {l s='OK' mod='productcomments'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+{* Comment post error modal *}
+{include file='module:productcomments/views/templates/hook/alert-modal.tpl'
+  modal_id='product-comment-post-error'
+  modal_title={l s='Your review could not be sent' mod='productcomments'}
+  icon='error'
+}

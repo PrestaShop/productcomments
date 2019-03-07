@@ -44,6 +44,7 @@
        id="product-comments-list"
        data-list-comments-url="{$list_comments_url}"
        data-update-comment-usefulness-url="{$update_comment_usefulness_url}"
+       data-report-comment-url="{$report_comment_url}"
        data-comment-item-prototype="{$comment_prototype|escape:'html_attr'}">
   </div>
 </div>
@@ -59,28 +60,32 @@
   </div>
 </div>
 
-<div id="update-comment-usefulness-post-error" class="modal fade product-comment-modal" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>
-          <i class="material-icons">error</i>
-          {l s='Your review appreciation could not be sent' mod='productcomments'}
-        </h2>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div id="update-comment-usefulness-post-error-message" class="col-md-12  col-sm-12">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12  col-sm-12 post-comment-buttons">
-            <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal" aria-label="{l s='OK' mod='productcomments'}">
-              {l s='OK' mod='productcomments'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+{* Appreciation post error modal *}
+{include file='module:productcomments/views/templates/hook/alert-modal.tpl'
+  modal_id='update-comment-usefulness-post-error'
+  modal_title={l s='Your review appreciation could not be sent' mod='productcomments'}
+  icon='error'
+}
+
+{* Confirm report modal *}
+{include file='module:productcomments/views/templates/hook/confirm-modal.tpl'
+  modal_id='report-comment-confirmation'
+  modal_title={l s='Report comment' mod='productcomments'}
+  modal_message={l s='Are you sure that you want to report this comment?' mod='productcomments'}
+  icon='feedback'
+}
+
+{* Report comment posted modal *}
+{include file='module:productcomments/views/templates/hook/alert-modal.tpl'
+  modal_id='report-comment-posted'
+  modal_title={l s='Report sent' mod='productcomments'}
+  modal_message={l s='Your report has been submitted and will be considered by a moderator.' mod='productcomments'}
+}
+
+{* Report abuse error modal *}
+{include file='module:productcomments/views/templates/hook/alert-modal.tpl'
+modal_id='report-comment-post-error'
+modal_title={l s='Your report could not be sent' mod='productcomments'}
+icon='error'
+}
+

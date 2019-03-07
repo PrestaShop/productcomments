@@ -164,17 +164,18 @@
   margin-top: 30px;
 }
 
-#product-comment-posted-modal .modal-header .material-icons,
-#product-comment-post-error .modal-header .material-icons,
-#update-comment-usefulness-post-error .modal-header .material-icons {
+.modal-header .material-icons {
   color: #40A85F;
   font-size: 30px;
   line-height: 25px;
 }
 
-#product-comment-post-error .modal-header .material-icons,
-#update-comment-usefulness-post-error .modal-header .material-icons {
+.modal-header .material-icons.error {
   color: #a94442;
+}
+
+.modal-header .material-icons.feedback {
+  color: #F39D72;
 }
 
 /**

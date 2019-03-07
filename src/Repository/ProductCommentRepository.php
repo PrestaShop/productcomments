@@ -212,10 +212,13 @@ class ProductCommentRepository
             } elseif ($idGuest) {
                 $lastCustomerComment = $this->getLastGuestComment($productId, $idGuest);
             }
-            $postAllowed = null === $lastCustomerComment
-                || !isset($lastCustomerComment['date_add'])
-                || time() - strtotime($lastCustomerComment['date_add']) > $this->commentsMinimalTime
-            ;
+            $postAllowed = true;
+            if (null !== $lastCustomerComment && isset($lastCustomerComment['date_add'])) {
+                $postDate = new \DateTime($lastCustomerComment['date_add'], new \DateTimeZone('UTC'));
+                if (time() - $postDate->getTimestamp() < $this->commentsMinimalTime) {
+                    $postAllowed = false;
+                }
+            }
         }
 
         return $postAllowed;

@@ -316,6 +316,8 @@ class ProductComment
     }
 
     /**
+     * Date is stored in UTC timezone
+     *
      * @param \DateTime $dateAdd
      *
      * @return ProductComment

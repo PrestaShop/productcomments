@@ -38,14 +38,7 @@ jQuery(document).ready(function () {
   });
 
   const commentPostedModal = $('#product-comment-posted-modal');
-  commentPostedModal.on('hidden.bs.modal', function () {
-    commentPostedModal.modal('hide');
-  });
-
   const commentPostErrorModal = $('#product-comment-post-error');
-  commentPostErrorModal.on('hidden.bs.modal', function () {
-    commentPostErrorModal.modal('hide');
-  });
 
   function showPostCommentModal() {
     commentPostedModal.modal('hide');
