@@ -102,7 +102,7 @@ jQuery(document).ready(function () {
 
     const $comment = $(commentTemplate);
     $('.grade-stars', $comment).rating({
-      value: comment.grade
+      grade: comment.grade
     });
     $('.useful-review', $comment).click(function() {
       updateCommentUsefulness($comment, comment.id_product_comment, 1);

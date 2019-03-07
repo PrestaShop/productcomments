@@ -29,8 +29,8 @@ jQuery.fn.rating = function(generalOptions) {
   $ratings.each(function initRating() {
     const $ratingComponent = $(this);
     var options = generalOptions ? generalOptions : {};
-    if (!options.value && $ratingComponent.data('grade')) {
-      options.value = $ratingComponent.data('grade');
+    if (!options.grade && $ratingComponent.data('grade')) {
+      options.grade = $ratingComponent.data('grade');
     }
     if (!options.min && $ratingComponent.data('min')) {
       options.min = $ratingComponent.data('min');
@@ -42,7 +42,7 @@ jQuery.fn.rating = function(generalOptions) {
       options.input = $ratingComponent.data('input');
     }
     var componentOptions = jQuery.extend({
-      value: null,
+      grade: null,
       input: null,
       min: 1,
       max: 5,
@@ -51,7 +51,7 @@ jQuery.fn.rating = function(generalOptions) {
 
     const minValue = Math.min(componentOptions.min, componentOptions.max);
     const maxValue = Math.max(componentOptions.min, componentOptions.max);
-    const ratingValue = Math.min(Math.max(minValue, componentOptions.value), maxValue);
+    const ratingValue = Math.min(Math.max(minValue, componentOptions.grade), maxValue);
 
     $ratingComponent.html('');
     $ratingComponent.append('<div class="star-content star-empty clearfix"></div>');

@@ -876,6 +876,7 @@ class ProductComments extends Module
      * @param $params
      *
      * @return string
+     * @throws SmartyException
      */
     public function hookDisplayProductListReviews($params)
     {
@@ -883,13 +884,11 @@ class ProductComments extends Module
         $product = $params['product'];
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
-
-        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
 
         $this->context->smarty->assign(array(
             'product' => $product,
-            'average_grade' => $averageGrade,
+            'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade'),
             'nb_comments' => $commentsNb,
         ));
 

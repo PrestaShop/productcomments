@@ -201,7 +201,21 @@
 }
 .star-content div.star-on,
 .star-content div.star-hover {
-  background-position: -24px 0
+  background-position: -24px 0;
+}
+
+.small-stars .star-content div.star,
+.small-stars .star-content div.star-on,
+.small-stars .star-content div.star-hover {
+  background: url(../img/small_stars.png) no-repeat 0 0 transparent;
+  width: 16px;
+  height: 16px;
+  margin-left: 2px;
+}
+
+.small-stars .star-content div.star-on,
+.small-stars .star-content div.star-hover {
+  background-position: -19px 0;
 }
 
 .star-content div.star-hover {
@@ -213,6 +227,10 @@
   height: 20px;
   min-width: 120px;
   display: inline-block;
+}
+
+.grade-stars.small-stars {
+  min-width: 100px;
 }
 
 .grade-stars .star-content {
@@ -341,22 +359,58 @@
 ** Product list override
 */
 
+#products .thumbnail-container.has-reviews:hover .highlighted-informations,
+#products .thumbnail-container.has-reviews:focus .highlighted-informations,
+.featured-products .thumbnail-container.has-reviews:hover .highlighted-informations,
+.featured-products .thumbnail-container.has-reviews:focus .highlighted-informations,
+.product-accessories .thumbnail-container.has-reviews:hover .highlighted-informations,
+.featured-products .thumbnail-container.has-reviews:focus .highlighted-informations,
+.product-miniature .thumbnail-container.has-reviews:hover .highlighted-informations,
+.product-miniature .thumbnail-container.has-reviews:focus .highlighted-informations {
+  height: 4.5rem;
+}
+
+#products .thumbnail-container.has-reviews:hover .highlighted-informations .variant-links,
+#products .thumbnail-container.has-reviews:focus .highlighted-informations .variant-links,
+.featured-products .thumbnail-container.has-reviews:hover .highlighted-informations .variant-links,
+.featured-products .thumbnail-container.has-reviews:focus .highlighted-informations .variant-links,
+.product-accessories .thumbnail-container.has-reviews:hover .highlighted-informations .variant-links,
+.featured-products .thumbnail-container.has-reviews:focus .highlighted-informations .variant-links,
+.product-miniature .thumbnail-container.has-reviews:hover .highlighted-informations .variant-links,
+.product-miniature .thumbnail-container.has-reviews:focus .highlighted-informations .variant-links {
+  min-height: 3.7rem;
+}
+
+#products .thumbnail-container.has-reviews:hover .highlighted-informations.no-variants,
+#products .thumbnail-container.has-reviews:focus .highlighted-informations.no-variants,
+.featured-products .thumbnail-container.has-reviews:hover .highlighted-informations.no-variants,
+.featured-products .thumbnail-container.has-reviews:focus .highlighted-informations.no-variants,
+.product-accessories .thumbnail-container.has-reviews:hover .highlighted-informations.no-variants,
+.featured-products .thumbnail-container.has-reviews:focus .highlighted-informations.no-variants,
+.product-miniature .thumbnail-container.has-reviews:hover .highlighted-informations.no-variants,
+.product-miniature .thumbnail-container.has-reviews:focus .highlighted-informations.no-variants {
+  height: 4.125rem;
+}
+
 .product-list-reviews {
   position: absolute;
-  top: -238px;
-  right: 20px;
+  top: -26px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 4px 0;
 }
 
 .product-list-reviews .grade-stars .star-content {
-  top: 0;
+  top: 1px;
 }
 
 .product-list-reviews .comments-nb {
-  margin-left: 10px;
+  margin-left: 5px;
+  font-size: 13px;
 }
 
 @media (min-width: 768px) {

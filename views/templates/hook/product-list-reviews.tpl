@@ -27,12 +27,30 @@
   <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function() {
       const $ = jQuery;
-      $('#product-list-reviews-{$product.id} .grade-stars').rating({ showCommentsNb: true });
+      const productId = {$product.id};
+      const productReview = $('#product-list-reviews-{$product.id}');
+      const productCommentGradeUrl = "{$product_comment_grade_url}";
+
+      $.get(productCommentGradeUrl, { id_product: productId }, function(jsonResponse) {
+        var jsonData = false;
+        try {
+          jsonData = JSON.parse(jsonResponse);
+        } catch (e) {
+        }
+
+        if (jsonData) {
+          if (jsonData.id_product) {
+            $('.grade-stars', productReview).rating({ grade: jsonData.average_grade, starWidth: 16 });
+            $('.comments-nb', productReview).html('('+jsonData.comments_nb+')');
+            productReview.closest('.thumbnail-container').addClass('has-reviews');
+          }
+        }
+      });
     });
   </script>
 
   <div id="product-list-reviews-{$product.id}" class="product-list-reviews">
-    <div class="grade-stars" data-comments-nb="{$nb_comments}" data-grade="{$average_grade}"></div>
-    <div class="comments-nb">({$nb_comments})</div>
+    <div class="grade-stars small-stars"></div>
+    <div class="comments-nb"></div>
   </div>
 {/if}
