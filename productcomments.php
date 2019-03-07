@@ -85,6 +85,7 @@ class ProductComments extends Module
             !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
+            !Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', 1) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1)) {
             return false;
@@ -99,6 +100,7 @@ class ProductComments extends Module
             !Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_COMMENTS_PER_PAGE') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') ||
+            !Configuration::deleteByName('PRODUCT_COMMENTS_USEFULNESS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME') ||
             !$this->unregisterHook('displayProductAdditionalInfo') ||
             !$this->unregisterHook('header') ||
@@ -146,6 +148,7 @@ class ProductComments extends Module
         if (Tools::isSubmit('submitModerate')) {
             Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int) Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
             Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
+            Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
             Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', (int) Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'));
             Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int) Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
             $this->_html .= '<div class="conf confirm alert alert-success">' . $this->l('Settings updated') . '</div>';
@@ -300,6 +303,24 @@ class ProductComments extends Module
                                             'label' => $this->l('Disabled'),
                                         ),
                                     ),
+                    ),
+                    array(
+                        'type' => 'switch',
+                        'is_bool' => true, //retro compat 1.5
+                        'label' => $this->l('Enable upvotes / downvotes on reviews'),
+                        'name' => 'PRODUCT_COMMENTS_USEFULNESS',
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->l('Enabled'),
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->l('Disabled'),
+                            ),
+                        ),
                     ),
                     array(
                         'type' => 'text',
@@ -526,6 +547,7 @@ class ProductComments extends Module
         return array(
             'PRODUCT_COMMENTS_MODERATE' => Tools::getValue('PRODUCT_COMMENTS_MODERATE', Configuration::get('PRODUCT_COMMENTS_MODERATE')),
             'PRODUCT_COMMENTS_ALLOW_GUESTS' => Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS', Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')),
+            'PRODUCT_COMMENTS_USEFULNESS' => Tools::getValue('PRODUCT_COMMENTS_USEFULNESS', Configuration::get('PRODUCT_COMMENTS_USEFULNESS')),
             'PRODUCT_COMMENTS_MINIMAL_TIME' => Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME', Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')),
             'PRODUCT_COMMENTS_COMMENTS_PER_PAGE' => Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE')),
         );
@@ -808,6 +830,7 @@ class ProductComments extends Module
 
         $this->context->smarty->assign(array(
             'post_allowed' => $isPostAllowed,
+            'usefulness_enabled' => Configuration::get('PRODUCT_COMMENTS_USEFULNESS'),
             'average_grade' => $averageGrade,
             'nb_comments' => $commentsNb,
             'list_comments_url' => $this->context->link->getModuleLink('productcomments', 'ListComments', ['id_product' => $product->getId()]),

@@ -33,6 +33,15 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
 {
     public function display()
     {
+        if (!Configuration::get('PRODUCT_COMMENTS_USEFULNESS')) {
+            $this->ajaxRender(json_encode([
+                'success' => false,
+                'error' => $this->trans('This feature is not enabled.'),
+            ]));
+
+            return false;
+        }
+
         $customerId = (int) $this->context->cookie->id_customer;
         if (!$customerId) {
             $this->ajaxRender(json_encode([

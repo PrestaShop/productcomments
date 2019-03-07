@@ -33,4 +33,7 @@ function upgrade_module_5_0_0($object)
     if (!Configuration::hasKey('PRODUCT_COMMENTS_PAGE_COMMENTS_NB')) {
         Configuration::set('PRODUCT_COMMENTS_PAGE_COMMENTS_NB', 8);
     }
+    if (!Configuration::hasKey('PRODUCT_COMMENTS_USEFULNESS')) {
+        Configuration::set('PRODUCT_COMMENTS_USEFULNESS', 1);
+    }
 }

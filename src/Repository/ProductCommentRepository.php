@@ -93,6 +93,7 @@ class ProductCommentRepository
             ->setMaxResults($commentsPerPage)
             ->setFirstResult(($page - 1) * $commentsPerPage)
             ->addGroupBy('pc.id_product_comment')
+            ->addOrderBy('pc.date_add', 'DESC')
         ;
 
         if ($validatedOnly) {
