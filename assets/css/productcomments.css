@@ -301,6 +301,7 @@
   font-size: 14px;
   letter-spacing: -0.28px;
   line-height: 19px;
+  min-height: 100px;
 }
 
 .product-comment-list-item .comment-infos .grade-stars {
@@ -358,12 +359,44 @@
   margin-left: 10px;
 }
 
-#product-comments-list-footer {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: space-between;
+@media (min-width: 768px) {
+  #product-comments-list-footer {
+    position: relative;
+    min-height: 45px;
+  }
+
+  #product-comments-list-footer .post-product-comment {
+    margin: 0 auto;
+    display: block;
+  }
+
+  #product-comments-list-pagination {
+    position: absolute;
+    right: 0;
+    top: 5px;
+  }
+}
+
+@media (max-width: 768px) {
+  #product-comments-list-footer {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 576px) {
+  #product-comments-list-footer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  #product-comments-list-pagination {
+    margin-bottom: 10px;
+  }
 }
 
 #product-comments-list-pagination {

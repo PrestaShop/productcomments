@@ -52,11 +52,16 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
         foreach ($productComments as $productComment) {
             $dateAdd = new \DateTime($productComment['date_add'], new \DateTimeZone('UTC'));
             $dateAdd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $dateFormatter = new \IntlDateFormatter(
+                $this->context->language->locale,
+                \IntlDateFormatter::SHORT,
+                \IntlDateFormatter::SHORT
+            );
+            $productComment['date_add'] = $dateFormatter->format($dateAdd);
 
-            //todo: use cldr to format the date correctly
-            $productComment['date_add'] = $dateAdd->format(\DateTime::ATOM);
             $usefulness = $productCommentRepository->getProductCommentUsefulness($productComment['id_product_comment']);
             $productComment = array_merge($productComment, $usefulness);
+
             $responseArray['comments'][] = $productComment;
         }
 

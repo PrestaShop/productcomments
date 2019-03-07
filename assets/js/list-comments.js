@@ -56,16 +56,21 @@ jQuery(document).ready(function () {
       const jsonResponse = JSON.parse(result);
       if (jsonResponse.comments && jsonResponse.comments.length > 0) {
         populateComments(jsonResponse.comments);
-        $('#product-comments-list-pagination').pagination({
-          currentPage: page,
-          items: jsonResponse.comments_nb,
-          itemsOnPage: jsonResponse.comments_per_page,
-          cssStyle: '',
-          prevText: '<i class="material-icons">chevron_left</i>',
-          nextText: '<i class="material-icons">chevron_right</i>',
-          useAnchors: false,
-          onPageClick: paginateComments
-        });
+        if (jsonResponse.comments_nb > jsonResponse.comments_per_page) {
+          $('#product-comments-list-pagination').pagination({
+            currentPage: page,
+            items: jsonResponse.comments_nb,
+            itemsOnPage: jsonResponse.comments_per_page,
+            cssStyle: '',
+            prevText: '<i class="material-icons">chevron_left</i>',
+            nextText: '<i class="material-icons">chevron_right</i>',
+            useAnchors: false,
+            displayedPages: 2,
+            onPageClick: paginateComments
+          });
+        } else {
+          $('#product-comments-list-pagination').hide();
+        }
       } else {
         commentsList.html('');
         emptyProductComment.show();

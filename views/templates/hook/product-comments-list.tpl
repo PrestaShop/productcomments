@@ -50,13 +50,13 @@
 </div>
 <div class="row">
   <div class="col-md-12 col-sm-12" id="product-comments-list-footer">
+    <div id="product-comments-list-pagination"></div>
     {if $post_allowed}
       <button class="btn btn-comment btn-comment-big post-product-comment">
         <i class="material-icons shopping-cart">edit</i>
         {l s='Write your review' mod='productcomments'}
       </button>
     {/if}
-    <div id="product-comments-list-pagination"></div>
   </div>
 </div>
 
