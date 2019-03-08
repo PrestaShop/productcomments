@@ -4,10 +4,10 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0)
+ * This source file is subject to the Academic Free License (AFL 3.0)
  * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
- * https://opensource.org/licenses/OSL-3.0
+ * http://opensource.org/licenses/afl-3.0.php
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@prestashop.com so we can send you a copy immediately.
@@ -20,7 +20,7 @@
  *
  * @author    PrestaShop SA <contact@prestashop.com>
  * @copyright 2007-2019 PrestaShop SA and Contributors
- * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
 
@@ -85,7 +85,7 @@ class ProductCommentRepository
             ->addSelect('pc.id_product, pc.id_product_comment, pc.title, pc.content, pc.customer_name, pc.date_add, pc.grade')
             ->addSelect('c.firstname, c.lastname')
             ->from($this->databasePrefix . 'product_comment', 'pc')
-            ->leftJoin('pc', $this->databasePrefix.'customer', 'c', 'pc.id_customer = c.id_customer')
+            ->leftJoin('pc', $this->databasePrefix . 'customer', 'c', 'pc.id_customer = c.id_customer')
             ->andWhere('pc.id_product = :id_product')
             ->andWhere('pc.deleted = :deleted')
             ->setParameter('deleted', 0)
@@ -129,9 +129,9 @@ class ProductCommentRepository
         $customerAppreciations = $qb->execute()->fetchAll();
         foreach ($customerAppreciations as $customerAppreciation) {
             if ((int) $customerAppreciation['usefulness']) {
-                $usefulnessInfos['usefulness']++;
+                ++$usefulnessInfos['usefulness'];
             }
-            $usefulnessInfos['total_usefulness']++;
+            ++$usefulnessInfos['total_usefulness'];
         }
 
         return $usefulnessInfos;
@@ -255,7 +255,7 @@ class ProductCommentRepository
         //We anonymize the customer comment by unlinking them (the name won't be visible any more but the grade and comment are still visible)
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->update($this->databasePrefix.'product_comment', 'pc')
+            ->update($this->databasePrefix . 'product_comment', 'pc')
             ->set('id_customer', 0)
             ->andWhere('pc.id_customer = :id_customer')
             ->setParameter('id_customer', $customerId)
@@ -265,7 +265,7 @@ class ProductCommentRepository
         //But we remove every report and votes for comments
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->delete($this->databasePrefix.'product_comment_report')
+            ->delete($this->databasePrefix . 'product_comment_report')
             ->andWhere('id_customer = :id_customer')
             ->setParameter('id_customer', $customerId)
         ;
@@ -273,7 +273,7 @@ class ProductCommentRepository
 
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->delete($this->databasePrefix.'product_comment_usefulness')
+            ->delete($this->databasePrefix . 'product_comment_usefulness')
             ->andWhere('id_customer = :id_customer')
             ->setParameter('id_customer', $customerId)
         ;
@@ -291,11 +291,11 @@ class ProductCommentRepository
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->select('pl.name, pc.id_product, pc.id_product_comment, pc.title, pc.content, pc.grade, pc.validate, pc.deleted, pcu.usefulness, pc.date_add')
-            ->from($this->databasePrefix.'product_comment', 'pc')
-            ->leftJoin('pc', $this->databasePrefix.'product_comment_usefulness', 'pcu', 'pc.id_product_comment = pcu.id_product_comment')
-            ->leftJoin('pc', $this->databasePrefix.'product', 'p', 'pc.id_product = p.id_product')
-            ->leftJoin('p', $this->databasePrefix.'product_lang', 'pl', 'p.id_product = pl.id_product')
-            ->leftJoin('pl', $this->databasePrefix.'lang', 'l', 'pl.id_lang = l.id_lang')
+            ->from($this->databasePrefix . 'product_comment', 'pc')
+            ->leftJoin('pc', $this->databasePrefix . 'product_comment_usefulness', 'pcu', 'pc.id_product_comment = pcu.id_product_comment')
+            ->leftJoin('pc', $this->databasePrefix . 'product', 'p', 'pc.id_product = p.id_product')
+            ->leftJoin('p', $this->databasePrefix . 'product_lang', 'pl', 'p.id_product = pl.id_product')
+            ->leftJoin('pl', $this->databasePrefix . 'lang', 'l', 'pl.id_lang = l.id_lang')
             ->andWhere('pc.id_customer = :id_customer')
             ->andWhere('l.id_lang = :id_lang')
             ->setParameter('id_customer', $customerId)
