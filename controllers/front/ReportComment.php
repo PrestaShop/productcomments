@@ -79,9 +79,9 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
         $entityManager->persist($productCommentAbuse);
         $entityManager->flush();
 
-        $this->ajaxRender(json_encode(array_merge([
+        $this->ajaxRender(json_encode([
             'success' => true,
             'id_product_comment' => $id_product_comment,
-        ])));
+        ]));
     }
 }

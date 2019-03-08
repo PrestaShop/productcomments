@@ -29,10 +29,6 @@ namespace PrestaShop\Module\ProductComment\Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
-use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
-use Product;
-use Validate;
-use Tools;
 
 class ProductCommentCriterionRepository
 {
@@ -57,22 +53,15 @@ class ProductCommentCriterionRepository
     }
 
     /**
-     * @param int|Product|ProductLazyArray $product
+     * @param int $idProduct
      * @param int $idLang
      *
      * @return array
      *
      * @throws \PrestaShopException
      */
-    public function getByProduct($product, $idLang)
+    public function getByProduct($idProduct, $idLang)
     {
-        $idProduct = is_object($product) ? $product->id : (int) $product;
-
-        if (!Validate::isUnsignedId($idProduct) ||
-            !Validate::isUnsignedId($idLang)) {
-            throw new \Exception(Tools::displayError());
-        }
-
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb
