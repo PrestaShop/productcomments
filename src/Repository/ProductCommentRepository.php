@@ -248,6 +248,66 @@ class ProductCommentRepository
     }
 
     /**
+     * @param int $customerId
+     */
+    public function cleanCustomerData($customerId)
+    {
+        //We anonymize the customer comment by unlinking them (the name won't be visible any more but the grade and comment are still visible)
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->update($this->databasePrefix.'product_comment', 'pc')
+            ->set('id_customer', 0)
+            ->andWhere('pc.id_customer = :id_customer')
+            ->setParameter('id_customer', $customerId)
+        ;
+        $qb->execute();
+
+        //But we remove every report and votes for comments
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->delete($this->databasePrefix.'product_comment_report')
+            ->andWhere('id_customer = :id_customer')
+            ->setParameter('id_customer', $customerId)
+        ;
+        $qb->execute();
+
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->delete($this->databasePrefix.'product_comment_usefulness')
+            ->andWhere('id_customer = :id_customer')
+            ->setParameter('id_customer', $customerId)
+        ;
+        $qb->execute();
+    }
+
+    /**
+     * @param int $customerId
+     * @param int $langId
+     *
+     * @return array
+     */
+    public function getCustomerData($customerId, $langId)
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('pl.name, pc.id_product, pc.id_product_comment, pc.title, pc.content, pc.grade, pc.validate, pc.deleted, pcu.usefulness, pc.date_add')
+            ->from($this->databasePrefix.'product_comment', 'pc')
+            ->leftJoin('pc', $this->databasePrefix.'product_comment_usefulness', 'pcu', 'pc.id_product_comment = pcu.id_product_comment')
+            ->leftJoin('pc', $this->databasePrefix.'product', 'p', 'pc.id_product = p.id_product')
+            ->leftJoin('p', $this->databasePrefix.'product_lang', 'pl', 'p.id_product = pl.id_product')
+            ->leftJoin('pl', $this->databasePrefix.'lang', 'l', 'pl.id_lang = l.id_lang')
+            ->andWhere('pc.id_customer = :id_customer')
+            ->andWhere('l.id_lang = :id_lang')
+            ->setParameter('id_customer', $customerId)
+            ->setParameter('id_lang', $langId)
+            ->addGroupBy('pc.id_product_comment')
+            ->addOrderBy('pc.date_add', 'ASC')
+        ;
+
+        return $qb->execute()->fetchAll();
+    }
+
+    /**
      * @param array $criteria
      *
      * @return array

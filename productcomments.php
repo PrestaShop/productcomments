@@ -45,7 +45,7 @@ class ProductComments extends Module
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '4.0.0';
+        $this->version = '5.0.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -83,6 +83,11 @@ class ProductComments extends Module
             !$this->registerHook('header') || //Adds css and javascript on front
             !$this->registerHook('displayProductListReviews') || //Product list miniature
             !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
+
+            !$this->registerHook('registerGDPRConsent') ||
+            !$this->registerHook('actionDeleteGDPRCustomer') ||
+            !$this->registerHook('actionExportGDPRData') ||
+
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', 1) ||
@@ -102,6 +107,11 @@ class ProductComments extends Module
             !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_USEFULNESS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME') ||
+
+            !$this->unregisterHook('registerGDPRConsent') ||
+            !$this->unregisterHook('actionDeleteGDPRCustomer') ||
+            !$this->unregisterHook('actionExportGDPRData') ||
+
             !$this->unregisterHook('displayProductAdditionalInfo') ||
             !$this->unregisterHook('header') ||
             !$this->unregisterHook('displayFooterProduct') ||
@@ -767,6 +777,28 @@ class ProductComments extends Module
         $helper = new Helper();
 
         return $helper->renderCategoryTree($root_category, $selected_cat, 'categoryBox', false, true);
+    }
+
+    public function hookActionDeleteGDPRCustomer ($customer)
+    {
+        if (isset($customer['id'])) {
+            /** @var ProductCommentRepository $productCommentRepository */
+            $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
+            $productCommentRepository->cleanCustomerData($customer['id']);
+        }
+
+        return true;
+    }
+
+    public function hookActionExportGDPRData ($customer)
+    {
+        if (isset($customer['id'])) {
+            /** @var ProductCommentRepository $productCommentRepository */
+            $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
+            $langId = isset($customer['id_lang']) ? $customer['id_lang'] : $this->context->language->id;
+
+            return json_encode($productCommentRepository->getCustomerData($customer['id'], $langId));
+        }
     }
 
     /**
