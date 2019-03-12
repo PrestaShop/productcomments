@@ -891,7 +891,7 @@ class ProductComments extends Module
 
         /** @var ProductCommentCriterionRepository $criterionRepository */
         $criterionRepository = $this->context->controller->getContainer()->get('product_comment_criterion_repository');
-        $criterions = $criterionRepository->getByProduct($product, $this->context->language->id);
+        $criterions = $criterionRepository->getByProduct($product->getId(), $this->context->language->id);
 
         $this->context->smarty->assign(array(
             'logged' => (bool) $this->context->cookie->id_customer,
