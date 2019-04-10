@@ -42,9 +42,9 @@
 <div class="row">
   <div class="col-md-12 col-sm-12"
        id="product-comments-list"
-       data-list-comments-url="{$list_comments_url}"
-       data-update-comment-usefulness-url="{$update_comment_usefulness_url}"
-       data-report-comment-url="{$report_comment_url}"
+       data-list-comments-url="{$list_comments_url nofilter}"
+       data-update-comment-usefulness-url="{$update_comment_usefulness_url nofilter}"
+       data-report-comment-url="{$report_comment_url nofilter}"
        data-comment-item-prototype="{$comment_prototype|escape:'html_attr'}">
   </div>
 </div>

@@ -33,7 +33,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="post-product-comment-form" action="{$post_comment_url}" method="POST">
+        <form id="post-product-comment-form" action="{$post_comment_url nofilter}" method="POST">
           <div class="row">
             <div class="col-md-2 col-sm-2">
               {if isset($product) && $product}
@@ -50,7 +50,7 @@
                     {if $product.cover}
                       <img class="js-qv-product-cover" src="{$product.cover.bySize.medium_default.url}" alt="{$product.cover.legend}" title="{$product.cover.legend}" style="width:100%;" itemprop="image">
                     {else}
-                      <img src="{$urls.no_picture_image.bySize.large_default.url}" style="width:100%;">
+                      <img src="{$urls.no_picture_image.bySize.large_default.url nofilter}" style="width:100%;">
                     {/if}
                   </div>
                 {/block}

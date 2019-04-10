@@ -381,6 +381,20 @@
 }
 
 /*
+** Quickview style
+*/
+
+.product-quickview-review {
+  display: flex;
+  flex-direction: row;
+}
+
+.product-quickview-review .grade-stars .star-content {
+  margin: 0 0 0 0;
+  top: 0;
+}
+
+/*
 ** Product list override
 */
 

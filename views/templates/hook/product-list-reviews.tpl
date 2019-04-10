@@ -28,7 +28,7 @@
     const $ = jQuery;
     const productId = {$product.id};
     const productReview = $('#product-list-reviews-{$product.id}');
-    const productCommentGradeUrl = "{$product_comment_grade_url}";
+    const productCommentGradeUrl = '{$product_comment_grade_url nofilter}';
 
     $.get(productCommentGradeUrl, { id_product: productId }, function(jsonResponse) {
       var jsonData = false;

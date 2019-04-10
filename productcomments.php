@@ -56,7 +56,7 @@ class ProductComments extends Module
         $this->displayName = $this->l('Product Comments');
         $this->description = $this->l('Allows users to post reviews and rate products on specific criteria.');
 
-        $this->ps_versions_compliancy = array('min' => '1.7.5', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.7.6', 'max' => _PS_VERSION_);
     }
 
     public function install($keep = true)
@@ -956,6 +956,10 @@ class ProductComments extends Module
             'nb_comments' => $commentsNb,
             'post_allowed' => $isPostAllowed,
         ));
+
+        if ('quickview' === Tools::getValue('action')) {
+            return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info-quickview.tpl');
+        }
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
     }
