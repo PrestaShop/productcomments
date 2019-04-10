@@ -95,7 +95,16 @@ jQuery(document).ready(function () {
           clearPostCommentForm();
           showCommentPostedModal();
         } else {
-          showPostErrorModal(jsonData.error);
+          if (jsonData.errors) {
+            var errorList = '<ul>';
+            for (var i = 0; i < jsonData.errors.length; ++i) {
+              errorList += '<li>' + jsonData.errors[i] + '</li>';
+            }
+            errorList += '</ul>';
+            showPostErrorModal(errorList);
+          } else {
+            showPostErrorModal(jsonData.error);
+          }
         }
       } else {
         showPostErrorModal('Sorry, your review could not be posted.');

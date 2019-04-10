@@ -77,6 +77,16 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $entityManager->persist($productComment);
         $this->addCommentGrades($productComment, $criterions);
 
+        //Validate comment
+        if (!empty($errors = $this->validateComment($productComment))) {
+            $this->ajaxRender(json_encode([
+                'success' => false,
+                'errors' => $errors,
+            ]));
+
+            return false;
+        }
+
         $entityManager->flush();
 
         $this->ajaxRender(json_encode([
@@ -109,5 +119,32 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         }
         $averageGrade /= count($criterions);
         $productComment->setGrade($averageGrade);
+    }
+
+    /**
+     * Manual validation for now, this would be nice to use Symfony validator with the annotation
+     *
+     * @param ProductComment $productComment
+     *
+     * @return array
+     */
+    private function validateComment(ProductComment $productComment)
+    {
+        $errors = [];
+        if (empty($productComment->getTitle())) {
+            $errors[] = $this->getTranslator()->trans('Title cannot be empty');
+        } elseif (strlen($productComment->getTitle()) > 64) {
+            $errors[] = $this->getTranslator()->trans('Title cannot be more than %s characters', [64]);
+        }
+
+        if (!$productComment->getCustomerId()) {
+            if (empty($productComment->getCustomerName())) {
+                $errors[] = $this->getTranslator()->trans('Customer name cannot be empty');
+            } elseif (strlen($productComment->getCustomerName()) > 64) {
+                $errors[] = $this->getTranslator()->trans('Customer name cannot be more than %s characters', [64]);
+            }
+        }
+
+        return $errors;
     }
 }
