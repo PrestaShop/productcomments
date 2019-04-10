@@ -691,6 +691,7 @@ class ProductComments extends Module
                         'lang' => true,
                         'label' => $this->l('Criterion name'),
                         'name' => 'name',
+                        'desc' => $this->l(sprintf('Max length %s characters', 64))
                     ),
                     array(
                         'type' => 'select',
