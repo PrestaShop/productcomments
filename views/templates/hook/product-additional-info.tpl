@@ -46,6 +46,12 @@
         </a>
       {/if}
     </div>
+
+    {* Rich snippet rating*}
+    <div itemprop="aggregateRating" itemtype="http://schema.org/AggregateRating" itemscope>
+      <meta itemprop="reviewCount" content="{$nb_comments}" />
+      <meta itemprop="ratingValue" content="{$average_grade}" />
+    </div>
   {/if}
 </div>
 {/if}

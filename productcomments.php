@@ -924,11 +924,13 @@ class ProductComments extends Module
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
         $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
 
         $this->context->smarty->assign(array(
             'product' => $product,
             'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade'),
             'nb_comments' => $commentsNb,
+            'average_grade' => $averageGrade,
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-list-reviews.tpl');
