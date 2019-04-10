@@ -182,32 +182,36 @@ class ProductComments extends Module
             }
             $criterion->name = $name;
 
-            $criterion->save();
-
-            // Clear before reinserting data
-            $criterion->deleteCategories();
-            $criterion->deleteProducts();
-            if ($criterion->id_product_comment_criterion_type == 2) {
-                if ($categories = Tools::getValue('categoryBox')) {
-                    if (count($categories)) {
-                        foreach ($categories as $id_category) {
-                            $criterion->addCategory((int) $id_category);
-                        }
-                    }
-                }
-            } elseif ($criterion->id_product_comment_criterion_type == 3) {
-                if ($products = Tools::getValue('ids_product')) {
-                    if (count($products)) {
-                        foreach ($products as $product) {
-                            $criterion->addProduct((int) $product);
-                        }
-                    }
-                }
-            }
-            if ($criterion->save()) {
-                Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&conf=4');
-            } else {
+            if (!$criterion->validateFields(false) || !$criterion->validateFieldsLang(false)) {
                 $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->l('The criterion could not be saved') . '</div>';
+            } else {
+                $criterion->save();
+
+                // Clear before reinserting data
+                $criterion->deleteCategories();
+                $criterion->deleteProducts();
+                if ($criterion->id_product_comment_criterion_type == 2) {
+                    if ($categories = Tools::getValue('categoryBox')) {
+                        if (count($categories)) {
+                            foreach ($categories as $id_category) {
+                                $criterion->addCategory((int) $id_category);
+                            }
+                        }
+                    }
+                } elseif ($criterion->id_product_comment_criterion_type == 3) {
+                    if ($products = Tools::getValue('ids_product')) {
+                        if (count($products)) {
+                            foreach ($products as $product) {
+                                $criterion->addProduct((int) $product);
+                            }
+                        }
+                    }
+                }
+                if ($criterion->save()) {
+                    Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&conf=4');
+                } else {
+                    $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->l('The criterion could not be saved') . '</div>';
+                }
             }
         } elseif (Tools::isSubmit('deleteproductcommentscriterion')) {
             $productCommentCriterion = new ProductCommentCriterion((int) Tools::getValue('id_product_comment_criterion'));
