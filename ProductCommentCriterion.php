@@ -274,9 +274,9 @@ class ProductCommentCriterion extends ObjectModel
         $module = new ProductComments();
 
         return array(
-            1 => $module->l('Valid for the entire catalog', 'ProductCommentCriterion'),
-            2 => $module->l('Restricted to some categories', 'ProductCommentCriterion'),
-            3 => $module->l('Restricted to some products', 'ProductCommentCriterion'),
+            1 => $module->getTranslator()->trans('Valid for the entire catalog', [], 'Modules.Productcomments.Admin'),
+            2 => $module->getTranslator()->trans('Restricted to some categories', [], 'Modules.Productcomments.Admin'),
+            3 => $module->getTranslator()->trans('Restricted to some products', [], 'Modules.Productcomments.Admin'),
         );
     }
 }

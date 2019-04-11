@@ -27,7 +27,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>{l s='Write your review' mod='productcomments'}</h2>
+        <h2>{l s='Write your review' d='Modules.Productcomments.Shop'}</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -85,14 +85,14 @@
           <div class="row">
             {if !$logged}
               <div class="col-md-8 col-sm-8">
-                <label class="form-label" for="comment_title">{l s='Title' mod='productcomments'}<sup class="required">*</sup></label>
+                <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
               </div>
               <div class="col-md-4 col-sm-4">
-                <label class="form-label" for="customer_name">{l s='Your name' mod='productcomments'}<sup class="required">*</sup></label>
+                <label class="form-label" for="customer_name">{l s='Your name' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
               </div>
             {else}
               <div class="col-md-12 col-sm-12">
-                <label class="form-label" for="comment_title">{l s='Title' mod='productcomments'}<sup class="required">*</sup></label>
+                <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
               </div>
             {/if}
           </div>
@@ -114,7 +114,7 @@
 
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              <label class="form-label" for="comment_content">{l s='Review' mod='productcomments'}<sup class="required">*</sup></label>
+              <label class="form-label" for="comment_content">{l s='Review' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
             </div>
           </div>
           <div class="row">
@@ -125,14 +125,14 @@
 
           <div class="row">
             <div class="col-md-6 col-sm-6">
-              <p class="required"><sup>*</sup> {l s='Required fields' mod='productcomments'}</p>
+              <p class="required"><sup>*</sup> {l s='Required fields' d='Modules.Productcomments.Shop'}</p>
             </div>
             <div class="col-md-6 col-sm-6 post-comment-buttons">
-              <button type="button" class="btn btn-comment-inverse btn-comment-big" data-dismiss="modal" aria-label="{l s='Cancel' mod='productcomments'}">
-                {l s='Cancel' mod='productcomments'}
+              <button type="button" class="btn btn-comment-inverse btn-comment-big" data-dismiss="modal" aria-label="{l s='Cancel' d='Modules.Productcomments.Shop'}">
+                {l s='Cancel' d='Modules.Productcomments.Shop'}
               </button>
               <button type="submit" class="btn btn-comment btn-comment-big">
-                {l s='Send' mod='productcomments'}
+                {l s='Send' d='Modules.Productcomments.Shop'}
               </button>
             </div>
           </div>
@@ -144,19 +144,19 @@
 
 {* Comment posted modal *}
 {if $moderation_active}
-  {assign var='comment_posted_message' value={l s='Your comment has been submitted and will be available once approved by a moderator.' mod='productcomments'}}
+  {assign var='comment_posted_message' value={l s='Your comment has been submitted and will be available once approved by a moderator.' d='Modules.Productcomments.Shop'}}
 {else}
-  {assign var='comment_posted_message' value={l s='Your comment has been added!' mod='productcomments'}}
+  {assign var='comment_posted_message' value={l s='Your comment has been added!' d='Modules.Productcomments.Shop'}}
 {/if}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
   modal_id='product-comment-posted-modal'
-  modal_title={l s='Review sent' mod='productcomments'}
+  modal_title={l s='Review sent' d='Modules.Productcomments.Shop'}
   modal_message=$comment_posted_message
 }
 
 {* Comment post error modal *}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
   modal_id='product-comment-post-error'
-  modal_title={l s='Your review could not be sent' mod='productcomments'}
+  modal_title={l s='Your review could not be sent' d='Modules.Productcomments.Shop'}
   icon='error'
 }

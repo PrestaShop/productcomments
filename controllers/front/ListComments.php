@@ -61,7 +61,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             $usefulness = $productCommentRepository->getProductCommentUsefulness($productComment['id_product_comment']);
             $productComment = array_merge($productComment, $usefulness);
             if (empty($productComment['customer_name']) && !isset($productComment['firstname']) && !isset($productComment['lastname'])) {
-                $productComment['customer_name'] = $this->getTranslator()->trans('Deleted account');
+                $productComment['customer_name'] = $this->trans('Deleted account', [], 'Modules.Productcomments.Shop');
             }
 
             $responseArray['comments'][] = $productComment;

@@ -35,7 +35,7 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
         if (!Configuration::get('PRODUCT_COMMENTS_USEFULNESS')) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('This feature is not enabled.'),
+                'error' => $this->trans('This feature is not enabled.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;
@@ -45,7 +45,7 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
         if (!$customerId) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('You need to be logged in to give your appreciation of a review.'),
+                'error' => $this->trans('You need to be logged in to give your appreciation of a review.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;
@@ -62,7 +62,7 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
         if (!$productComment) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('Could not find the requested product review.'),
+                'error' => $this->trans('Could not find the requested product review.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;

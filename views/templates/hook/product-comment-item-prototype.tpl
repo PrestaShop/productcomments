@@ -30,7 +30,7 @@
       @COMMENT_DATE@
     </div>
     <div class="comment-author">
-      {l s='By %1$s' sprintf=['@CUSTOMER_NAME@'] mod='productcomments'}
+      {l s='By %1$s' sprintf=['@CUSTOMER_NAME@'] d='Modules.Productcomments.Shop'}
     </div>
   </div>
 
@@ -48,7 +48,7 @@
           <span class="not-useful-review-value">@COMMENT_NOT_USEFUL_ADVICES@</span>
         </a>
       {/if}
-      <a class="report-abuse" title="{l s='Report abuse' mod='productcomments'}">
+      <a class="report-abuse" title="{l s='Report abuse' d='Modules.Productcomments.Shop'}">
         <i class="material-icons outlined_flag">flag</i>
       </a>
     </div>

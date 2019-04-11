@@ -35,7 +35,7 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
         if (!$customerId) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('You need to be logged in to report a review.'),
+                'error' => $this->trans('You need to be logged in to report a review.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;
@@ -51,7 +51,7 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
         if (!$productComment) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('Could not find the requested product review.'),
+                'error' => $this->trans('Could not find the requested product review.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;
@@ -66,7 +66,7 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
         if ($productCommentAbuse) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('You already reported this review as abusive.'),
+                'error' => $this->trans('You already reported this review as abusive.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;

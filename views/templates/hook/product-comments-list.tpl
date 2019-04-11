@@ -24,14 +24,14 @@
  *}
 
 <script type="text/javascript">
-  var confirm_report_message = '{l s='Are you sure that you want to report this comment?' mod='productcomments' js=1}';
+  var confirm_report_message = '{l s='Are you sure that you want to report this comment?' d='Modules.Productcomments.Shop' js=1}';
 </script>
 
 <div class="row">
   <div class="col-md-12 col-sm-12" id="product-comments-list-header">
     <div class="comments-nb">
       <i class="material-icons shopping-cart">chat</i>
-      {l s='Comments' mod='productcomments'} ({$nb_comments})
+      {l s='Comments' d='Modules.Productcomments.Shop'} ({$nb_comments})
     </div>
     {include file='module:productcomments/views/templates/hook/average-grade-stars.tpl' grade=$average_grade}
   </div>
@@ -54,7 +54,7 @@
     {if $post_allowed && $nb_comments != 0}
       <button class="btn btn-comment btn-comment-big post-product-comment">
         <i class="material-icons shopping-cart">edit</i>
-        {l s='Write your review' mod='productcomments'}
+        {l s='Write your review' d='Modules.Productcomments.Shop'}
       </button>
     {/if}
   </div>
@@ -63,29 +63,28 @@
 {* Appreciation post error modal *}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
   modal_id='update-comment-usefulness-post-error'
-  modal_title={l s='Your review appreciation could not be sent' mod='productcomments'}
+  modal_title={l s='Your review appreciation could not be sent' d='Modules.Productcomments.Shop'}
   icon='error'
 }
 
 {* Confirm report modal *}
 {include file='module:productcomments/views/templates/hook/confirm-modal.tpl'
   modal_id='report-comment-confirmation'
-  modal_title={l s='Report comment' mod='productcomments'}
-  modal_message={l s='Are you sure that you want to report this comment?' mod='productcomments'}
+  modal_title={l s='Report comment' d='Modules.Productcomments.Shop'}
+  modal_message={l s='Are you sure that you want to report this comment?' d='Modules.Productcomments.Shop'}
   icon='feedback'
 }
 
 {* Report comment posted modal *}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
   modal_id='report-comment-posted'
-  modal_title={l s='Report sent' mod='productcomments'}
-  modal_message={l s='Your report has been submitted and will be considered by a moderator.' mod='productcomments'}
+  modal_title={l s='Report sent' d='Modules.Productcomments.Shop'}
+  modal_message={l s='Your report has been submitted and will be considered by a moderator.' d='Modules.Productcomments.Shop'}
 }
 
 {* Report abuse error modal *}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
 modal_id='report-comment-post-error'
-modal_title={l s='Your report could not be sent' mod='productcomments'}
+modal_title={l s='Your report could not be sent' d='Modules.Productcomments.Shop'}
 icon='error'
 }
-

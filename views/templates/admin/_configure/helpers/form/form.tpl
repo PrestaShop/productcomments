@@ -31,7 +31,7 @@
 			<tr>
 				<th></th>
 				<th>ID</th>
-				<th width="80%">{l s='Product Name'}</th>
+				<th width="80%">{l s='Product Name' d='Modules.Productcomments.Admin'}</th>
 			</tr>
 			{foreach $input.values as $value}
 				<tr>

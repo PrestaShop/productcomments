@@ -52,8 +52,8 @@
         </div>
         <div class="row">
           <div class="col-md-12  col-sm-12 post-comment-buttons">
-            <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal" aria-label="{l s='OK' mod='productcomments'}">
-              {l s='OK' mod='productcomments'}
+            <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal" aria-label="{l s='OK' d='Modules.Productcomments.Shop'}">
+              {l s='OK' d='Modules.Productcomments.Shop'}
             </button>
           </div>
         </div>

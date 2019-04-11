@@ -36,7 +36,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         if (!(int) $this->context->cookie->id_customer && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('You need to be logged in to post your review.'),
+                'error' => $this->trans('You need to be logged in to post your review.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;
@@ -54,7 +54,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         if (!$isPostAllowed) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('You are not allowed to post a review at the moment, please try again later.'),
+                'error' => $this->trans('You are not allowed to post a review at the moment, please try again later.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;
@@ -132,16 +132,16 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
     {
         $errors = [];
         if (empty($productComment->getTitle())) {
-            $errors[] = $this->getTranslator()->trans('Title cannot be empty');
+            $errors[] = $this->trans('Title cannot be empty', [], 'Modules.Productcomments.Shop');
         } elseif (strlen($productComment->getTitle()) > 64) {
-            $errors[] = $this->getTranslator()->trans('Title cannot be more than %s characters', [64]);
+            $errors[] = $this->trans('Title cannot be more than %s characters', [64],'Modules.Productcomments.Shop');
         }
 
         if (!$productComment->getCustomerId()) {
             if (empty($productComment->getCustomerName())) {
-                $errors[] = $this->getTranslator()->trans('Customer name cannot be empty');
+                $errors[] = $this->trans('Customer name cannot be empty', [], 'Modules.Productcomments.Shop');
             } elseif (strlen($productComment->getCustomerName()) > 64) {
-                $errors[] = $this->getTranslator()->trans('Customer name cannot be more than %s characters', [64]);
+                $errors[] = $this->trans('Customer name cannot be more than %s characters', [64], 'Modules.Productcomments.Shop');
             }
         }
 

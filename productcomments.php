@@ -53,8 +53,8 @@ class ProductComments extends Module
 
         $this->secure_key = Tools::encrypt($this->name);
 
-        $this->displayName = $this->l('Product Comments');
-        $this->description = $this->l('Allows users to post reviews and rate products on specific criteria.');
+        $this->displayName = $this->trans('Product Comments', [], 'Modules.Productcomments.Admin');
+        $this->description = $this->trans('Allows users to post reviews and rate products on specific criteria.', [], 'Modules.Productcomments.Admin');
 
         $this->ps_versions_compliancy = array('min' => '1.7.6', 'max' => _PS_VERSION_);
     }
@@ -160,7 +160,7 @@ class ProductComments extends Module
             Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
             Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', (int) Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'));
             Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int) Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
-            $this->_html .= '<div class="conf confirm alert alert-success">' . $this->l('Settings updated') . '</div>';
+            $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Settings updated', [], 'Modules.Productcomments.Admin') . '</div>';
         } elseif (Tools::isSubmit('productcomments')) {
             $id_product_comment = (int) Tools::getValue('id_product_comment');
             $comment = new ProductComment($id_product_comment);
@@ -183,7 +183,7 @@ class ProductComments extends Module
             $criterion->name = $name;
 
             if (!$criterion->validateFields(false) || !$criterion->validateFieldsLang(false)) {
-                $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->l('The criterion could not be saved') . '</div>';
+                $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion could not be saved', [], 'Modules.Productcomments.Admin') . '</div>';
             } else {
                 $criterion->save();
 
@@ -210,14 +210,14 @@ class ProductComments extends Module
                 if ($criterion->save()) {
                     Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&conf=4');
                 } else {
-                    $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->l('The criterion could not be saved') . '</div>';
+                    $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion could not be saved', [], 'Modules.Productcomments.Admin') . '</div>';
                 }
             }
         } elseif (Tools::isSubmit('deleteproductcommentscriterion')) {
             $productCommentCriterion = new ProductCommentCriterion((int) Tools::getValue('id_product_comment_criterion'));
             if ($productCommentCriterion->id) {
                 if ($productCommentCriterion->delete()) {
-                    $this->_html .= '<div class="conf confirm alert alert-success">' . $this->l('Criterion deleted') . '</div>';
+                    $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Criterion deleted', [], 'Modules.Productcomments.Admin') . '</div>';
                 }
             }
         } elseif (Tools::isSubmit('statusproductcommentscriterion')) {
@@ -277,81 +277,81 @@ class ProductComments extends Module
         $fields_form_1 = array(
             'form' => array(
                 'legend' => array(
-                    'title' => $this->l('Configuration'),
+                    'title' => $this->trans('Configuration', [], 'Modules.Productcomments.Admin'),
                     'icon' => 'icon-cogs',
                 ),
                 'input' => array(
                     array(
                         'type' => 'switch',
                         'is_bool' => true, //retro compat 1.5
-                        'label' => $this->l('All reviews must be validated by an employee'),
+                        'label' => $this->trans('All reviews must be validated by an employee', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_MODERATE',
                         'values' => array(
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->l('Enabled'),
+                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->l('Disabled'),
+                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
                     array(
                         'type' => 'switch',
                         'is_bool' => true, //retro compat 1.5
-                        'label' => $this->l('Allow guest reviews'),
+                        'label' => $this->trans('Allow guest reviews', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_ALLOW_GUESTS',
                         'values' => array(
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->l('Enabled'),
+                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->l('Disabled'),
+                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
                     array(
                         'type' => 'switch',
                         'is_bool' => true, //retro compat 1.5
-                        'label' => $this->l('Enable upvotes / downvotes on reviews'),
+                        'label' => $this->trans('Enable upvotes / downvotes on reviews', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_USEFULNESS',
                         'values' => array(
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->l('Enabled'),
+                                'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->l('Disabled'),
+                                'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
                             ),
                         ),
                     ),
                     array(
                         'type' => 'text',
-                        'label' => $this->l('Minimum time between 2 reviews from the same user'),
+                        'label' => $this->trans('Minimum time between 2 reviews from the same user', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_MINIMAL_TIME',
                         'class' => 'fixed-width-xs',
                         'suffix' => 'seconds',
                     ),
                     array(
                         'type' => 'text',
-                        'label' => $this->l('Number of comments per page'),
+                        'label' => $this->trans('Number of comments per page', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_COMMENTS_PER_PAGE',
                         'class' => 'fixed-width-xs',
                         'suffix' => 'comments',
                     ),
                 ),
             'submit' => array(
-                'title' => $this->l('Save'),
+                'title' => $this->trans('Save', [], 'Modules.Productcomments.Admin'),
                 'class' => 'btn btn-default pull-right',
                 'name' => 'submitModerate',
                 ),
@@ -389,7 +389,7 @@ class ProductComments extends Module
             $fields_list = $this->getStandardFieldList();
 
             if (version_compare(_PS_VERSION_, '1.6', '<')) {
-                $return .= '<h1>' . $this->l('Reviews waiting for approval') . '</h1>';
+                $return .= '<h1>' . $this->trans('Reviews waiting for approval', [], 'Modules.Productcomments.Admin') . '</h1>';
                 $actions = array('enable', 'delete');
             } else {
                 $actions = array('approve', 'delete');
@@ -403,11 +403,10 @@ class ProductComments extends Module
             $helper->module = $this;
             $helper->listTotal = count($comments);
             $helper->identifier = 'id_product_comment';
-            $helper->title = $this->l('Reviews waiting for approval');
+            $helper->title = $this->trans('Reviews waiting for approval', [], 'Modules.Productcomments.Admin');
             $helper->table = $this->name;
             $helper->token = Tools::getAdminTokenLite('AdminModules');
             $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
-            //$helper->tpl_vars = array('priority' => array($this->l('High'), $this->l('Medium'), $this->l('Low')));
 
             $return .= $helper->generateList($comments, $fields_list);
         }
@@ -416,12 +415,7 @@ class ProductComments extends Module
 
         $fields_list = $this->getStandardFieldList();
 
-        if (version_compare(_PS_VERSION_, '1.6', '<')) {
-            $return .= '<h1>' . $this->l('Reported Reviews') . '</h1>';
-            $actions = array('enable', 'delete');
-        } else {
-            $actions = array('delete', 'noabuse');
-        }
+        $actions = array('delete', 'noabuse');
 
         $helper = new HelperList();
         $helper->shopLinkType = '';
@@ -431,11 +425,10 @@ class ProductComments extends Module
         $helper->module = $this;
         $helper->listTotal = count($comments);
         $helper->identifier = 'id_product_comment';
-        $helper->title = $this->l('Reported Reviews');
+        $helper->title = $this->trans('Reported Reviews', [], 'Modules.Productcomments.Admin');
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
-        //$helper->tpl_vars = array('priority' => array($this->l('High'), $this->l('Medium'), $this->l('Low')));
 
         $return .= $helper->generateList($comments, $fields_list);
 
@@ -455,7 +448,7 @@ class ProductComments extends Module
     {
         $this->smarty->assign(array(
             'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&approveComment=' . $id,
-            'action' => $this->l('Approve'),
+            'action' => $this->trans('Approve', [], 'Modules.Productcomments.Admin'),
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/list_action_approve.tpl');
@@ -474,7 +467,7 @@ class ProductComments extends Module
     {
         $this->smarty->assign(array(
             'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&noabuseComment=' . $id,
-            'action' => $this->l('Not abusive'),
+            'action' => $this->trans('Not abusive', [], 'Modules.Productcomments.Admin'),
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/list_action_noabuse.tpl');
@@ -488,19 +481,19 @@ class ProductComments extends Module
 
         $fields_list = array(
             'id_product_comment_criterion' => array(
-                'title' => $this->l('ID'),
+                'title' => $this->trans('ID', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
             ),
             'name' => array(
-                'title' => $this->l('Name'),
+                'title' => $this->trans('Name', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
             ),
             'type_name' => array(
-                'title' => $this->l('Type'),
+                'title' => $this->trans('Type', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
             ),
             'active' => array(
-                'title' => $this->l('Status'),
+                'title' => $this->trans('Status', [], 'Modules.Productcomments.Admin'),
                 'active' => 'status',
                 'type' => 'bool',
             ),
@@ -513,15 +506,14 @@ class ProductComments extends Module
         $helper->show_toolbar = true;
         $helper->toolbar_btn['new'] = array(
             'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&updateproductcommentscriterion',
-            'desc' => $this->l('Add New Criterion', null, null, false),
+            'desc' => $this->trans('Add New Criterion', [], 'Modules.Productcomments.Admin'),
         );
         $helper->module = $this;
         $helper->identifier = 'id_product_comment_criterion';
-        $helper->title = $this->l('Review Criteria');
+        $helper->title = $this->trans('Review Criteria', [], 'Modules.Productcomments.Admin');
         $helper->table = $this->name . 'criterion';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
-        //$helper->tpl_vars = array('priority' => array($this->l('High'), $this->l('Medium'), $this->l('Low')));
 
         return $helper->generateList($criterions, $fields_list);
     }
@@ -546,11 +538,10 @@ class ProductComments extends Module
         $helper->module = $this;
         $helper->listTotal = count($comments);
         $helper->identifier = 'id_product_comment';
-        $helper->title = $this->l('Approved Reviews');
+        $helper->title = $this->trans('Approved Reviews', [], 'Modules.Productcomments.Admin');
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
-        //$helper->tpl_vars = array('priority' => array($this->l('High'), $this->l('Medium'), $this->l('Low')));
 
         return $helper->generateList($comments, $fields_list);
     }
@@ -582,32 +573,32 @@ class ProductComments extends Module
     {
         return array(
             'id_product_comment' => array(
-                'title' => $this->l('ID'),
+                'title' => $this->trans('ID', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
             ),
             'title' => array(
-                'title' => $this->l('Review title'),
+                'title' => $this->trans('Review title', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
             ),
             'content' => array(
-                'title' => $this->l('Review'),
+                'title' => $this->trans('Review', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
             ),
             'grade' => array(
-                'title' => $this->l('Rating'),
+                'title' => $this->trans('Rating', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'suffix' => '/5',
             ),
             'customer_name' => array(
-                'title' => $this->l('Author'),
+                'title' => $this->trans('Author', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
             ),
             'name' => array(
-                'title' => $this->l('Product'),
+                'title' => $this->trans('Product', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
             ),
             'date_add' => array(
-                'title' => $this->l('Time of publication'),
+                'title' => $this->trans('Time of publication', [], 'Modules.Productcomments.Admin'),
                 'type' => 'date',
             ),
         );
@@ -639,15 +630,15 @@ class ProductComments extends Module
             $field_category_tree = array(
                                     'type' => 'categories_select',
                                     'name' => 'categoryBox',
-                                    'label' => $this->l('Criterion will be restricted to the following categories'),
+                                    'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
                                     'category_tree' => $this->initCategoriesAssociation(null, $id_criterion),
                                 );
         } else {
             $field_category_tree = array(
                             'type' => 'categories',
-                            'label' => $this->l('Criterion will be restricted to the following categories'),
+                            'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
                             'name' => 'categoryBox',
-                            'desc' => $this->l('Mark the boxes of categories to which this criterion applies.'),
+                            'desc' => $this->trans('Mark the boxes of categories to which this criterion applies.', [], 'Modules.Productcomments.Admin'),
                             'tree' => array(
                                 'use_search' => false,
                                 'id' => 'categoryBox',
@@ -658,11 +649,11 @@ class ProductComments extends Module
                             'values' => array(
                                 'trads' => array(
                                     'Root' => Category::getTopCategory(),
-                                    'selected' => $this->l('Selected'),
-                                    'Collapse All' => $this->l('Collapse All'),
-                                    'Expand All' => $this->l('Expand All'),
-                                    'Check All' => $this->l('Check All'),
-                                    'Uncheck All' => $this->l('Uncheck All'),
+                                    'selected' => $this->trans('Selected', [], 'Modules.Productcomments.Admin'),
+                                    'Collapse All' => $this->trans('Collapse All', [], 'Modules.Productcomments.Admin'),
+                                    'Expand All' => $this->trans('Expand All', [], 'Modules.Productcomments.Admin'),
+                                    'Check All' => $this->trans('Check All', [], 'Modules.Productcomments.Admin'),
+                                    'Uncheck All' => $this->trans('Uncheck All', [], 'Modules.Productcomments.Admin'),
                                 ),
                                 'selected_cat' => $selected_categories,
                                 'input_name' => 'categoryBox[]',
@@ -678,7 +669,7 @@ class ProductComments extends Module
         $fields_form_1 = array(
             'form' => array(
                 'legend' => array(
-                    'title' => $this->l('Add new criterion'),
+                    'title' => $this->trans('Add new criterion', [], 'Modules.Productcomments.Admin'),
                     'icon' => 'icon-cogs',
                 ),
                 'input' => array(
@@ -689,14 +680,14 @@ class ProductComments extends Module
                     array(
                         'type' => 'text',
                         'lang' => true,
-                        'label' => $this->l('Criterion name'),
+                        'label' => $this->trans('Criterion name', [], 'Modules.Productcomments.Admin'),
                         'name' => 'name',
-                        'desc' => $this->l(sprintf('Max length %s characters', 64))
+                        'desc' => $this->trans('Max length %s characters', [64], 'Modules.Productcomments.Admin')
                     ),
                     array(
                         'type' => 'select',
                         'name' => 'id_product_comment_criterion_type',
-                        'label' => $this->l('Application scope of the criterion'),
+                        'label' => $this->trans('Application scope of the criterion', [], 'Modules.Productcomments.Admin'),
                         'options' => array(
                                         'query' => $query,
                                         'id' => 'id',
@@ -706,31 +697,31 @@ class ProductComments extends Module
                     $field_category_tree,
                     array(
                         'type' => 'products',
-                        'label' => $this->l('The criterion will be restricted to the following products'),
+                        'label' => $this->trans('The criterion will be restricted to the following products', [], 'Modules.Productcomments.Admin'),
                         'name' => 'ids_product',
                         'values' => $product_table_values,
                     ),
                     array(
                         'type' => 'switch',
                         'is_bool' => true, //retro compat 1.5
-                        'label' => $this->l('Active'),
+                        'label' => $this->trans('Active', [], 'Modules.Productcomments.Admin'),
                         'name' => 'active',
                         'values' => array(
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->l('Enabled'),
+                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->l('Disabled'),
+                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
                 ),
             'submit' => array(
-                'title' => $this->l('Save'),
+                'title' => $this->trans('Save', [], 'Modules.Productcomments.Admin'),
                 'class' => 'btn btn-default pull-right',
                 'name' => 'submitEditCriterion',
                 ),
