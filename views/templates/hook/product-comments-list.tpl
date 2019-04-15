@@ -24,7 +24,8 @@
  *}
 
 <script type="text/javascript">
-  var confirm_report_message = '{l s='Are you sure that you want to report this comment?' d='Modules.Productcomments.Shop' js=1}';
+  var productCommentUpdatePostErrorMessage = '{l s='Sorry, your review appreciation cannot be sent.' d='Modules.Productcomments.Shop' js=1}';
+  var productCommentAbuseReportErrorMessage = '{l s='Sorry, your abuse report cannot be sent.' d='Modules.Productcomments.Shop' js=1}';
 </script>
 
 <div class="row">

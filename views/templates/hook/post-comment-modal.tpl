@@ -23,6 +23,10 @@
  * International Registered Trademark & Property of PrestaShop SA
  *}
 
+<script type="text/javascript">
+  var productCommentPostErrorMessage = '{l s='Sorry, your review cannot be posted.' d='Modules.Productcomments.Shop' js=1}';
+</script>
+
 <div id="post-product-comment-modal" class="modal fade product-comment-modal" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

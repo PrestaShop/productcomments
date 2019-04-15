@@ -132,10 +132,10 @@ jQuery(document).ready(function () {
           showUpdatePostCommentErrorModal(jsonData.error);
         }
       } else {
-        showUpdatePostCommentErrorModal('Sorry, your review appreciation cannot be sent.');
+        showUpdatePostCommentErrorModal(productCommentUpdatePostErrorMessage);
       }
     }).fail(function() {
-      showUpdatePostCommentErrorModal('Sorry, your review appreciation cannot be sent.');
+      showUpdatePostCommentErrorModal(productCommentUpdatePostErrorMessage);
     });
   }
 
@@ -158,10 +158,10 @@ jQuery(document).ready(function () {
             showReportCommentErrorModal(jsonData.error);
           }
         } else {
-          showReportCommentErrorModal('Sorry, your abuse report cannot be sent.');
+          showReportCommentErrorModal(productCommentAbuseReportErrorMessage);
         }
       }).fail(function() {
-        showReportCommentErrorModal('Sorry, your abuse report cannot be sent.');
+        showReportCommentErrorModal(productCommentAbuseReportErrorMessage);
       });
     })
   }

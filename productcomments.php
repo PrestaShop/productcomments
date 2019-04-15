@@ -816,10 +816,11 @@ class ProductComments extends Module
             $jsList[] = $this->_path . 'assets/js/jquery.simplePagination.js';
         }
         foreach ($cssList as $cssUrl) {
-            $this->context->controller->addCSS($cssUrl, 'all');
+            $this->context->controller->registerStylesheet(sha1($cssUrl), $cssUrl, ['media' => 'all', 'priority' => 80]);
+
         }
         foreach ($jsList as $jsUrl) {
-            $this->context->controller->addJS($jsUrl);
+            $this->context->controller->registerJavascript(sha1($jsUrl), $jsUrl, ['position' => 'bottom', 'priority' => 80]);
         }
     }
 
