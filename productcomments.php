@@ -183,7 +183,7 @@ class ProductComments extends Module
             $criterion->name = $name;
 
             if (!$criterion->validateFields(false) || !$criterion->validateFieldsLang(false)) {
-                $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion could not be saved', [], 'Modules.Productcomments.Admin') . '</div>';
+                $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin') . '</div>';
             } else {
                 $criterion->save();
 
@@ -210,7 +210,7 @@ class ProductComments extends Module
                 if ($criterion->save()) {
                     Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&conf=4');
                 } else {
-                    $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion could not be saved', [], 'Modules.Productcomments.Admin') . '</div>';
+                    $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin') . '</div>';
                 }
             }
         } elseif (Tools::isSubmit('deleteproductcommentscriterion')) {

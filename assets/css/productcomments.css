@@ -431,6 +431,28 @@
   height: 4.125rem;
 }
 
+#products .product-miniature .thumbnail-container.has-reviews .discount-amount.online-only,
+#products .product-miniature .thumbnail-container.has-reviews .discount-percentage.online-only,
+#products .product-miniature .thumbnail-container.has-reviews .on-sale.online-only,
+#products .product-miniature .thumbnail-container.has-reviews .online-only.online-only,
+#products .product-miniature .thumbnail-container.has-reviews .pack.online-only,
+#products .product-miniature .thumbnail-container.has-reviews .product-flags .new.online-only,
+.featured-products .product-miniature .thumbnail-container.has-reviews .discount-amount.online-only,
+.featured-products .product-miniature .thumbnail-container.has-reviews .discount-percentage.online-only,
+.featured-products .product-miniature .thumbnail-container.has-reviews .on-sale.online-only,
+.featured-products .product-miniature .thumbnail-container.has-reviews .online-only.online-only,
+.featured-products .product-miniature .thumbnail-container.has-reviews .pack.online-only,
+.featured-products .product-miniature .thumbnail-container.has-reviews .product-flags .new.online-only,
+.product-accessories .product-miniature .thumbnail-container.has-reviews .discount-amount.online-only,
+.product-accessories .product-miniature .thumbnail-container.has-reviews .discount-percentage.online-only,
+.product-accessories .product-miniature .thumbnail-container.has-reviews .on-sale.online-only,
+.product-accessories .product-miniature .thumbnail-container.has-reviews .online-only.online-only,
+.product-accessories .product-miniature .thumbnail-container.has-reviews .pack.online-only,
+.product-accessories .product-miniature .thumbnail-container.has-reviews .product-flags .new.online-only {
+  top: 11.5rem;
+}
+
+
 .product-list-reviews {
   position: absolute;
   top: -26px;

@@ -132,10 +132,10 @@ jQuery(document).ready(function () {
           showUpdatePostCommentErrorModal(jsonData.error);
         }
       } else {
-        showUpdatePostCommentErrorModal('Sorry, your review appreciation could not be sent.');
+        showUpdatePostCommentErrorModal('Sorry, your review appreciation cannot be sent.');
       }
     }).fail(function() {
-      showUpdatePostCommentErrorModal('Sorry, your review appreciation could not be sent.');
+      showUpdatePostCommentErrorModal('Sorry, your review appreciation cannot be sent.');
     });
   }
 
@@ -158,10 +158,10 @@ jQuery(document).ready(function () {
             showReportCommentErrorModal(jsonData.error);
           }
         } else {
-          showReportCommentErrorModal('Sorry, your abuse report could not be sent.');
+          showReportCommentErrorModal('Sorry, your abuse report cannot be sent.');
         }
       }).fail(function() {
-        showReportCommentErrorModal('Sorry, your abuse report could not be sent.');
+        showReportCommentErrorModal('Sorry, your abuse report cannot be sent.');
       });
     })
   }

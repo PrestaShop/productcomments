@@ -62,7 +62,7 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
         if (!$productComment) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('Could not find the requested product review.', [], 'Modules.Productcomments.Shop'),
+                'error' => $this->trans('Cannot find the requested product review.', [], 'Modules.Productcomments.Shop'),
             ]));
 
             return false;

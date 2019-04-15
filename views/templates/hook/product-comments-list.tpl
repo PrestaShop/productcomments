@@ -63,7 +63,7 @@
 {* Appreciation post error modal *}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
   modal_id='update-comment-usefulness-post-error'
-  modal_title={l s='Your review appreciation could not be sent' d='Modules.Productcomments.Shop'}
+  modal_title={l s='Your review appreciation cannot be sent' d='Modules.Productcomments.Shop'}
   icon='error'
 }
 
@@ -85,6 +85,6 @@
 {* Report abuse error modal *}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
 modal_id='report-comment-post-error'
-modal_title={l s='Your report could not be sent' d='Modules.Productcomments.Shop'}
+modal_title={l s='Your report cannot be sent' d='Modules.Productcomments.Shop'}
 icon='error'
 }

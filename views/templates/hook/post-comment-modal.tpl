@@ -157,6 +157,6 @@
 {* Comment post error modal *}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
   modal_id='product-comment-post-error'
-  modal_title={l s='Your review could not be sent' d='Modules.Productcomments.Shop'}
+  modal_title={l s='Your review cannot be sent' d='Modules.Productcomments.Shop'}
   icon='error'
 }

@@ -107,10 +107,10 @@ jQuery(document).ready(function () {
           }
         }
       } else {
-        showPostErrorModal('Sorry, your review could not be posted.');
+        showPostErrorModal('Sorry, your review cannot be posted.');
       }
     }).fail(function() {
-      showPostErrorModal('Sorry, your review could not be posted.');
+      showPostErrorModal('Sorry, your review cannot be posted.');
     });
   }
 
