@@ -232,6 +232,8 @@ class ProductComments extends Module
             $comment->validate();
         } elseif ($id_product_comment = (int) Tools::getValue('noabuseComment')) {
             ProductComment::deleteReports($id_product_comment);
+        } elseif ($id_product_comment = (int) Tools::getValue('hideAddons')) {
+            Configuration::set('PRODUCT_COMMENTS_HIDE_ADDONS', 1);
         }
 
         $this->_clearcache('productcomments_reviews.tpl');
@@ -399,6 +401,7 @@ class ProductComments extends Module
             }
 
             $helper = new HelperList();
+            $helper->list_id = 'form-productcomments-moderate-list';
             $helper->shopLinkType = '';
             $helper->simple_header = true;
             $helper->actions = $actions;
@@ -421,6 +424,7 @@ class ProductComments extends Module
         $actions = array('delete', 'noabuse');
 
         $helper = new HelperList();
+        $helper->list_id = 'form-productcomments-reported-list';
         $helper->shopLinkType = '';
         $helper->simple_header = true;
         $helper->actions = $actions;
@@ -534,6 +538,7 @@ class ProductComments extends Module
         $fields_list = $this->getStandardFieldList();
 
         $helper = new HelperList();
+        $helper->list_id = 'form-productcomments-list';
         $helper->shopLinkType = '';
         $helper->simple_header = true;
         $helper->actions = array('delete');
@@ -551,8 +556,29 @@ class ProductComments extends Module
 
     public function renderAddonsSuggestion()
     {
+        if ((bool) Configuration::get('PRODUCT_COMMENTS_HIDE_ADDONS')) {
+            return '';
+        }
+
+        $addonsLinks = [
+            'en' => 'https://addons.prestashop.com/en/480-customer-reviews?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-EN',
+            'fr' => 'https://addons.prestashop.com/fr/480-avis-clients?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-FR',
+            'es' => 'https://addons.prestashop.com/es/480-comentarios-clientes',
+            'de' => 'https://addons.prestashop.com/de/480-kundenbewertungen?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-DE',
+            'it' => 'https://addons.prestashop.com/it/480-recensioni-clienti?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-IT',
+            'nl' => 'https://addons.prestashop.com/nl/480-klantbeoordelingen?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-NL',
+        ];
+        if (isset($addonsLinks[$this->context->language->iso_code])) {
+            $addonsLink = $addonsLinks[$this->context->language->iso_code];
+        } elseif (isset($addonsLinks[Configuration::get('PS_LOCALE_LANGUAGE')])) {
+            $addonsLink = $addonsLinks[Configuration::get('PS_LOCALE_LANGUAGE')];
+        } else {
+            $addonsLink = $addonsLinks['en'];
+        }
+
         $this->context->smarty->assign(array(
-            'admin_close_showcase_card_url' => $this->context->link->getAdminLink('', true, ['route' => 'admin_close_showcase_card']),
+            'addons_productcomments_link' => $addonsLink,
+            'hide_addons_link' => $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'module_name' => $this->name, 'hideAddons' => 1]),
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/admin/addons-suggestion.tpl');

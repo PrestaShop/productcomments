@@ -23,6 +23,16 @@
  * International Registered Trademark & Property of PrestaShop SA
  *}
 
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+    const $ = jQuery;
+    $('.module-addons-suggestion .close-button').click(function() {
+      $('.module-addons-suggestion').hide();
+      window.location = '{$hide_addons_link}';
+    });
+  });
+</script>
+
 <div class="module-addons-suggestion">
   <div class="suggestion-icon">
 
@@ -43,7 +53,7 @@
     {l s='Customer reviews reassure your visitors and help you improve conversion! Encourage your customers to leave a review, display them, and do not forget to use rich snippets to show your products’ satisfaction ratings on search engines: they will be more visible!' d='Modules.Productcomments.Shop'}
   </div>
   <div class="suggestion-link">
-    <a target="_blank" class="btn btn-primary">
+    <a target="_blank" class="btn btn-primary" href="{$addons_productcomments_link}">
       {l s='Discover all modules' d='Modules.Productcomments.Shop'}
     </a>
   </div>

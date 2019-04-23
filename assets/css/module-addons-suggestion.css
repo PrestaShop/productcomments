@@ -14,12 +14,16 @@
   padding: 20px 10px;
 }
 
+.module-addons-suggestion > div {
+  margin: 0 5px;
+}
+
 .module-addons-suggestion .suggestion-icon {
   width: 100px;
 }
 
 .module-addons-suggestion .suggestion-category-details {
-  width: 190px;
+  min-width: 130px;
 }
 
 .module-addons-suggestion .suggestion-category-details .category-label {
@@ -49,4 +53,6 @@
   position: absolute;
   top: 20px;
   right: 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
