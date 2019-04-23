@@ -251,6 +251,9 @@ class ProductComments extends Module
             $this->_html .= $this->renderModerateLists();
             $this->_html .= $this->renderCriterionList();
             $this->_html .= $this->renderCommentsList();
+
+            $this->context->controller->addCss($this->_path . 'assets/css/module-addons-suggestion.css');
+            $this->_html .= $this->renderAddonsSuggestion();
         }
 
         $this->_setBaseUrl();
@@ -544,6 +547,15 @@ class ProductComments extends Module
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
 
         return $helper->generateList($comments, $fields_list);
+    }
+
+    public function renderAddonsSuggestion()
+    {
+        $this->context->smarty->assign(array(
+            'admin_close_showcase_card_url' => $this->context->link->getAdminLink('', true, ['route' => 'admin_close_showcase_card']),
+        ));
+
+        return $this->context->smarty->fetch('module:productcomments/views/templates/admin/addons-suggestion.tpl');
     }
 
     public function getConfigFieldsValues()

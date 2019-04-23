@@ -47,7 +47,7 @@ This module is released under the [Academic Free License 3.0][AFL-3.0]
 
 ### Update dependency
 
-The only dependency for this modul (for now) is https://github.com/flaviusmatis/simplePagination.js.git
+The only dependency for this module (for now) is https://github.com/flaviusmatis/simplePagination.js.git
 You can install/update it by launching the command
 
 ```
