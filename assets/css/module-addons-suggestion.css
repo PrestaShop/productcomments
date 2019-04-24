@@ -19,7 +19,11 @@
 }
 
 .module-addons-suggestion .suggestion-icon {
+  min-width: 100px;
   width: 100px;
+  height: 81px;
+  background: url("../img/additional_module.png") no-repeat transparent;
+  background-size: contain;
 }
 
 .module-addons-suggestion .suggestion-category-details {
@@ -40,7 +44,7 @@
 }
 
 .module-addons-suggestion .suggestion-link {
-  padding-top: 30px;
+  margin-top: 30px;
 }
 .module-addons-suggestion .suggestion-link .btn-primary {
   background-color: #25b9d7;
@@ -49,10 +53,22 @@
   border-radius: 0;
 }
 
-.module-addons-suggestion .close-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 16px;
-  cursor: pointer;
+@media screen and (max-width: 768px) {
+  .module-addons-suggestion {
+    display: block;
+  }
+
+  .module-addons-suggestion .suggestion-wording {
+    width: auto;
+    margin-top: 10px;
+  }
+
+  .module-addons-suggestion .suggestion-link {
+    margin-top: 10px;
+  }
+
+  .module-addons-suggestion .suggestion-icon,
+  .module-addons-suggestion .suggestion-category-details {
+    display: inline-block;
+  }
 }

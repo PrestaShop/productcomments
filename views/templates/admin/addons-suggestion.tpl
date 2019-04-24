@@ -23,19 +23,8 @@
  * International Registered Trademark & Property of PrestaShop SA
  *}
 
-<script type="text/javascript">
-  document.addEventListener("DOMContentLoaded", function() {
-    const $ = jQuery;
-    $('.module-addons-suggestion .close-button').click(function() {
-      $('.module-addons-suggestion').hide();
-      window.location = '{$hide_addons_link}';
-    });
-  });
-</script>
-
 <div class="module-addons-suggestion">
   <div class="suggestion-icon">
-
   </div>
   <div class="suggestion-category-details">
     <div>
@@ -57,7 +46,4 @@
       {l s='Discover all modules' d='Modules.Productcomments.Shop'}
     </a>
   </div>
-  <i class="close-button material-icons">
-    close
-  </i>
 </div>

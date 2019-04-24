@@ -232,8 +232,6 @@ class ProductComments extends Module
             $comment->validate();
         } elseif ($id_product_comment = (int) Tools::getValue('noabuseComment')) {
             ProductComment::deleteReports($id_product_comment);
-        } elseif ($id_product_comment = (int) Tools::getValue('hideAddons')) {
-            Configuration::set('PRODUCT_COMMENTS_HIDE_ADDONS', 1);
         }
 
         $this->_clearcache('productcomments_reviews.tpl');
@@ -556,10 +554,6 @@ class ProductComments extends Module
 
     public function renderAddonsSuggestion()
     {
-        if ((bool) Configuration::get('PRODUCT_COMMENTS_HIDE_ADDONS')) {
-            return '';
-        }
-
         $addonsLinks = [
             'en' => 'https://addons.prestashop.com/en/480-customer-reviews?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-EN',
             'fr' => 'https://addons.prestashop.com/fr/480-avis-clients?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-FR',
@@ -578,7 +572,6 @@ class ProductComments extends Module
 
         $this->context->smarty->assign(array(
             'addons_productcomments_link' => $addonsLink,
-            'hide_addons_link' => $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'module_name' => $this->name, 'hideAddons' => 1]),
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/admin/addons-suggestion.tpl');
