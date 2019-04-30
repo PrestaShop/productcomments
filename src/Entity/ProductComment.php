@@ -35,6 +35,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProductComment
 {
+    const TITLE_MAX_LENGTH = 64;
+    const CUSTOMER_NAME_MAX_LENGTH = 64;
+
     /**
      * @var int
      *

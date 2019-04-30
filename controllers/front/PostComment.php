@@ -133,15 +133,15 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $errors = [];
         if (empty($productComment->getTitle())) {
             $errors[] = $this->trans('Title cannot be empty', [], 'Modules.Productcomments.Shop');
-        } elseif (strlen($productComment->getTitle()) > 64) {
-            $errors[] = $this->trans('Title cannot be more than %s characters', [64],'Modules.Productcomments.Shop');
+        } elseif (strlen($productComment->getTitle()) > ProductComment::TITLE_MAX_LENGTH) {
+            $errors[] = $this->trans('Title cannot be more than %s characters', [ProductComment::TITLE_MAX_LENGTH],'Modules.Productcomments.Shop');
         }
 
         if (!$productComment->getCustomerId()) {
             if (empty($productComment->getCustomerName())) {
                 $errors[] = $this->trans('Customer name cannot be empty', [], 'Modules.Productcomments.Shop');
-            } elseif (strlen($productComment->getCustomerName()) > 64) {
-                $errors[] = $this->trans('Customer name cannot be more than %s characters', [64], 'Modules.Productcomments.Shop');
+            } elseif (strlen($productComment->getCustomerName()) > ProductComment::CUSTOMER_NAME_MAX_LENGTH) {
+                $errors[] = $this->trans('Customer name cannot be more than %s characters', [ProductComment::CUSTOMER_NAME_MAX_LENGTH], 'Modules.Productcomments.Shop');
             }
         }
 

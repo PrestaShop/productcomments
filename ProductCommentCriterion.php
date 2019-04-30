@@ -25,6 +25,8 @@
  */
 class ProductCommentCriterion extends ObjectModel
 {
+    const NAME_MAX_LENGTH = 64;
+
     public $id;
     public $id_product_comment_criterion_type;
     public $name;
@@ -41,7 +43,7 @@ class ProductCommentCriterion extends ObjectModel
             'id_product_comment_criterion_type' => array('type' => self::TYPE_INT),
             'active' => array('type' => self::TYPE_BOOL),
             // Lang fields
-            'name' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName', 'required' => true, 'size' => 64),
+            'name' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName', 'required' => true, 'size' => self::NAME_MAX_LENGTH),
         ),
     );
 

@@ -208,7 +208,7 @@ class ProductComments extends Module
                     }
                 }
                 if ($criterion->save()) {
-                    Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&conf=4');
+                    Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'conf' => 4]));
                 } else {
                     $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin') . '</div>';
                 }
@@ -226,7 +226,7 @@ class ProductComments extends Module
                 $criterion->active = (int) (!$criterion->active);
                 $criterion->save();
             }
-            Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&conf=4&module_name=' . $this->name);
+            Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'conf' => 4, 'module_name' => $this->name]));
         } elseif ($id_product_comment = (int) Tools::getValue('approveComment')) {
             $comment = new ProductComment($id_product_comment);
             $comment->validate();
@@ -370,7 +370,7 @@ class ProductComments extends Module
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitProducCommentsConfiguration';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'module_name' => $this->name]);
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = array(
             'fields_value' => $this->getConfigFieldsValues(),
@@ -452,7 +452,7 @@ class ProductComments extends Module
     public function displayApproveLink($token, $id, $name = null)
     {
         $this->smarty->assign(array(
-            'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&approveComment=' . $id,
+            'href' => $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'module_name' => $this->name, 'approveComment' => $id]),
             'action' => $this->trans('Approve', [], 'Modules.Productcomments.Admin'),
         ));
 
@@ -471,7 +471,7 @@ class ProductComments extends Module
     public function displayNoabuseLink($token, $id, $name = null)
     {
         $this->smarty->assign(array(
-            'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&noabuseComment=' . $id,
+            'href' => $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'module_name' => $this->name, 'noabuseComment' => $id]),
             'action' => $this->trans('Not abusive', [], 'Modules.Productcomments.Admin'),
         ));
 
@@ -510,7 +510,7 @@ class ProductComments extends Module
         $helper->actions = array('edit', 'delete');
         $helper->show_toolbar = true;
         $helper->toolbar_btn['new'] = array(
-            'href' => $this->context->link->getAdminLink('AdminModules') . '&configure=' . $this->name . '&module_name=' . $this->name . '&updateproductcommentscriterion',
+            'href' => $this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'module_name' => $this->name, 'updateproductcommentscriterion' => '']),
             'desc' => $this->trans('Add New Criterion', [], 'Modules.Productcomments.Admin'),
         );
         $helper->module = $this;
@@ -713,7 +713,7 @@ class ProductComments extends Module
                         'lang' => true,
                         'label' => $this->trans('Criterion name', [], 'Modules.Productcomments.Admin'),
                         'name' => 'name',
-                        'desc' => $this->trans('Max length %s characters', [64], 'Modules.Productcomments.Admin')
+                        'desc' => $this->trans('Max length %s characters', [ProductCommentCriterion::NAME_MAX_LENGTH], 'Modules.Productcomments.Admin')
                     ),
                     array(
                         'type' => 'select',
@@ -768,7 +768,7 @@ class ProductComments extends Module
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitEditCriterion';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'module_name' => $this->name]);
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = array(
             'fields_value' => $this->getCriterionFieldsValues($id_criterion),
