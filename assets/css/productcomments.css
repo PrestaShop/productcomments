@@ -129,10 +129,7 @@
 }
 
 .product-comment-modal .modal-dialog .product-flag {
-  font-size: 10px;
-  line-height: 11px;
-  margin-top: 3px;
-  padding: 3px;
+  display: none;
 }
 
 .product-comment-modal .modal-dialog .product-cover,
