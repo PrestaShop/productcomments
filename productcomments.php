@@ -837,17 +837,16 @@ class ProductComments extends Module
         if ($this->context->controller instanceof ProductControllerCore ||
             $this->context->controller instanceof ProductListingFrontControllerCore ||
             $this->context->controller instanceof IndexControllerCore) {
-            $cssList[] = $this->_path . '/assets/css/productcomments.css';
-            $jsList[] = $this->_path . 'assets/js/jquery.rating.plugin.js';
+            $cssList[] = '/modules/productcomments/assets/css/productcomments.css';
+            $jsList[] = '/modules/productcomments/assets/js/jquery.rating.plugin.js';
         }
         if ($this->context->controller instanceof ProductControllerCore) {
-            $jsList[] = $this->_path . 'assets/js/post-comment.js';
-            $jsList[] = $this->_path . 'assets/js/list-comments.js';
-            $jsList[] = $this->_path . 'assets/js/jquery.simplePagination.js';
+            $jsList[] = '/modules/productcomments/assets/js/post-comment.js';
+            $jsList[] = '/modules/productcomments/assets/js/list-comments.js';
+            $jsList[] = '/modules/productcomments/assets/js/jquery.simplePagination.js';
         }
         foreach ($cssList as $cssUrl) {
             $this->context->controller->registerStylesheet(sha1($cssUrl), $cssUrl, ['media' => 'all', 'priority' => 80]);
-
         }
         foreach ($jsList as $jsUrl) {
             $this->context->controller->registerJavascript(sha1($jsUrl), $jsUrl, ['position' => 'bottom', 'priority' => 80]);
