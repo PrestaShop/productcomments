@@ -834,14 +834,13 @@ class ProductComments extends Module
     {
         $jsList = [];
         $cssList = [];
-        if ($this->context->controller instanceof ProductController ||
-            $this->context->controller instanceof ProductListingFrontController ||
-            $this->context->controller instanceof IndexController) {
+        if ($this->context->controller instanceof ProductControllerCore ||
+            $this->context->controller instanceof ProductListingFrontControllerCore ||
+            $this->context->controller instanceof IndexControllerCore) {
             $cssList[] = $this->_path . '/assets/css/productcomments.css';
             $jsList[] = $this->_path . 'assets/js/jquery.rating.plugin.js';
         }
-        if ($this->context->controller instanceof ProductController) {
-            $jsList[] = $this->_path . 'js/jquery.textareaCounter.plugin.js';
+        if ($this->context->controller instanceof ProductControllerCore) {
             $jsList[] = $this->_path . 'assets/js/post-comment.js';
             $jsList[] = $this->_path . 'assets/js/list-comments.js';
             $jsList[] = $this->_path . 'assets/js/jquery.simplePagination.js';
