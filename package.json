@@ -1,0 +1,30 @@
+{
+  "name": "productcomments",
+  "version": "4.0.0",
+  "description": "Allows users to post reviews and rate products on specific criteria.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "cp node_modules/simplePagination.js/jquery.simplePagination.js assets/js/jquery.simplePagination.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PrestaShop/productcomments.git"
+  },
+  "keywords": [
+    "product",
+    "comments",
+    "reviews",
+    "rate",
+    "grade"
+  ],
+  "author": "PrestaShop",
+  "license": "AFL-3.0",
+  "bugs": {
+    "url": "https://github.com/PrestaShop/productcomments/issues"
+  },
+  "homepage": "https://github.com/PrestaShop/productcomments#readme",
+  "dependencies": {
+    "simplePagination.js": "https://github.com/flaviusmatis/simplePagination.js.git"
+  }
+}
