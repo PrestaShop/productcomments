@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    public: true
+
+  product_comment_criterion_repository:
+    class: PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository
+    arguments:
+      - '@doctrine.dbal.default_connection'
+      - '%database_prefix%'
+
+  product_comment_repository:
+    class: PrestaShop\Module\ProductComment\Repository\ProductCommentRepository
+    arguments:
+      - '@doctrine.dbal.default_connection'
+      - '%database_prefix%'
+      - '@=service("prestashop.adapter.legacy.configuration").get("PRODUCT_COMMENTS_ALLOW_GUESTS")'
+      - '@=service("prestashop.adapter.legacy.configuration").get("PRODUCT_COMMENTS_MINIMAL_TIME")'
