@@ -1,9 +1,9 @@
 change-template: '- $TITLE (#$NUMBER)'
 template: |
-  ## Changelog
+    ## Changelog
 
-  $CHANGES
+    $CHANGES
 
-  ### Contributors
+    ### Contributors
 
-  $CONTRIBUTORS
+    $CONTRIBUTORS
