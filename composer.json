@@ -10,7 +10,10 @@
     }
   ],
   "require": {
-    "php": ">=5.6.0"
+    "php": ">=5.6.0",
+    "prestashop/circuit-breaker": "^2.0",
+    "symfony/cache": "^4.2",
+    "symfony/css-selector": "^4.2"
   },
   "autoload": {
     "psr-4": {

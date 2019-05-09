@@ -31,18 +31,17 @@
       {l s='To go further:' d='Modules.Productcomments.Shop'}
     </div>
     <div class="category-label">
-      {l s='Customer reviews' d='Modules.Productcomments.Shop'}
+      {$addons_category.name}
     </div>
     <div class="marketplace-label">
       {l s='Addons Marketplace' d='Modules.Productcomments.Shop'}
     </div>
   </div>
-  <div class="suggestion-wording">
-    {l s='Display customer reviews on your store!' d='Modules.Productcomments.Shop'}<br />
-    {l s='Customer reviews reassure your visitors and help you improve conversion! Encourage your customers to leave a review, display them, and do not forget to use rich snippets to show your products’ satisfaction ratings on search engines: they will be more visible!' d='Modules.Productcomments.Shop'}
+  <div class="suggestion-category-description">
+    {$addons_category.description}
   </div>
   <div class="suggestion-link">
-    <a target="_blank" class="btn btn-primary" href="{$addons_productcomments_link}">
+    <a target="_blank" class="btn btn-primary" href="{$addons_category.link}">
       {l s='Discover all modules' d='Modules.Productcomments.Shop'}
     </a>
   </div>

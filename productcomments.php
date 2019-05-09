@@ -30,6 +30,7 @@ if (!defined('_PS_VERSION_')) {
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
+use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
 
 class ProductComments extends Module
 {
@@ -554,24 +555,17 @@ class ProductComments extends Module
 
     public function renderAddonsSuggestion()
     {
-        $addonsLinks = [
-            'en' => 'https://addons.prestashop.com/en/480-customer-reviews?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-EN',
-            'fr' => 'https://addons.prestashop.com/fr/480-avis-clients?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-FR',
-            'es' => 'https://addons.prestashop.com/es/480-comentarios-clientes',
-            'de' => 'https://addons.prestashop.com/de/480-kundenbewertungen?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-DE',
-            'it' => 'https://addons.prestashop.com/it/480-recensioni-clienti?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-IT',
-            'nl' => 'https://addons.prestashop.com/nl/480-klantbeoordelingen?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-NL',
-        ];
-        if (isset($addonsLinks[$this->context->language->iso_code])) {
-            $addonsLink = $addonsLinks[$this->context->language->iso_code];
-        } elseif (isset($addonsLinks[Configuration::get('PS_LOCALE_LANGUAGE')])) {
-            $addonsLink = $addonsLinks[Configuration::get('PS_LOCALE_LANGUAGE')];
-        } else {
-            $addonsLink = $addonsLinks['en'];
-        }
-
+        $categoryFetcher = new CategoryFetcher(
+            480,
+            [
+                'name' => 'Customer reviews',
+                'link' => '/en/480-customer-reviews',
+                'description' => '<h2>Display customer reviews on your store!</h2>Customer reviews reassure your visitors and help you improve conversion! Encourage your customers to leave a review, display them, and do not forget to use rich snippets to show your products’ satisfaction ratings on search engines: they will be more visible!',
+            ]
+        );
+        $category = $categoryFetcher->getData($this->context->language->iso_code);
         $this->context->smarty->assign(array(
-            'addons_productcomments_link' => $addonsLink,
+            'addons_category' => $category,
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/admin/addons-suggestion.tpl');

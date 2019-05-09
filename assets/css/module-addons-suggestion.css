@@ -39,8 +39,16 @@
   font-weight: bold;
 }
 
-.module-addons-suggestion .suggestion-wording {
+.module-addons-suggestion .suggestion-category-description {
   width: 500px;
+}
+
+.module-addons-suggestion .suggestion-category-description,
+.module-addons-suggestion .suggestion-category-description h2 {
+  font-weight: normal;
+  font-size: 12px;
+  font-family: Open Sans,Helvetica,Arial,sans-serif;
+  margin: 0;
 }
 
 .module-addons-suggestion .suggestion-link {
@@ -58,7 +66,7 @@
     display: block;
   }
 
-  .module-addons-suggestion .suggestion-wording {
+  .module-addons-suggestion .suggestion-category-description {
     width: auto;
     margin-top: 10px;
   }
