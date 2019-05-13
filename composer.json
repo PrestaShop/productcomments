@@ -11,10 +11,16 @@
   ],
   "require": {
     "php": ">=5.6.0",
-    "prestashop/circuit-breaker": "^2.0",
+    "prestashop/circuit-breaker": "dev-improve-symfony-circuit-breaker",
     "symfony/cache": "^4.2",
     "symfony/css-selector": "^4.2"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:jolelievre/circuit-breaker.git"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "PrestaShop\\Module\\ProductComment\\": "src/"

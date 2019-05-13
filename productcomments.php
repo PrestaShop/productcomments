@@ -707,7 +707,7 @@ class ProductComments extends Module
                         'lang' => true,
                         'label' => $this->trans('Criterion name', [], 'Modules.Productcomments.Admin'),
                         'name' => 'name',
-                        'desc' => $this->trans('Max length %s characters', [ProductCommentCriterion::NAME_MAX_LENGTH], 'Modules.Productcomments.Admin')
+                        'desc' => $this->trans('Max length %s characters', [ProductCommentCriterion::NAME_MAX_LENGTH], 'Modules.Productcomments.Admin'),
                     ),
                     array(
                         'type' => 'select',

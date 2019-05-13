@@ -134,7 +134,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         if (empty($productComment->getTitle())) {
             $errors[] = $this->trans('Title cannot be empty', [], 'Modules.Productcomments.Shop');
         } elseif (strlen($productComment->getTitle()) > ProductComment::TITLE_MAX_LENGTH) {
-            $errors[] = $this->trans('Title cannot be more than %s characters', [ProductComment::TITLE_MAX_LENGTH],'Modules.Productcomments.Shop');
+            $errors[] = $this->trans('Title cannot be more than %s characters', [ProductComment::TITLE_MAX_LENGTH], 'Modules.Productcomments.Shop');
         }
 
         if (!$productComment->getCustomerId()) {

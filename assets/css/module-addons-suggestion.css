@@ -39,10 +39,6 @@
   font-weight: bold;
 }
 
-.module-addons-suggestion .suggestion-category-description {
-  width: 500px;
-}
-
 .module-addons-suggestion .suggestion-category-description,
 .module-addons-suggestion .suggestion-category-description h2 {
   font-weight: normal;
@@ -53,6 +49,8 @@
 
 .module-addons-suggestion .suggestion-link {
   margin-top: 30px;
+  width: 160px;
+  text-align: center;
 }
 .module-addons-suggestion .suggestion-link .btn-primary {
   background-color: #25b9d7;

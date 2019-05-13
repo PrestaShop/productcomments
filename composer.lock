@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "49b8ed89e02808ca82b3e241c6097bca",
+    "content-hash": "0d2a1ffb9916b14e995e9667774d4698",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -162,16 +162,16 @@
         },
         {
             "name": "prestashop/circuit-breaker",
-            "version": "v2.0.0",
+            "version": "dev-improve-symfony-circuit-breaker",
             "source": {
                 "type": "git",
-                "url": "https://github.com/PrestaShop/circuit-breaker.git",
-                "reference": "e1d97a5f097d17e8c5f4b65343c2cd13dd8d9d79"
+                "url": "https://github.com/jolelievre/circuit-breaker.git",
+                "reference": "3faf525222ca8d7833f97015eb80d53bbde39da1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PrestaShop/circuit-breaker/zipball/e1d97a5f097d17e8c5f4b65343c2cd13dd8d9d79",
-                "reference": "e1d97a5f097d17e8c5f4b65343c2cd13dd8d9d79",
+                "url": "https://api.github.com/repos/jolelievre/circuit-breaker/zipball/3faf525222ca8d7833f97015eb80d53bbde39da1",
+                "reference": "3faf525222ca8d7833f97015eb80d53bbde39da1",
                 "shasum": ""
             },
             "require": {
@@ -195,7 +195,25 @@
                     "PrestaShop\\CircuitBreaker\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\PrestaShop\\CircuitBreaker\\": "tests/"
+                }
+            },
+            "scripts": {
+                "phpstan": [
+                    "@php ./vendor/bin/phpstan analyse src tests -l 7 -c extension.neon"
+                ],
+                "psalm": [
+                    "@php ./vendor/bin/psalm --find-dead-code --threads=8 --diff --diff-methods"
+                ],
+                "cs-fix": [
+                    "@php ./vendor/bin/php-cs-fixer fix"
+                ],
+                "test": [
+                    "@php ./vendor/bin/phpunit"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -210,7 +228,10 @@
                 }
             ],
             "description": "A circuit breaker implementation for PHP",
-            "time": "2019-03-29T13:58:55+00:00"
+            "support": {
+                "source": "https://github.com/jolelievre/circuit-breaker/tree/improve-symfony-circuit-breaker"
+            },
+            "time": "2019-05-13T15:19:17+00:00"
         },
         {
             "name": "psr/cache",
@@ -664,7 +685,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "prestashop/circuit-breaker": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
