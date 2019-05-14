@@ -28,13 +28,13 @@
   </div>
   <div class="suggestion-category-details">
     <div>
-      {l s='To go further:' d='Modules.Productcomments.Shop'}
+      {l s='To go further:' d='Admin.Modules.Feature'}
     </div>
     <div class="category-label">
       {$addons_category.name}
     </div>
     <div class="marketplace-label">
-      {l s='Addons Marketplace' d='Modules.Productcomments.Shop'}
+      {l s='Addons Marketplace' d='Admin.Modules.Feature'}
     </div>
   </div>
   <div class="suggestion-category-description">
@@ -42,7 +42,7 @@
   </div>
   <div class="suggestion-link">
     <a target="_blank" class="btn btn-primary" href="{$addons_category.link}">
-      {l s='Discover all modules' d='Modules.Productcomments.Shop'}
+      {l s='Discover all modules' d='Admin.Modules.Feature'}
     </a>
   </div>
 </div>
