@@ -28,13 +28,13 @@
   </div>
   <div class="suggestion-category-details">
     <div>
-      {l s='To go further:' d='Admin.Modules.Feature'}
+      {l s='Want to go further?' d='Admin.Modules.Feature'}
     </div>
     <div class="category-label">
       {$addons_category.name}
     </div>
     <div class="marketplace-label">
-      {l s='Addons Marketplace' d='Admin.Modules.Feature'}
+      {l s='Addons Marketplace' d='Admin.Global'}
     </div>
   </div>
   <div class="suggestion-category-description">

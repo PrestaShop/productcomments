@@ -31,6 +31,9 @@ use PrestaShop\CircuitBreaker\Contracts\Factory;
 use PrestaShop\CircuitBreaker\Storages\SymfonyCache;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\CssSelector\CssSelectorConverter;
+use DOMDocument;
+use DOMXPath;
+use DOMNode;
 
 /**
  * Class CategoryFetcher helps you to fetch an Addon category data. It calls the Addons
@@ -115,8 +118,8 @@ class CategoryFetcher
                 'method' => 'POST',
             ],
         ]);
-        $apiJsonResponse = $circuitBreaker->callWithParameters(
-            'https://api-addons.prestashop.com',
+        $apiJsonResponse = $circuitBreaker->call(
+            self::ADDONS_BASE_URL,
             function () { return false; },
             [
                 'body' => [
@@ -186,12 +189,12 @@ class CategoryFetcher
         }
 
         $cssSelector = new CssSelectorConverter();
-        $document = new \DOMDocument();
+        $document = new DOMDocument();
         $document->loadHTML($categoryResponse);
-        $xpath = new \DOMXPath($document);
+        $xpath = new DOMXPath($document);
         $descriptionNode = $xpath->query($cssSelector->toXPath('#category_description'))->item(0);
         $categoryDescription = '';
-        /** @var \DOMNode $childNode */
+        /** @var DOMNode $childNode */
         foreach ($descriptionNode->childNodes as $childNode) {
             $categoryDescription .= $childNode->ownerDocument->saveHTML($childNode);
         }
