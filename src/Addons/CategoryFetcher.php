@@ -43,6 +43,7 @@ use DOMNode;
 class CategoryFetcher
 {
     const ADDONS_BASE_URL = 'https://addons.prestashop.com';
+    const ADDONS_API_URL = 'https://api-addons.prestashop.com';
 
     const CLOSED_ALLOWED_FAILURES = 2;
     const API_TIMEOUT_SECONDS = 0.6;
@@ -119,7 +120,7 @@ class CategoryFetcher
             ],
         ]);
         $apiJsonResponse = $circuitBreaker->call(
-            self::ADDONS_BASE_URL,
+            self::ADDONS_API_URL,
             function () { return false; },
             [
                 'body' => [
