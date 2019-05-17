@@ -166,12 +166,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jolelievre/circuit-breaker.git",
-                "reference": "3faf525222ca8d7833f97015eb80d53bbde39da1"
+                "reference": "0f87f98d44004eef35d360bc9b314c294a30b880"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jolelievre/circuit-breaker/zipball/3faf525222ca8d7833f97015eb80d53bbde39da1",
-                "reference": "3faf525222ca8d7833f97015eb80d53bbde39da1",
+                "url": "https://api.github.com/repos/jolelievre/circuit-breaker/zipball/0f87f98d44004eef35d360bc9b314c294a30b880",
+                "reference": "0f87f98d44004eef35d360bc9b314c294a30b880",
                 "shasum": ""
             },
             "require": {
@@ -231,7 +231,7 @@
             "support": {
                 "source": "https://github.com/jolelievre/circuit-breaker/tree/improve-symfony-circuit-breaker"
             },
-            "time": "2019-05-13T15:19:17+00:00"
+            "time": "2019-05-17T14:00:27+00:00"
         },
         {
             "name": "psr/cache",
