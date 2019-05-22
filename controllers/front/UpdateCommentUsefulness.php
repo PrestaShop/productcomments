@@ -45,7 +45,16 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
         if (!$customerId) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('You need to be logged in to give your appreciation of a review.', [], 'Modules.Productcomments.Shop'),
+                'error' => $this->trans(
+                    'You need to be [1]logged in[/1] or [2]create an account[/2] to give your appreciation of a review.',
+                    [
+                        '[1]' => '<a href="' . $this->context->link->getPageLink('my-account') . '">',
+                        '[/1]' => '</a>',
+                        '[2]' => '<a href="' . $this->context->link->getPageLink('authentication&create_account=1') . '">',
+                        '[/2]' => '</a>',
+                    ],
+                    'Modules.Productcomments.Shop'
+                ),
             ]));
 
             return false;
