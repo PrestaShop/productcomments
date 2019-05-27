@@ -12,8 +12,9 @@
   "require": {
     "php": ">=5.6.0",
     "prestashop/circuit-breaker": "dev-improve-symfony-circuit-breaker",
-    "symfony/cache": "^4.2",
-    "symfony/css-selector": "^4.2"
+    "doctrine/cache": "^1.6",
+    "symfony/css-selector": "^3.4.0",
+    "guzzlehttp/cache-subscriber": "dev-master"
   },
   "repositories": [
     {
