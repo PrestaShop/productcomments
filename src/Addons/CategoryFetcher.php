@@ -32,6 +32,7 @@ use GuzzleHttp\Subscriber\Cache\CacheStorage;
 use PrestaShop\CircuitBreaker\AdvancedCircuitBreakerFactory;
 use GuzzleHttp\Subscriber\Cache\CacheSubscriber;
 use PrestaShop\CircuitBreaker\Contracts\Factory;
+use PrestaShop\CircuitBreaker\FactorySettings;
 use PrestaShop\CircuitBreaker\Storages\DoctrineCache;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use DOMDocument;
@@ -73,10 +74,10 @@ class CategoryFetcher
     private $factory;
 
     /** @var array */
-    private $apiClientOptions;
+    private $apiSettings;
 
     /** @var array */
-    private $platformClientOptions;
+    private $platformSettings;
 
     /**
      * @param int $categoryId
@@ -97,35 +98,45 @@ class CategoryFetcher
         //Init Guzzle cache
         $cacheStorage = new CacheStorage($doctrineCache, null, self::CACHE_DURATION);
         $cacheSubscriber = new CacheSubscriber($cacheStorage, function (Request $request) { return true; });
-        $this->apiClientOptions = [
-            'subscribers' => [$cacheSubscriber],
-            'method' => 'POST',
-        ];
-        $this->platformClientOptions = [
-            'subscribers' => [$cacheSubscriber],
-            'method' => 'GET',
-        ];
 
         //Init circuit breaker factory
         $storage = new DoctrineCache($doctrineCache);
-        $this->factory = new AdvancedCircuitBreakerFactory([
-            'closed' => [
-                'failures' => self::CLOSED_ALLOWED_FAILURES,
-                'timeout' => self::API_TIMEOUT_SECONDS,
-                'threshold' => 0,
-            ],
-            'open' => [
-                'failures' => 0,
-                'timeout' => 0,
-                'threshold' => self::OPEN_THRESHOLD_SECONDS,
-            ],
-            'half_open' => [
-                'failures' => self::OPEN_ALLOWED_FAILURES,
-                'timeout' => self::OPEN_TIMEOUT_SECONDS,
-                'threshold' => 0,
-            ],
-            'storage' => $storage,
-        ]);
+        $this->apiSettings = new FactorySettings(self::CLOSED_ALLOWED_FAILURES, self::API_TIMEOUT_SECONDS, 0);
+        $this->apiSettings
+            ->setThreshold(self::OPEN_THRESHOLD_SECONDS)
+            ->setStrippedFailures(self::OPEN_ALLOWED_FAILURES)
+            ->setStrippedTimeout(self::OPEN_TIMEOUT_SECONDS)
+            ->setStorage($storage)
+            ->setClientOptions([
+                'subscribers' => [$cacheSubscriber],
+                'method' => 'POST',
+            ])
+        ;
+
+        $this->platformSettings = new FactorySettings(self::CLOSED_ALLOWED_FAILURES, self::PLATFORM_TIMEOUT_SECONDS, 0);
+        $this->platformSettings
+            ->setThreshold(self::OPEN_THRESHOLD_SECONDS)
+            ->setStrippedFailures(self::OPEN_ALLOWED_FAILURES)
+            ->setStrippedTimeout(self::OPEN_TIMEOUT_SECONDS)
+            ->setStorage($storage)
+            ->setClientOptions([
+                'subscribers' => [$cacheSubscriber],
+                'method' => 'GET',
+            ])
+        ;
+
+        $factorySettings = new FactorySettings(
+            self::CLOSED_ALLOWED_FAILURES,
+            self::API_TIMEOUT_SECONDS,
+            0
+        );
+        $factorySettings
+            ->setThreshold(self::OPEN_THRESHOLD_SECONDS)
+            ->setStrippedFailures(self::OPEN_ALLOWED_FAILURES)
+            ->setStrippedTimeout(self::OPEN_TIMEOUT_SECONDS)
+            ->setStorage($storage)
+        ;
+        $this->factory = new AdvancedCircuitBreakerFactory();
     }
 
     /**
@@ -149,21 +160,18 @@ class CategoryFetcher
      */
     private function getCategoryFromApi($isoCode)
     {
-        $circuitBreaker = $this->factory->create([]);
+        $circuitBreaker = $this->factory->create($this->apiSettings);
         $apiJsonResponse = $circuitBreaker->call(
             self::ADDONS_API_URL . '?iso_lang=' . $isoCode, //Include language in url to correctly cache results
             function () { return false; },
-            array_merge(
-                $this->apiClientOptions,
-                [
-                    'body' => [
-                        'method' => 'listing',
-                        'action' => 'categories',
-                        'version' => '1.7',
-                        'iso_lang' => $isoCode,
-                    ],
-                ]
-            )
+            [
+                'body' => [
+                    'method' => 'listing',
+                    'action' => 'categories',
+                    'version' => '1.7',
+                    'iso_lang' => $isoCode,
+                ],
+            ]
         );
         $apiResponse = !empty($apiJsonResponse) ? json_decode($apiJsonResponse, true) : false;
         $category = null;
@@ -211,15 +219,8 @@ class CategoryFetcher
             return $defaultDescription;
         }
 
-        $circuitBreaker = $this->factory->create([
-            'closed' => [
-                'failures' => self::CLOSED_ALLOWED_FAILURES,
-                'timeout' => self::PLATFORM_TIMEOUT_SECONDS,
-                'threshold' => 0,
-            ],
-        ]);
-
-        $categoryResponse = $circuitBreaker->call($category['clean_link'], function () { return false; }, $this->platformClientOptions);
+        $circuitBreaker = $this->factory->create($this->platformSettings);
+        $categoryResponse = $circuitBreaker->call($category['clean_link'], function () { return false; });
         if (empty($categoryResponse)) {
             return $defaultDescription;
         }

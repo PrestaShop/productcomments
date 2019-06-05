@@ -293,12 +293,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jolelievre/circuit-breaker.git",
-                "reference": "d53976837f0a699f18b489a636a875ca490af491"
+                "reference": "e551ad51fefc2e8710ae87df32da3e073cb9c0ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jolelievre/circuit-breaker/zipball/d53976837f0a699f18b489a636a875ca490af491",
-                "reference": "d53976837f0a699f18b489a636a875ca490af491",
+                "url": "https://api.github.com/repos/jolelievre/circuit-breaker/zipball/e551ad51fefc2e8710ae87df32da3e073cb9c0ec",
+                "reference": "e551ad51fefc2e8710ae87df32da3e073cb9c0ec",
                 "shasum": ""
             },
             "require": {
@@ -360,7 +360,7 @@
             "support": {
                 "source": "https://github.com/jolelievre/circuit-breaker/tree/improve-symfony-circuit-breaker"
             },
-            "time": "2019-05-27T14:07:31+00:00"
+            "time": "2019-06-05T13:48:01+00:00"
         },
         {
             "name": "react/promise",
@@ -410,7 +410,7 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v3.4.27",
+            "version": "v3.4.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
