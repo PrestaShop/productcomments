@@ -31,7 +31,7 @@ use GuzzleHttp\Message\Request;
 use GuzzleHttp\Subscriber\Cache\CacheStorage;
 use PrestaShop\CircuitBreaker\AdvancedCircuitBreakerFactory;
 use GuzzleHttp\Subscriber\Cache\CacheSubscriber;
-use PrestaShop\CircuitBreaker\Contracts\Factory;
+use PrestaShop\CircuitBreaker\Contracts\FactoryInterface;
 use PrestaShop\CircuitBreaker\FactorySettings;
 use PrestaShop\CircuitBreaker\Storages\DoctrineCache;
 use Symfony\Component\CssSelector\CssSelectorConverter;
@@ -70,7 +70,7 @@ class CategoryFetcher
     /** @var array */
     private $defaultData;
 
-    /** @var Factory */
+    /** @var FactoryInterface */
     private $factory;
 
     /** @var array */

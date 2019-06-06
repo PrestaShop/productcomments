@@ -31,7 +31,7 @@
 .btn-comment-inverse {
   height: 36px;
   border-radius: 2px;
-  background-color: #6C868E;
+  background-color: #6B868F;
   color: #FFFFFF;
   font-size: 14px;
   box-shadow: 2px 2px 4px 0 rgba(0,0,0,0.2);
@@ -44,17 +44,17 @@
 }
 
 .btn-comment:hover {
-  background-color: #FFFFFF;
-  color: #6C868E;
+  background-color: #3C4D52;
 }
 
 .btn-comment-inverse {
   background-color: #FFFFFF;
-  color: #6C868E;
-  border: 1px solid #6C868E;
+  color: #363A41;
+  border: 1px solid #979797;
 }
 .btn-comment-inverse:hover {
-  background-color: #6C868E;
+  background-color: #6B868F;
+  border: 1px solid #6B868F;
   color: #FFFFFF;
 }
 
@@ -337,7 +337,7 @@
 
 .product-comment-list-item .comment-infos {
   height: 19px;
-  color: #6C868E;
+  color: #6B868F;
   font-size: 14px;
   letter-spacing: -0.28px;
   line-height: 19px;
@@ -531,7 +531,7 @@
   text-align: center;
   font-size: 20px;
   line-height: 32px;
-  color: #6C868E;
+  color: #6B868F;
 }
 
 #product-comments-list-pagination ul li.active span,
