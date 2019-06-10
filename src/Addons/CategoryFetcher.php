@@ -29,11 +29,11 @@ namespace PrestaShop\Module\ProductComment\Addons;
 use Doctrine\Common\Cache\FilesystemCache;
 use GuzzleHttp\Message\Request;
 use GuzzleHttp\Subscriber\Cache\CacheStorage;
-use PrestaShop\CircuitBreaker\AdvancedCircuitBreakerFactory;
 use GuzzleHttp\Subscriber\Cache\CacheSubscriber;
-use PrestaShop\CircuitBreaker\Contracts\FactoryInterface;
+use PrestaShop\CircuitBreaker\AdvancedCircuitBreakerFactory;
+use PrestaShop\CircuitBreaker\Contract\FactoryInterface;
 use PrestaShop\CircuitBreaker\FactorySettings;
-use PrestaShop\CircuitBreaker\Storages\DoctrineCache;
+use PrestaShop\CircuitBreaker\Storage\DoctrineCache;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use DOMDocument;
 use DOMXPath;
@@ -125,17 +125,6 @@ class CategoryFetcher
             ])
         ;
 
-        $factorySettings = new FactorySettings(
-            self::CLOSED_ALLOWED_FAILURES,
-            self::API_TIMEOUT_SECONDS,
-            0
-        );
-        $factorySettings
-            ->setThreshold(self::OPEN_THRESHOLD_SECONDS)
-            ->setStrippedFailures(self::OPEN_ALLOWED_FAILURES)
-            ->setStrippedTimeout(self::OPEN_TIMEOUT_SECONDS)
-            ->setStorage($storage)
-        ;
         $this->factory = new AdvancedCircuitBreakerFactory();
     }
 
@@ -163,7 +152,6 @@ class CategoryFetcher
         $circuitBreaker = $this->factory->create($this->apiSettings);
         $apiJsonResponse = $circuitBreaker->call(
             self::ADDONS_API_URL . '?iso_lang=' . $isoCode, //Include language in url to correctly cache results
-            function () { return false; },
             [
                 'body' => [
                     'method' => 'listing',
@@ -220,7 +208,7 @@ class CategoryFetcher
         }
 
         $circuitBreaker = $this->factory->create($this->platformSettings);
-        $categoryResponse = $circuitBreaker->call($category['clean_link'], function () { return false; });
+        $categoryResponse = $circuitBreaker->call($category['clean_link']);
         if (empty($categoryResponse)) {
             return $defaultDescription;
         }

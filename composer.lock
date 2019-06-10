@@ -293,12 +293,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jolelievre/circuit-breaker.git",
-                "reference": "e551ad51fefc2e8710ae87df32da3e073cb9c0ec"
+                "reference": "4c7fada06214b44a70a6770a63238ecd22324e41"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jolelievre/circuit-breaker/zipball/e551ad51fefc2e8710ae87df32da3e073cb9c0ec",
-                "reference": "e551ad51fefc2e8710ae87df32da3e073cb9c0ec",
+                "url": "https://api.github.com/repos/jolelievre/circuit-breaker/zipball/4c7fada06214b44a70a6770a63238ecd22324e41",
+                "reference": "4c7fada06214b44a70a6770a63238ecd22324e41",
                 "shasum": ""
             },
             "require": {
@@ -360,7 +360,7 @@
             "support": {
                 "source": "https://github.com/jolelievre/circuit-breaker/tree/improve-symfony-circuit-breaker"
             },
-            "time": "2019-06-05T13:48:01+00:00"
+            "time": "2019-06-10T08:54:44+00:00"
         },
         {
             "name": "react/promise",
