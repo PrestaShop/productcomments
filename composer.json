@@ -31,7 +31,10 @@
   },
   "config": {
     "preferred-install": "dist",
-    "prepend-autoloader": false
+    "prepend-autoloader": false,
+    "platform": {
+      "php": "5.6"
+    }
   },
   "type": "prestashop-module"
 }
