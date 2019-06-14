@@ -60,8 +60,8 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
             return false;
         }
 
-        $id_product_comment = Tools::getValue('id_product_comment');
-        $usefulness = Tools::getValue('usefulness');
+        $id_product_comment = (int) Tools::getValue('id_product_comment');
+        $usefulness = (int) Tools::getValue('usefulness');
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');

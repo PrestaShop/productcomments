@@ -51,7 +51,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
             return false;
         }
 
-        $id_product = Tools::getValue('id_product');
+        $id_product = (int) Tools::getValue('id_product');
         $comment_title = Tools::getValue('comment_title');
         $comment_content = Tools::getValue('comment_content');
         $customer_name = Tools::getValue('customer_name');
