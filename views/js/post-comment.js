@@ -103,7 +103,8 @@ jQuery(document).ready(function () {
             errorList += '</ul>';
             showPostErrorModal(errorList);
           } else {
-            showPostErrorModal(jsonData.error);
+            const decodedErrorMessage = $("<div/>").html(jsonData.error).text();
+            showPostErrorModal(decodedErrorMessage);
           }
         }
       } else {

@@ -30,6 +30,7 @@ if (!defined('_PS_VERSION_')) {
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
+use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
 
 class ProductComments extends Module
 {
@@ -252,7 +253,7 @@ class ProductComments extends Module
             $this->_html .= $this->renderCriterionList();
             $this->_html .= $this->renderCommentsList();
 
-            $this->context->controller->addCss($this->_path . 'assets/css/module-addons-suggestion.css');
+            $this->context->controller->addCss($this->_path . 'views/css/module-addons-suggestion.css');
             $this->_html .= $this->renderAddonsSuggestion();
         }
 
@@ -554,24 +555,17 @@ class ProductComments extends Module
 
     public function renderAddonsSuggestion()
     {
-        $addonsLinks = [
-            'en' => 'https://addons.prestashop.com/en/480-customer-reviews?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-EN',
-            'fr' => 'https://addons.prestashop.com/fr/480-avis-clients?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-FR',
-            'es' => 'https://addons.prestashop.com/es/480-comentarios-clientes',
-            'de' => 'https://addons.prestashop.com/de/480-kundenbewertungen?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-DE',
-            'it' => 'https://addons.prestashop.com/it/480-recensioni-clienti?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-IT',
-            'nl' => 'https://addons.prestashop.com/nl/480-klantbeoordelingen?utm_source=back-office&utm_medium=modules&utm_campaign=back-office-NL',
-        ];
-        if (isset($addonsLinks[$this->context->language->iso_code])) {
-            $addonsLink = $addonsLinks[$this->context->language->iso_code];
-        } elseif (isset($addonsLinks[Configuration::get('PS_LOCALE_LANGUAGE')])) {
-            $addonsLink = $addonsLinks[Configuration::get('PS_LOCALE_LANGUAGE')];
-        } else {
-            $addonsLink = $addonsLinks['en'];
-        }
-
+        $categoryFetcher = new CategoryFetcher(
+            480,
+            [
+                'name' => 'Customer reviews',
+                'link' => '/en/480-customer-reviews',
+                'description' => '<h2>Display customer reviews on your store!</h2>Customer reviews reassure your visitors and help you improve conversion! Encourage your customers to leave a review, display them, and do not forget to use rich snippets to show your products’ satisfaction ratings on search engines: they will be more visible!',
+            ]
+        );
+        $category = $categoryFetcher->getData($this->context->language->iso_code);
         $this->context->smarty->assign(array(
-            'addons_productcomments_link' => $addonsLink,
+            'addons_category' => $category,
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/admin/addons-suggestion.tpl');
@@ -713,7 +707,7 @@ class ProductComments extends Module
                         'lang' => true,
                         'label' => $this->trans('Criterion name', [], 'Modules.Productcomments.Admin'),
                         'name' => 'name',
-                        'desc' => $this->trans('Max length %s characters', [ProductCommentCriterion::NAME_MAX_LENGTH], 'Modules.Productcomments.Admin')
+                        'desc' => $this->trans('Maximum length: %s characters', [ProductCommentCriterion::NAME_MAX_LENGTH], 'Modules.Productcomments.Admin'),
                     ),
                     array(
                         'type' => 'select',
@@ -837,13 +831,13 @@ class ProductComments extends Module
         if ($this->context->controller instanceof ProductControllerCore ||
             $this->context->controller instanceof ProductListingFrontControllerCore ||
             $this->context->controller instanceof IndexControllerCore) {
-            $cssList[] = '/modules/productcomments/assets/css/productcomments.css';
-            $jsList[] = '/modules/productcomments/assets/js/jquery.rating.plugin.js';
+            $cssList[] = '/modules/productcomments/views/css/productcomments.css';
+            $jsList[] = '/modules/productcomments/views/js/jquery.rating.plugin.js';
         }
         if ($this->context->controller instanceof ProductControllerCore) {
-            $jsList[] = '/modules/productcomments/assets/js/post-comment.js';
-            $jsList[] = '/modules/productcomments/assets/js/list-comments.js';
-            $jsList[] = '/modules/productcomments/assets/js/jquery.simplePagination.js';
+            $jsList[] = '/modules/productcomments/views/js/post-comment.js';
+            $jsList[] = '/modules/productcomments/views/js/list-comments.js';
+            $jsList[] = '/modules/productcomments/views/js/jquery.simplePagination.js';
         }
         foreach ($cssList as $cssUrl) {
             $this->context->controller->registerStylesheet(sha1($cssUrl), $cssUrl, ['media' => 'all', 'priority' => 80]);

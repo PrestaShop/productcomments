@@ -129,7 +129,8 @@ jQuery(document).ready(function () {
           $('.useful-review-value', $comment).html(jsonData.usefulness);
           $('.not-useful-review-value', $comment).html(jsonData.total_usefulness - jsonData.usefulness);
         } else {
-          showUpdatePostCommentErrorModal(jsonData.error);
+          const decodedErrorMessage = $("<div/>").html(jsonData.error).text();
+          showUpdatePostCommentErrorModal(decodedErrorMessage);
         }
       } else {
         showUpdatePostCommentErrorModal(productCommentUpdatePostErrorMessage);
