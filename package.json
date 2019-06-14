@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "cp node_modules/simplePagination.js/jquery.simplePagination.js assets/js/jquery.simplePagination.js"
+    "install": "cp node_modules/simplePagination.js/jquery.simplePagination.js views/js/jquery.simplePagination.js"
   },
   "repository": {
     "type": "git",

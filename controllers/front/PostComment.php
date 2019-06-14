@@ -36,13 +36,22 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         if (!(int) $this->context->cookie->id_customer && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')) {
             $this->ajaxRender(json_encode([
                 'success' => false,
-                'error' => $this->trans('You need to be logged in to post your review.', [], 'Modules.Productcomments.Shop'),
+                'error' => $this->trans(
+                    'You need to be [1]logged in[/1] or [2]create an account[/2] to post your review.',
+                    [
+                        '[1]' => '<a href="' . $this->context->link->getPageLink('my-account') . '">',
+                        '[/1]' => '</a>',
+                        '[2]' => '<a href="' . $this->context->link->getPageLink('authentication&create_account=1') . '">',
+                        '[/2]' => '</a>',
+                    ],
+                    'Modules.Productcomments.Shop'
+                ),
             ]));
 
             return false;
         }
 
-        $id_product = Tools::getValue('id_product');
+        $id_product = (int) Tools::getValue('id_product');
         $comment_title = Tools::getValue('comment_title');
         $comment_content = Tools::getValue('comment_content');
         $customer_name = Tools::getValue('customer_name');
@@ -134,7 +143,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         if (empty($productComment->getTitle())) {
             $errors[] = $this->trans('Title cannot be empty', [], 'Modules.Productcomments.Shop');
         } elseif (strlen($productComment->getTitle()) > ProductComment::TITLE_MAX_LENGTH) {
-            $errors[] = $this->trans('Title cannot be more than %s characters', [ProductComment::TITLE_MAX_LENGTH],'Modules.Productcomments.Shop');
+            $errors[] = $this->trans('Title cannot be more than %s characters', [ProductComment::TITLE_MAX_LENGTH], 'Modules.Productcomments.Shop');
         }
 
         if (!$productComment->getCustomerId()) {

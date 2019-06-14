@@ -41,7 +41,7 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
             return false;
         }
 
-        $id_product_comment = Tools::getValue('id_product_comment');
+        $id_product_comment = (int) Tools::getValue('id_product_comment');
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');

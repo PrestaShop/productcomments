@@ -15,7 +15,7 @@ You can install/update it by launching the command
 
 (We use yarn because this library is not served as a package for npm).
 
-This will install the library js in assets/js folder.
+This will install the library js in views/js folder.
 
 ## Reporting issues
 

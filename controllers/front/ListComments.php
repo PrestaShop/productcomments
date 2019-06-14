@@ -56,6 +56,9 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
                 \IntlDateFormatter::SHORT,
                 \IntlDateFormatter::SHORT
             );
+            $productComment['customer_name'] = htmlentities($productComment['customer_name']);
+            $productComment['title'] = htmlentities($productComment['title']);
+            $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
 
             $usefulness = $productCommentRepository->getProductCommentUsefulness($productComment['id_product_comment']);
