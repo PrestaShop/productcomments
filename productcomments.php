@@ -253,7 +253,7 @@ class ProductComments extends Module
             $this->_html .= $this->renderCriterionList();
             $this->_html .= $this->renderCommentsList();
 
-            $this->context->controller->addCss($this->_path . 'assets/css/module-addons-suggestion.css');
+            $this->context->controller->addCss($this->_path . 'views/css/module-addons-suggestion.css');
             $this->_html .= $this->renderAddonsSuggestion();
         }
 
@@ -831,13 +831,13 @@ class ProductComments extends Module
         if ($this->context->controller instanceof ProductControllerCore ||
             $this->context->controller instanceof ProductListingFrontControllerCore ||
             $this->context->controller instanceof IndexControllerCore) {
-            $cssList[] = '/modules/productcomments/assets/css/productcomments.css';
-            $jsList[] = '/modules/productcomments/assets/js/jquery.rating.plugin.js';
+            $cssList[] = '/modules/productcomments/views/css/productcomments.css';
+            $jsList[] = '/modules/productcomments/views/js/jquery.rating.plugin.js';
         }
         if ($this->context->controller instanceof ProductControllerCore) {
-            $jsList[] = '/modules/productcomments/assets/js/post-comment.js';
-            $jsList[] = '/modules/productcomments/assets/js/list-comments.js';
-            $jsList[] = '/modules/productcomments/assets/js/jquery.simplePagination.js';
+            $jsList[] = '/modules/productcomments/views/js/post-comment.js';
+            $jsList[] = '/modules/productcomments/views/js/list-comments.js';
+            $jsList[] = '/modules/productcomments/views/js/jquery.simplePagination.js';
         }
         foreach ($cssList as $cssUrl) {
             $this->context->controller->registerStylesheet(sha1($cssUrl), $cssUrl, ['media' => 'all', 'priority' => 80]);
