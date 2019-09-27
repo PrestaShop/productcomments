@@ -906,8 +906,6 @@ class ProductComments extends Module
      */
     private function renderProductCommentModal($product)
     {
-        $image = Product::getCover($product->getId());
-        $cover_image = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'medium_default');
 
         /** @var ProductCommentCriterionRepository $criterionRepository */
         $criterionRepository = $this->context->controller->getContainer()->get('product_comment_criterion_repository');
@@ -917,8 +915,8 @@ class ProductComments extends Module
             'logged' => (bool) $this->context->cookie->id_customer,
             'post_comment_url' => $this->context->link->getModuleLink('productcomments', 'PostComment', ['id_product' => $product->getId()]),
             'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
-            'cover_image' => $cover_image,
             'criterions' => $criterions,
+            'product' => $product,
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
