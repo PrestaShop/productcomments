@@ -167,6 +167,43 @@ class ProductCommentRepository
     }
 
     /**
+     * @param array $productIds
+     * @param bool $validatedOnly
+     *
+     * @return array
+     */
+    public function getAverageGrades($productIds, $validatedOnly)
+    {
+        $sql = 'SELECT';
+
+        $count = count($productIds);
+
+        foreach ($productIds as $index => $id) {
+            $sql .= " SUM(IF(id_product = '" . $id . "' AND deleted = 0";
+            if ($validatedOnly) {
+                $sql .= " AND validate = '1'";
+            }
+            $sql .= " ,grade, 0))";
+            $sql .= " / SUM(IF(id_product = '" . $id . "' AND deleted = 0";
+            if ($validatedOnly) {
+                $sql .= " AND validate = '1'";
+            }
+            $sql .= " ,1, 0)) AS '" . $id . "'"; 
+
+            if ($count - 1 > $index) {
+                $sql .= ",";
+            }
+        }
+
+        $sql .= " FROM " . $this->databasePrefix . 'product_comment';
+
+        $query = $this->connection->prepare($sql);
+        $query->execute();
+
+        return (array) $query->fetch();
+    }
+
+    /**
      * @param int $productId
      * @param bool $validatedOnly
      *
@@ -193,6 +230,41 @@ class ProductCommentRepository
         }
 
         return (int) $qb->execute()->fetchColumn();
+    }
+
+    /**
+     * @param array $productIds
+     * @param bool $validatedOnly
+     *
+     * @return array
+     */
+    public function getCommentsNumberForProducts($productIds, $validatedOnly)
+    {
+      
+        $sql = 'SELECT';
+
+        $count = count($productIds);
+
+        foreach ($productIds as $index => $id) {
+            $sql .= " SUM(IF(id_product = '". $id . "' AND deleted = 0";
+            if ($validatedOnly) {
+                $sql .= " AND validate = '1'";
+            }
+            $sql .= " ,1, 0)) AS '". $id ."'";
+
+            if($count-1 > $index) {
+                $sql .= ",";
+            }
+        }
+
+        $sql .= " FROM " . $this->databasePrefix . 'product_comment';
+
+        // return $sql;
+
+        $query = $this->connection->prepare($sql);
+        $query->execute();
+
+        return (array) $query->fetch();
     }
 
     /**
