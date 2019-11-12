@@ -2,7 +2,7 @@
   "name": "prestashop/productcomments",
   "description": "PrestaShop module productcomments",
   "homepage": "https://github.com/PrestaShop/productcomments",
-  "license": "AFL - Academic Free License (AFL 3.0)",
+  "license": "AFL-3.0",
   "authors": [
     {
       "name": "PrestaShop SA",
