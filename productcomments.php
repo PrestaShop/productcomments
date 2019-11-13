@@ -92,6 +92,7 @@ class ProductComments extends Module
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', 1) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5) ||
+            !Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', 0) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1)) {
             return false;
         }
@@ -104,6 +105,7 @@ class ProductComments extends Module
         if (!parent::uninstall() || ($keep && !$this->deleteTables()) ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_COMMENTS_PER_PAGE') ||
+            !Configuration::deleteByName('PRODUCT_COMMENTS_ANONYMISATION') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_USEFULNESS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME') ||
@@ -160,6 +162,7 @@ class ProductComments extends Module
             Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
             Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
             Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', (int) Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'));
+            Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', (int) Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION'));
             Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int) Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
             $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Settings updated', [], 'Modules.Productcomments.Admin') . '</div>';
         } elseif (Tools::isSubmit('productcomments')) {
@@ -326,6 +329,25 @@ class ProductComments extends Module
                         'is_bool' => true, //retro compat 1.5
                         'label' => $this->trans('Enable upvotes / downvotes on reviews', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_USEFULNESS',
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                            ),
+                        ),
+                    ),
+                    array(
+                        'type' => 'switch',
+                        'is_bool' => true, //retro compat 1.5
+                        'label' => $this->trans('Anonymous the customer\'s last name ', [], 'Modules.Productcomments.Admin'),
+                        'name' => 'PRODUCT_COMMENTS_ANONYMISATION',
+                        'desc' => $this->trans('Only working for logged in users', [], 'Modules.Productcomments.Admin'),
                         'values' => array(
                             array(
                                 'id' => 'active_on',
@@ -579,6 +601,7 @@ class ProductComments extends Module
             'PRODUCT_COMMENTS_USEFULNESS' => Tools::getValue('PRODUCT_COMMENTS_USEFULNESS', Configuration::get('PRODUCT_COMMENTS_USEFULNESS')),
             'PRODUCT_COMMENTS_MINIMAL_TIME' => Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME', Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')),
             'PRODUCT_COMMENTS_COMMENTS_PER_PAGE' => Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE')),
+            'PRODUCT_COMMENTS_ANONYMISATION' => Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION', Configuration::get('PRODUCT_COMMENTS_ANONYMISATION')),
         );
     }
 

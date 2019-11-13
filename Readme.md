@@ -4,6 +4,19 @@
 
 Allows users to post reviews and rate products on specific criteria.
 
+### Update dependency
+
+The only dependency for this module (for now) is https://github.com/flaviusmatis/simplePagination.js.git
+You can install/update it by launching the command
+
+```
+# yarn install
+```
+
+(We use yarn because this library is not served as a package for npm).
+
+This will install the library js in views/js folder.
+
 ## Reporting issues
 
 You can report issues with this module in the main PrestaShop repository. [Click here to report an issue][report-issue]. 
