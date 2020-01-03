@@ -35,6 +35,10 @@ jQuery(document).ready(function () {
   emptyProductComment.hide();
   $('.grade-stars').rating();
 
+  document.addEventListener('updateRating', function() {
+    $('.grade-stars').rating();
+  });
+
   const updateCommentPostErrorModal = $('#update-comment-usefulness-post-error');
 
   const confirmAbuseModal = $('#report-comment-confirmation');
@@ -54,6 +58,7 @@ jQuery(document).ready(function () {
   function paginateComments(page) {
     $.get(commentsListUrl, {page: page}, function(result) {
       const jsonResponse = JSON.parse(result);
+
       if (jsonResponse.comments && jsonResponse.comments.length > 0) {
         populateComments(jsonResponse.comments);
         if (jsonResponse.comments_nb > jsonResponse.comments_per_page) {
