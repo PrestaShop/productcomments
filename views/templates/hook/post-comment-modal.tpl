@@ -90,27 +90,15 @@
             {if !$logged}
               <div class="col-md-8 col-sm-8">
                 <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-              </div>
-              <div class="col-md-4 col-sm-4">
-                <label class="form-label" for="customer_name">{l s='Your name' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-              </div>
-            {else}
-              <div class="col-md-12 col-sm-12">
-                <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-              </div>
-            {/if}
-          </div>
-
-          <div class="row">
-            {if !$logged}
-              <div class="col-md-8 col-sm-8">
                 <input name="comment_title" type="text" value=""/>
               </div>
               <div class="col-md-4 col-sm-4">
+                <label class="form-label" for="customer_name">{l s='Your name' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
                 <input name="customer_name" type="text" value=""/>
               </div>
             {else}
               <div class="col-md-12 col-sm-12">
+                <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
                 <input name="comment_title" type="text" value=""/>
               </div>
             {/if}
