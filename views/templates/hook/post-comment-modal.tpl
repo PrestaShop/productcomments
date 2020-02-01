@@ -126,7 +126,7 @@
               <textarea name="comment_content"></textarea>
             </div>
           </div>
-
+          {hook h='displayGDPRConsent' id_module=$id_module}
           <div class="row">
             <div class="col-md-6 col-sm-6">
               <p class="required"><sup>*</sup> {l s='Required fields' d='Modules.Productcomments.Shop'}</p>

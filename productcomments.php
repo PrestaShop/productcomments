@@ -917,6 +917,7 @@ class ProductComments extends Module
             'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
             'criterions' => $criterions,
             'product' => $product,
+            'id_module' => $this->id
         ));
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
