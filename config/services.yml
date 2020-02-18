@@ -1,0 +1,16 @@
+# This service is defined here (instead od admin/services.yml) because it
+# can only work with a Symfony container. In 1.7.8 there will only be one container
+# in the back office so we won't have to use this kind of trick
+services:
+  _defaults:
+    public: true
+
+  product_comment_database_updater:
+    lazy: true
+    class: PrestaShop\Module\ProductComment\Database\DatabaseUpdater
+    arguments:
+      - '@prestashop.database.doctrine_folder_schema_updater'
+      - '@doctrine.orm.entity_manager'
+      - "@=service('prestashop.core.admin.lang.repository').findAll()"
+      - "@translator"
+      - "%modules_dir%"

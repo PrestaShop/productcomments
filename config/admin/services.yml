@@ -1,15 +1,2 @@
 imports:
   - { resource: ../common.yml }
-
-services:
-  _defaults:
-    public: true
-
-  product_comment_database_updater:
-    class: PrestaShop\Module\ProductComment\Database\DatabaseUpdater
-    arguments:
-      - '@prestashop.database.doctrine_folder_schema_updater'
-      - '@doctrine.orm.entity_manager'
-      - "@=service('prestashop.core.admin.lang.repository').findAll()"
-      - "@translator"
-      - "%modules_dir%"
