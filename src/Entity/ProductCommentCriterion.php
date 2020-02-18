@@ -26,6 +26,7 @@
 
 namespace PrestaShop\Module\ProductComment\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -60,6 +61,18 @@ class ProductCommentCriterion
      * @ORM\Column(name="active", type="boolean")
      */
     private $active = 0;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="ProductCommentCriterionLang", mappedBy="criterion", cascade={"persist", "remove"})
+     */
+    private $languages;
+
+    public function __construct()
+    {
+        $this->languages = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -105,6 +118,27 @@ class ProductCommentCriterion
     public function setActive($active)
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLanguages(): ArrayCollection
+    {
+        return $this->languages;
+    }
+
+    /**
+     * @param ProductCommentCriterionLang $language
+     *
+     * @return self
+     */
+    public function addLanguage(ProductCommentCriterionLang $language): self
+    {
+        $language->setCriterion($this);
+        $this->languages[] = $language;
 
         return $this;
     }
