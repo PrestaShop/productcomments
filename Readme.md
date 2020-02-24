@@ -4,6 +4,10 @@
 
 Allows users to post reviews and rate products on specific criteria.
 
+## Multistore compatibility
+
+This module is not completely compatible with the multistore, some features are not available with the multistore
+
 ### Update dependency
 
 The only dependency for this module (for now) is https://github.com/flaviusmatis/simplePagination.js.git
