@@ -6,7 +6,7 @@ Allows users to post reviews and rate products on specific criteria.
 
 ## Multistore compatibility
 
-This module is not completely compatible with the multistore, some features are not available with the multistore
+This module is partially compatible with the multistore feature. Some of its options might not be available.
 
 ### Update dependency
 
