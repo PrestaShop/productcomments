@@ -15,3 +15,4 @@ services:
       - '%database_prefix%'
       - '@=service("prestashop.adapter.legacy.configuration").get("PRODUCT_COMMENTS_ALLOW_GUESTS")'
       - '@=service("prestashop.adapter.legacy.configuration").get("PRODUCT_COMMENTS_MINIMAL_TIME")'
+      - '@=service("prestashop.adapter.legacy.configuration").get("PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED")'

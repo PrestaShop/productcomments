@@ -52,21 +52,29 @@ class ProductCommentRepository
     private $commentsMinimalTime;
 
     /**
+     * @var bool
+     */
+    private $customerOrdererProductAllowed;
+
+    /**
      * @param Connection $connection
      * @param string $databasePrefix
      * @param bool $guestCommentsAllowed
      * @param int $commentsMinimalTime
+     * @param bool $customerOrdererProductAllowed
      */
     public function __construct(
         Connection $connection,
         $databasePrefix,
         $guestCommentsAllowed,
-        $commentsMinimalTime
+        $commentsMinimalTime,
+        $customerOrdererProductAllowed
     ) {
         $this->connection = $connection;
         $this->databasePrefix = $databasePrefix;
         $this->guestCommentsAllowed = (bool) $guestCommentsAllowed;
         $this->commentsMinimalTime = (int) $commentsMinimalTime;
+        $this->customerOrdererProductAllowed = (bool) $customerOrdererProductAllowed;
     }
 
     /**
@@ -204,7 +212,7 @@ class ProductCommentRepository
      */
     public function isPostAllowed($productId, $idCustomer, $idGuest)
     {
-        if (!$idCustomer && !$this->guestCommentsAllowed) {
+        if ((!$idCustomer && !$this->guestCommentsAllowed) || !$this->isCustomerOrdererProductAllowed($productId, $idCustomer)) {
             $postAllowed = false;
         } else {
             $lastCustomerComment = null;
@@ -335,5 +343,32 @@ class ProductCommentRepository
         $comments = $qb->execute()->fetchAll();
 
         return empty($comments) ? [] : $comments[0];
+    }
+
+    /**
+     * @param int $idProduct
+     * @param int $idCustomer
+     *
+     * @return bool
+     */
+    private function isCustomerOrdererProductAllowed(int $idProduct, int $idCustomer)
+    {
+        if ($this->customerOrdererProductAllowed) {
+            //Test if the customer has a product ordered
+            /** @var QueryBuilder $qb */
+            $qb = $this->connection->createQueryBuilder();
+            $qb
+                ->addSelect('od.product_id')
+                ->from($this->databasePrefix . 'order_detail', 'od')
+                ->leftJoin('od', $this->databasePrefix . 'orders', 'o', 'od.id_order = o.id_order')
+                ->where('o.id_customer = :id_customer')
+                ->andWhere('od.product_id = :id_product')
+                ->setParameter('id_customer', (int) $idCustomer)
+                ->setParameter('id_product', (int) $idProduct)
+            ;
+            $result = $qb->execute()->fetchAll();
+            return count($result)>0;
+        }
+        return true;
     }
 }

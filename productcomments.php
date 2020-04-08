@@ -87,12 +87,14 @@ class ProductComments extends Module
             !$this->registerHook('registerGDPRConsent') ||
             !$this->registerHook('actionDeleteGDPRCustomer') ||
             !$this->registerHook('actionExportGDPRData') ||
+            !$this->registerHook('actionAdminControllerSetMedia') || //Add CSS/JS for config admin
 
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', 1) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5) ||
-            !Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1)) {
+            !Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1) ||
+            !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED', 0)) {
             return false;
         }
 
@@ -107,6 +109,7 @@ class ProductComments extends Module
             !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_USEFULNESS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME') ||
+            !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED') ||
 
             !$this->unregisterHook('registerGDPRConsent') ||
             !$this->unregisterHook('actionDeleteGDPRCustomer') ||
@@ -161,6 +164,7 @@ class ProductComments extends Module
             Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
             Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', (int) Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'));
             Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int) Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
+            Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED'));
             $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Settings updated', [], 'Modules.Productcomments.Admin') . '</div>';
         } elseif (Tools::isSubmit('productcomments')) {
             $id_product_comment = (int) Tools::getValue('id_product_comment');
@@ -308,6 +312,26 @@ class ProductComments extends Module
                         'is_bool' => true, //retro compat 1.5
                         'label' => $this->trans('Allow guest reviews', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_ALLOW_GUESTS',
+                        'class' => 'product_comments_allow_guests',
+                        'values' => array(
+                                        array(
+                                            'id' => 'active_on',
+                                            'value' => 1,
+                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                        ),
+                                        array(
+                                            'id' => 'active_off',
+                                            'value' => 0,
+                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                        ),
+                                    ),
+                    ),
+                    array(
+                        'type' => 'switch',
+                        'is_bool' => true, //retro compat 1.5
+                        'label' => $this->trans('Allow a comment, only if the customer has already ordered the product', [], 'Modules.Productcomments.Admin'),
+                        'name' => 'PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED',
+                        'class' => 'product_comments_allow_already_ordered',
                         'values' => array(
                                         array(
                                             'id' => 'active_on',
@@ -579,6 +603,7 @@ class ProductComments extends Module
             'PRODUCT_COMMENTS_USEFULNESS' => Tools::getValue('PRODUCT_COMMENTS_USEFULNESS', Configuration::get('PRODUCT_COMMENTS_USEFULNESS')),
             'PRODUCT_COMMENTS_MINIMAL_TIME' => Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME', Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')),
             'PRODUCT_COMMENTS_COMMENTS_PER_PAGE' => Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE')),
+            'PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED' => Tools::getValue('PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED', Configuration::get('PRODUCT_COMMENTS_ALLOW_ALREADY_ORDERED')),
         );
     }
 
@@ -982,5 +1007,14 @@ class ProductComments extends Module
         }
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
+    }
+    /**
+     * Permet d'ajouter nos css et js dans la partie backoffice
+     *
+     * @param $params
+     */
+    public function hookactionAdminControllerSetMedia($params)
+    {
+        $this->context->controller->addJS($this->_path.'views/js/config-comments.js');
     }
 }
