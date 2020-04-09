@@ -353,22 +353,22 @@ class ProductCommentRepository
      */
     private function isCustomerOrdererProductAllowed(int $idProduct, int $idCustomer)
     {
-        if ($this->customerOrdererProductAllowed) {
-            //Test if the customer has a product ordered
-            /** @var QueryBuilder $qb */
-            $qb = $this->connection->createQueryBuilder();
-            $qb
-                ->addSelect('od.product_id')
-                ->from($this->databasePrefix . 'order_detail', 'od')
-                ->leftJoin('od', $this->databasePrefix . 'orders', 'o', 'od.id_order = o.id_order')
-                ->where('o.id_customer = :id_customer')
-                ->andWhere('od.product_id = :id_product')
-                ->setParameter('id_customer', (int) $idCustomer)
-                ->setParameter('id_product', (int) $idProduct)
-            ;
-            $result = $qb->execute()->fetchAll();
-            return count($result)>0;
+        if (!$this->customerOrdererProductAllowed) {
+            return true;
         }
-        return true;
+        
+        //Test if the customer has a product ordered
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->addSelect('od.product_id')
+            ->from($this->databasePrefix . 'order_detail', 'od')
+            ->leftJoin('od', $this->databasePrefix . 'orders', 'o', 'od.id_order = o.id_order')
+            ->where('o.id_customer = :id_customer')
+            ->andWhere('od.product_id = :id_product')
+            ->setParameter('id_customer', (int) $idCustomer)
+            ->setParameter('id_product', (int) $idProduct);
+
+        return $qb->execute()->rowCount() > 0;
     }
 }
