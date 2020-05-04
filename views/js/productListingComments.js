@@ -141,7 +141,7 @@ var productListingComments = (function () {
                     data.productIDs.shift();
                 });
 
-                commentsLoadingInProgress = false;
+                data.commentsLoadingInProgress = false;
                 if (data.productIDs.length > 0) {
                     loadProductsData();
                 }
