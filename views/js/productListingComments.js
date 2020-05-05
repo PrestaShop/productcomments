@@ -83,15 +83,10 @@ var productListingComments = (function () {
 
         $productsList.each(function (ele) {
             var id = $(this).data('id');
-            if (seenIds[id]) {
-                return false;
-            } else {
-                seenIds[id] = true;
-                return true;
-            }
+            seenIds[id] = true;
         });
+
         
-            
         var IDsArray = Object.keys(seenIds);
         var prevDataIDs = data.productIDs.splice(0);
         data.productIDs = prevDataIDs.concat(IDsArray);
