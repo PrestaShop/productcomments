@@ -113,7 +113,7 @@ var productListingComments = (function () {
             } catch (e) {
             }
 
-            if (jsonData.products) {
+            if (jsonData) {
 
                 $.each(jsonData.products, function(i, elem) {
                     var productData = elem;
