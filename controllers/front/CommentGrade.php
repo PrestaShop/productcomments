@@ -32,6 +32,9 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
         $idProducts = Tools::getValue('id_products');
         /** @var ProductCommentRepository $productCommentRepository */
 
+        if (!is_array($idProducts)) {
+            die();
+        }
 
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
