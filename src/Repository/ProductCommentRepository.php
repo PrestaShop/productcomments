@@ -172,7 +172,7 @@ class ProductCommentRepository
      *
      * @return array
      */
-    public function getAverageGrades($productIds, $validatedOnly)
+    public function getAverageGrades(array $productIds, $validatedOnly)
     {
         $sql = 'SELECT';
 
@@ -238,7 +238,7 @@ class ProductCommentRepository
      *
      * @return array
      */
-    public function getCommentsNumberForProducts($productIds, $validatedOnly)
+    public function getCommentsNumberForProducts(array $productIds, $validatedOnly)
     {
       
         $sql = 'SELECT';
