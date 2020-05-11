@@ -33,7 +33,7 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
         /** @var ProductCommentRepository $productCommentRepository */
 
         if (!is_array($idProducts)) {
-            die();
+            return $this->ajaxRender(null);
         }
 
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
