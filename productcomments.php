@@ -412,6 +412,7 @@ class ProductComments extends Module
             $helper->table = $this->name;
             $helper->token = Tools::getAdminTokenLite('AdminModules');
             $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+            $helper->no_link = true;
 
             $return .= $helper->generateList($comments, $fields_list);
         }
@@ -435,6 +436,7 @@ class ProductComments extends Module
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->no_link = true;
 
         $return .= $helper->generateList($comments, $fields_list);
 
@@ -549,6 +551,7 @@ class ProductComments extends Module
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->no_link = true;
 
         return $helper->generateList($comments, $fields_list);
     }
