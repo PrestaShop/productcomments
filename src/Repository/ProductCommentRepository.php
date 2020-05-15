@@ -179,23 +179,25 @@ class ProductCommentRepository
         $count = count($productIds);
 
         foreach ($productIds as $index => $id) {
-            $sql .= " SUM(IF(id_product = '" . $id . "' AND deleted = 0";
+            $esqID = pSQL($id);
+
+            $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
             if ($validatedOnly) {
-                $sql .= " AND validate = '1'";
+                $sql .= ' AND validate = 1';
             }
-            $sql .= " ,grade, 0))";
-            $sql .= " / SUM(IF(id_product = '" . $id . "' AND deleted = 0";
+            $sql .= ' ,grade, 0))';
+            $sql .= ' / SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
             if ($validatedOnly) {
-                $sql .= " AND validate = '1'";
+                $sql .= ' AND validate = ';
             }
-            $sql .= " ,1, 0)) AS '" . $id . "'"; 
+            $sql .= ' ,1, 0)) AS "' . $esqID . '"';
 
             if ($count - 1 > $index) {
-                $sql .= ",";
+                $sql .= ',';
             }
         }
 
-        $sql .= " FROM " . $this->databasePrefix . 'product_comment';
+        $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
 
         $query = $this->connection->prepare($sql);
         $query->execute();
@@ -246,18 +248,20 @@ class ProductCommentRepository
         $count = count($productIds);
 
         foreach ($productIds as $index => $id) {
-            $sql .= " SUM(IF(id_product = '". $id . "' AND deleted = 0";
-            if ($validatedOnly) {
-                $sql .= " AND validate = '1'";
-            }
-            $sql .= " ,1, 0)) AS '". $id ."'";
+            $esqID = pSQL($id);
 
-            if($count-1 > $index) {
-                $sql .= ",";
+            $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
+            if ($validatedOnly) {
+                $sql .= ' AND validate = 1';
+            }
+            $sql .= ' ,1, 0)) AS "' . $esqID . '"';
+
+            if ($count - 1 > $index) {
+                $sql .= ',';
             }
         }
 
-        $sql .= " FROM " . $this->databasePrefix . 'product_comment';
+        $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
 
         // return $sql;
 
