@@ -81,7 +81,7 @@ var productListingComments = (function () {
         var $productsList = getNewProductsReviewsElements(),
             seenIds = {};
 
-        $productsList.each(function (ele) {
+        $productsList.each(function () {
             var id = $(this).data('id');
             seenIds[id] = true;
         });
