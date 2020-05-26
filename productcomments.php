@@ -828,12 +828,10 @@ class ProductComments extends Module
     {
         $jsList = [];
         $cssList = [];
-        if ($this->context->controller instanceof ProductControllerCore ||
-            $this->context->controller instanceof ProductListingFrontControllerCore ||
-            $this->context->controller instanceof IndexControllerCore) {
-            $cssList[] = '/modules/productcomments/views/css/productcomments.css';
-            $jsList[] = '/modules/productcomments/views/js/jquery.rating.plugin.js';
-        }
+ 
+        $cssList[] = '/modules/productcomments/views/css/productcomments.css';
+        $jsList[] = '/modules/productcomments/views/js/jquery.rating.plugin.js';
+        $jsList[] = '/modules/productcomments/views/js/productListingComments.js';
         if ($this->context->controller instanceof ProductControllerCore) {
             $jsList[] = '/modules/productcomments/views/js/post-comment.js';
             $jsList[] = '/modules/productcomments/views/js/list-comments.js';
