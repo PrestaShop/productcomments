@@ -22,10 +22,9 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  * International Registered Trademark & Property of PrestaShop SA
  *}
-
 <script type="text/javascript">
-  var productCommentUpdatePostErrorMessage = '{l s='Sorry, your review appreciation cannot be sent.' d='Modules.Productcomments.Shop' js=1}';
-  var productCommentAbuseReportErrorMessage = '{l s='Sorry, your abuse report cannot be sent.' d='Modules.Productcomments.Shop' js=1}';
+  var productCommentUpdatePostErrorMessage = '{l|escape:'javascript' s='Sorry, your review appreciation cannot be sent.' d='Modules.Productcomments.Shop'}';
+  var productCommentAbuseReportErrorMessage = '{l|escape:'javascript' s='Sorry, your abuse report cannot be sent.' d='Modules.Productcomments.Shop'}';
 </script>
 
 <div class="row">
