@@ -345,7 +345,7 @@ class ProductComments extends Module
                     array(
                         'type' => 'switch',
                         'is_bool' => true, //retro compat 1.5
-                        'label' => $this->trans('Anonymous the customer\'s last name ', [], 'Modules.Productcomments.Admin'),
+                        'label' => $this->trans('Make anonymous the customer\'s last name.', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_ANONYMISATION',
                         'desc' => $this->trans('Only working for logged in users', [], 'Modules.Productcomments.Admin'),
                         'values' => array(
