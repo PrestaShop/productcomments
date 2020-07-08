@@ -27,13 +27,14 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
 
-class ProductComments extends Module
-{
+class ProductComments extends Module implements WidgetInterface
+{ 
     const INSTALL_SQL_FILE = 'install.sql';
 
     private $_html = '';
@@ -950,37 +951,44 @@ class ProductComments extends Module
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-list-reviews.tpl');
     }
 
-    /**
-     * Display average grade and buttons in the product page under checkout and share buttons
-     *
-     * @param $params
-     *
-     * @return string
-     *
-     * @throws PrestaShopException
-     * @throws SmartyException
-     */
-    public function hookDisplayProductAdditionalInfo($params)
+    public function getWidgetVariables($hookName = null, array $configuration = [])
     {
-        /** @var ProductLazyArray $product */
-        $product = $params['product'];
-        /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
-        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $isPostAllowed = $productCommentRepository->isPostAllowed($product->getId(), (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
+        $averageGrade = $productCommentRepository->getAverageGrade($configuration['id'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $commentsNb = $productCommentRepository->getCommentsNumber($configuration['id'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $isPostAllowed = $productCommentRepository->isPostAllowed($configuration['id'], (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
-        $this->context->smarty->assign(array(
+
+        return array(
             'average_grade' => $averageGrade,
             'nb_comments' => $commentsNb,
             'post_allowed' => $isPostAllowed,
-        ));
+        );
+    }
 
-        if ('quickview' === Tools::getValue('action')) {
-            return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info-quickview.tpl');
+
+
+    public function renderWidget($hookName = null, array $configuration = [])
+    {
+        if (!$this->context->controller instanceof ProductControllerCore) {
+            return;
         }
 
-        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
+        $product_id = Tools::getValue('id_product');
+
+        $variables = $this->getWidgetVariables($hookName, array('id' => $product_id));
+
+        if (empty($variables)) {
+            return false;
+        }
+
+        $this->smarty->assign($variables);
+
+        if ('quickview' === Tools::getValue('action')) {
+            return $this->fetch('module:productcomments/views/templates/hook/product-additional-info-quickview.tpl');
+        }
+
+        return $this->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
     }
 }
