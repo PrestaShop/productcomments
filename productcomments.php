@@ -388,7 +388,7 @@ class ProductComments extends Module
         $return = null;
 
         if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
-            $comments = ProductComment::getByValidate(0, false);
+            $comments = ProductComment::getByValidate(0);
 
             $fields_list = $this->getStandardFieldList();
 
@@ -528,27 +528,35 @@ class ProductComments extends Module
     {
         require_once dirname(__FILE__) . '/ProductComment.php';
 
-        $comments = ProductComment::getByValidate(1, false);
-        $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
-        if (empty($moderate)) {
-            $comments = array_merge($comments, ProductComment::getByValidate(0, false));
-        }
-
         $fields_list = $this->getStandardFieldList();
 
         $helper = new HelperList();
         $helper->list_id = 'form-productcomments-list';
         $helper->shopLinkType = '';
-        $helper->simple_header = true;
+        $helper->simple_header = false;
         $helper->actions = array('delete');
         $helper->show_toolbar = false;
         $helper->module = $this;
-        $helper->listTotal = count($comments);
         $helper->identifier = 'id_product_comment';
         $helper->title = $this->trans('Approved Reviews', [], 'Modules.Productcomments.Admin');
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+
+
+        $page = ($page = Tools::getValue('submitFilter' . $helper->list_id)) ? $page : 1;
+        $pagination = ($pagination = Tools::getValue($helper->list_id . '_pagination')) ? $pagination : 50;
+
+        $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
+        if (empty($moderate)) {
+            $comments = ProductComment::getByValidate(0, (int)$page, (int)$pagination, true);
+            $count = (int)ProductComment::getCountByValidate(0, true);
+        } else {
+            $comments = ProductComment::getByValidate(1, (int)$page, (int)$pagination);
+            $count = (int)ProductComment::getCountByValidate(1);
+        }
+
+        $helper->listTotal = $count;
 
         return $helper->generateList($comments, $fields_list);
     }
@@ -600,31 +608,38 @@ class ProductComments extends Module
             'id_product_comment' => array(
                 'title' => $this->trans('ID', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'title' => array(
                 'title' => $this->trans('Review title', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'content' => array(
                 'title' => $this->trans('Review', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'grade' => array(
                 'title' => $this->trans('Rating', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'suffix' => '/5',
+                'search' => false,
             ),
             'customer_name' => array(
                 'title' => $this->trans('Author', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'name' => array(
                 'title' => $this->trans('Product', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'date_add' => array(
                 'title' => $this->trans('Time of publication', [], 'Modules.Productcomments.Admin'),
                 'type' => 'date',
+                'search' => false,
             ),
         );
     }
