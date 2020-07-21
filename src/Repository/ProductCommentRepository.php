@@ -185,12 +185,12 @@ class ProductCommentRepository
             if ($validatedOnly) {
                 $sql .= ' AND validate = 1';
             }
-            $sql .= ' ,grade, 0))';
+            $sql .= ',grade, 0))';
             $sql .= ' / SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
             if ($validatedOnly) {
-                $sql .= ' AND validate = ';
+                $sql .= ' AND validate = 1';
             }
-            $sql .= ' ,1, 0)) AS "' . $esqID . '"';
+            $sql .= ',1, 0)) AS "' . $esqID . '"';
 
             if ($count - 1 > $index) {
                 $sql .= ',';
