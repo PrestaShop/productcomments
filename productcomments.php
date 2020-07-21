@@ -62,6 +62,10 @@ class ProductComments extends Module
 
     public function install($keep = true)
     {
+        if (Shop::isFeatureActive()) {
+            Shop::setContext(Shop::CONTEXT_ALL);
+        }
+	
         if ($keep) {
             if (!file_exists(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
                 return false;
