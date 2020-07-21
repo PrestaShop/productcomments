@@ -31,6 +31,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
     {
         $idProduct = Tools::getValue('id_product');
         $page = Tools::getValue('page', 1);
+        $isLastNameAnynomus = Configuration::get('PRODUCT_COMMENTS_ANONYMISATION');
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
@@ -60,6 +61,10 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             $productComment['title'] = htmlentities($productComment['title']);
             $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
+
+            if($isLastNameAnynomus) {
+                $productComment['lastname'] = substr($productComment['lastname'], 0, 1) . '.';
+            }
 
             $usefulness = $productCommentRepository->getProductCommentUsefulness($productComment['id_product_comment']);
             $productComment = array_merge($productComment, $usefulness);
