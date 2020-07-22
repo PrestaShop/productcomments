@@ -388,7 +388,7 @@ class ProductComments extends Module
         $return = null;
 
         if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
-            $comments = ProductComment::getByValidate(0);
+            $comments = ProductComment::getByValidate(0, false);
 
             $fields_list = $this->getStandardFieldList();
 
@@ -549,10 +549,10 @@ class ProductComments extends Module
 
         $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
         if (empty($moderate)) {
-            $comments = ProductComment::getByValidate(0, (int)$page, (int)$pagination, true);
+            $comments = ProductComment::getByValidate(0, false, (int)$page, (int)$pagination, true);
             $count = (int)ProductComment::getCountByValidate(0, true);
         } else {
-            $comments = ProductComment::getByValidate(1, (int)$page, (int)$pagination);
+            $comments = ProductComment::getByValidate(1, false, (int)$page, (int)$pagination);
             $count = (int)ProductComment::getCountByValidate(1);
         }
 

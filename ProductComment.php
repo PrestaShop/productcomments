@@ -277,7 +277,7 @@ class ProductComment extends ObjectModel
      *
      * @return array Comments
      */
-    public static function getByValidate($validate = '0', $p = null, $limit = null, $skip_validate = false)
+    public static function getByValidate($validate = '0', $deleted = false, $p = null, $limit = null, $skip_validate = false)
     {
         $sql = '
 			SELECT pc.`id_product_comment`, pc.`id_product`, IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, pc.`title`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`
