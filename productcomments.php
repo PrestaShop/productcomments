@@ -923,42 +923,13 @@ class ProductComments extends Module implements WidgetInterface
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
     }
 
-    /**
-     * Display the review in the product miniatures
-     *
-     * @param $params
-     *
-     * @return string
-     *
-     * @throws SmartyException
-     */
-    public function hookDisplayProductListReviews($params)
-    {
-        /** @var ProductLazyArray $product */
-        $product = $params['product'];
-        /** @var ProductCommentRepository $productCommentRepository */
-        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
-        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-
-        $this->context->smarty->assign(array(
-            'product' => $product,
-            'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade'),
-            'nb_comments' => $commentsNb,
-            'average_grade' => $averageGrade,
-        ));
-
-        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-list-reviews.tpl');
-    }
 
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
-
-        $averageGrade = $productCommentRepository->getAverageGrade($configuration['id'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $commentsNb = $productCommentRepository->getCommentsNumber($configuration['id'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $isPostAllowed = $productCommentRepository->isPostAllowed($configuration['id'], (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
-
+        $averageGrade = $productCommentRepository->getAverageGrade($configuration['id_product'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $commentsNb = $productCommentRepository->getCommentsNumber($configuration['id_product'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $isPostAllowed = $productCommentRepository->isPostAllowed($configuration['id_product'], (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
         return array(
             'average_grade' => $averageGrade,
@@ -968,16 +939,30 @@ class ProductComments extends Module implements WidgetInterface
     }
 
 
-
     public function renderWidget($hookName = null, array $configuration = [])
     {
-        if (!$this->context->controller instanceof ProductControllerCore) {
-            return;
+
+        if('displayProductListReviews' === $hookName || isset($configuration['type']) && 'product_list' === $configuration['type']) {
+
+            $product = $configuration['product'];
+            $id_product = $product['id_product'];
+            $variables = $this->getWidgetVariables($hookName, array('id_product' => $id_product));
+
+            $variables = array_merge($variables, array(
+                'product' => $product,
+                'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade')
+            ));
+
+            $file_path = 'module:productcomments/views/templates/hook/product-list-reviews.tpl';
+
+        } elseif ($this->context->controller instanceof ProductControllerCore) {
+
+            $id_product = Tools::getValue('id_product');
+            $variables = $this->getWidgetVariables($hookName, array('id_product' => $id_product));
+
+            $file_path = 'quickview' === Tools::getValue('action') ? 'module:productcomments/views/templates/hook/product-additional-info-quickview.tpl' : 'module:productcomments/views/templates/hook/product-additional-info.tpl';
+    
         }
-
-        $product_id = Tools::getValue('id_product');
-
-        $variables = $this->getWidgetVariables($hookName, array('id' => $product_id));
 
         if (empty($variables)) {
             return false;
@@ -985,10 +970,7 @@ class ProductComments extends Module implements WidgetInterface
 
         $this->smarty->assign($variables);
 
-        if ('quickview' === Tools::getValue('action')) {
-            return $this->fetch('module:productcomments/views/templates/hook/product-additional-info-quickview.tpl');
-        }
-
-        return $this->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
+        return $this->fetch($file_path);
     }
+
 }
