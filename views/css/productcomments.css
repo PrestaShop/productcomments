@@ -364,6 +364,7 @@
   letter-spacing: -0.28px;
   line-height: 19px;
   word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .product-comment-list-item .comment-content .comment-buttons a {
