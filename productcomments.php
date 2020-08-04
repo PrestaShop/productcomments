@@ -45,7 +45,7 @@ class ProductComments extends Module
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '4.0.1';
+        $this->version = '4.1.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -65,7 +65,7 @@ class ProductComments extends Module
         if (Shop::isFeatureActive()) {
             Shop::setContext(Shop::CONTEXT_ALL);
         }
-	
+
         if ($keep) {
             if (!file_exists(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
                 return false;
@@ -858,7 +858,7 @@ class ProductComments extends Module
     {
         $jsList = [];
         $cssList = [];
- 
+
         $cssList[] = '/modules/productcomments/views/css/productcomments.css';
         $jsList[] = '/modules/productcomments/views/js/jquery.rating.plugin.js';
         $jsList[] = '/modules/productcomments/views/js/productListingComments.js';
