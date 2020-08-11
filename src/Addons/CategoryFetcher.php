@@ -215,7 +215,12 @@ class CategoryFetcher
 
         $cssSelector = new CssSelectorConverter();
         $document = new DOMDocument();
+
+        // if fetched HTML is not valid, DOMDocument::loadHtml() will generate E_WARNING warnings
+        libxml_use_internal_errors(true);
         $document->loadHTML($categoryResponse);
+        libxml_use_internal_errors(false);
+
         $xpath = new DOMXPath($document);
         $descriptionNode = $xpath->query($cssSelector->toXPath('#category_description'))->item(0);
         $categoryDescription = '';
