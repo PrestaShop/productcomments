@@ -1,13 +1,14 @@
 <?php
 /**
- * 2007-2019 PrestaShop SA and Contributors
+ * Copyright since 2007 PrestaShop SA and Contributors
+ * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
+ * that is bundled with this package in the file LICENSE.md.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/afl-3.0.php
+ * https://opensource.org/licenses/AFL-3.0
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@prestashop.com so we can send you a copy immediately.
@@ -16,12 +17,11 @@
  *
  * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
  * versions in the future. If you wish to customize PrestaShop for your
- * needs please refer to http://www.prestashop.com for more information.
+ * needs please refer to https://devdocs.prestashop.com/ for more information.
  *
- * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2019 PrestaShop SA and Contributors
- * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- * International Registered Trademark & Property of PrestaShop SA
+ * @author    PrestaShop SA and Contributors <contact@prestashop.com>
+ * @copyright Since 2007 PrestaShop SA and Contributors
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 if (!defined('_PS_VERSION_')) {
     exit;
@@ -45,7 +45,7 @@ class ProductComments extends Module
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '4.0.1';
+        $this->version = '4.1.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -62,6 +62,10 @@ class ProductComments extends Module
 
     public function install($keep = true)
     {
+        if (Shop::isFeatureActive()) {
+            Shop::setContext(Shop::CONTEXT_ALL);
+        }
+
         if ($keep) {
             if (!file_exists(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
                 return false;
@@ -92,6 +96,7 @@ class ProductComments extends Module
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', 1) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5) ||
+            !Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', 0) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1)) {
             return false;
         }
@@ -104,6 +109,7 @@ class ProductComments extends Module
         if (!parent::uninstall() || ($keep && !$this->deleteTables()) ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_COMMENTS_PER_PAGE') ||
+            !Configuration::deleteByName('PRODUCT_COMMENTS_ANONYMISATION') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_USEFULNESS') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME') ||
@@ -160,6 +166,7 @@ class ProductComments extends Module
             Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
             Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
             Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', (int) Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'));
+            Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', (int) Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION'));
             Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int) Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
             $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Settings updated', [], 'Modules.Productcomments.Admin') . '</div>';
         } elseif (Tools::isSubmit('productcomments')) {
@@ -340,6 +347,25 @@ class ProductComments extends Module
                         ),
                     ),
                     array(
+                        'type' => 'switch',
+                        'is_bool' => true, //retro compat 1.5
+                        'label' => $this->trans('Anonymize the user\'s last name', [], 'Modules.Productcomments.Admin'),
+                        'name' => 'PRODUCT_COMMENTS_ANONYMISATION',
+                        'desc' => $this->trans('Display only initials, e.g. John D.', [], 'Modules.Productcomments.Admin'),
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                            ),
+                        ),
+                    ),
+                    array(
                         'type' => 'text',
                         'label' => $this->trans('Minimum time between 2 reviews from the same user', [], 'Modules.Productcomments.Admin'),
                         'name' => 'PRODUCT_COMMENTS_MINIMAL_TIME',
@@ -412,6 +438,7 @@ class ProductComments extends Module
             $helper->table = $this->name;
             $helper->token = Tools::getAdminTokenLite('AdminModules');
             $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+            $helper->no_link = true;
 
             $return .= $helper->generateList($comments, $fields_list);
         }
@@ -435,6 +462,7 @@ class ProductComments extends Module
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->no_link = true;
 
         $return .= $helper->generateList($comments, $fields_list);
 
@@ -549,6 +577,7 @@ class ProductComments extends Module
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->no_link = true;
 
         return $helper->generateList($comments, $fields_list);
     }
@@ -579,6 +608,7 @@ class ProductComments extends Module
             'PRODUCT_COMMENTS_USEFULNESS' => Tools::getValue('PRODUCT_COMMENTS_USEFULNESS', Configuration::get('PRODUCT_COMMENTS_USEFULNESS')),
             'PRODUCT_COMMENTS_MINIMAL_TIME' => Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME', Configuration::get('PRODUCT_COMMENTS_MINIMAL_TIME')),
             'PRODUCT_COMMENTS_COMMENTS_PER_PAGE' => Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE')),
+            'PRODUCT_COMMENTS_ANONYMISATION' => Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION', Configuration::get('PRODUCT_COMMENTS_ANONYMISATION')),
         );
     }
 
@@ -828,12 +858,10 @@ class ProductComments extends Module
     {
         $jsList = [];
         $cssList = [];
-        if ($this->context->controller instanceof ProductControllerCore ||
-            $this->context->controller instanceof ProductListingFrontControllerCore ||
-            $this->context->controller instanceof IndexControllerCore) {
-            $cssList[] = '/modules/productcomments/views/css/productcomments.css';
-            $jsList[] = '/modules/productcomments/views/js/jquery.rating.plugin.js';
-        }
+
+        $cssList[] = '/modules/productcomments/views/css/productcomments.css';
+        $jsList[] = '/modules/productcomments/views/js/jquery.rating.plugin.js';
+        $jsList[] = '/modules/productcomments/views/js/productListingComments.js';
         if ($this->context->controller instanceof ProductControllerCore) {
             $jsList[] = '/modules/productcomments/views/js/post-comment.js';
             $jsList[] = '/modules/productcomments/views/js/list-comments.js';

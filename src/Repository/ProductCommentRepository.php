@@ -1,13 +1,14 @@
 <?php
 /**
- * 2007-2019 PrestaShop SA and Contributors
+ * Copyright since 2007 PrestaShop SA and Contributors
+ * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
+ * This source file is subject to the Academic Free License 3.0 (AFL-3.0)
+ * that is bundled with this package in the file LICENSE.md.
  * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/afl-3.0.php
+ * https://opensource.org/licenses/AFL-3.0
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@prestashop.com so we can send you a copy immediately.
@@ -16,12 +17,11 @@
  *
  * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
  * versions in the future. If you wish to customize PrestaShop for your
- * needs please refer to http://www.prestashop.com for more information.
+ * needs please refer to https://devdocs.prestashop.com/ for more information.
  *
- * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2019 PrestaShop SA and Contributors
- * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
- * International Registered Trademark & Property of PrestaShop SA
+ * @author    PrestaShop SA and Contributors <contact@prestashop.com>
+ * @copyright Since 2007 PrestaShop SA and Contributors
+ * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
 namespace PrestaShop\Module\ProductComment\Repository;
@@ -167,6 +167,45 @@ class ProductCommentRepository
     }
 
     /**
+     * @param array $productIds
+     * @param bool $validatedOnly
+     *
+     * @return array
+     */
+    public function getAverageGrades(array $productIds, $validatedOnly)
+    {
+        $sql = 'SELECT';
+
+        $count = count($productIds);
+
+        foreach ($productIds as $index => $id) {
+            $esqID = pSQL($id);
+
+            $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
+            if ($validatedOnly) {
+                $sql .= ' AND validate = 1';
+            }
+            $sql .= ',grade, 0))';
+            $sql .= ' / SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
+            if ($validatedOnly) {
+                $sql .= ' AND validate = 1';
+            }
+            $sql .= ',1, 0)) AS "' . $esqID . '"';
+
+            if ($count - 1 > $index) {
+                $sql .= ',';
+            }
+        }
+
+        $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
+
+        $query = $this->connection->prepare($sql);
+        $query->execute();
+
+        return (array) $query->fetch();
+    }
+
+    /**
      * @param int $productId
      * @param bool $validatedOnly
      *
@@ -193,6 +232,43 @@ class ProductCommentRepository
         }
 
         return (int) $qb->execute()->fetchColumn();
+    }
+
+    /**
+     * @param array $productIds
+     * @param bool $validatedOnly
+     *
+     * @return array
+     */
+    public function getCommentsNumberForProducts(array $productIds, $validatedOnly)
+    {
+      
+        $sql = 'SELECT';
+
+        $count = count($productIds);
+
+        foreach ($productIds as $index => $id) {
+            $esqID = pSQL($id);
+
+            $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
+            if ($validatedOnly) {
+                $sql .= ' AND validate = 1';
+            }
+            $sql .= ' ,1, 0)) AS "' . $esqID . '"';
+
+            if ($count - 1 > $index) {
+                $sql .= ',';
+            }
+        }
+
+        $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
+
+        // return $sql;
+
+        $query = $this->connection->prepare($sql);
+        $query->execute();
+
+        return (array) $query->fetch();
     }
 
     /**

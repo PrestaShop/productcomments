@@ -4,6 +4,10 @@
 
 Allows users to post reviews and rate products on specific criteria.
 
+## Multistore compatibility
+
+This module is partially compatible with the multistore feature. Some of its options might not be available.
+
 ### Update dependency
 
 The only dependency for this module (for now) is https://github.com/flaviusmatis/simplePagination.js.git
@@ -35,3 +39,4 @@ This module is released under the [Academic Free License 3.0][AFL-3.0]
 [prestashop]: https://www.prestashop.com/
 [contribution-guidelines]: https://devdocs.prestashop.com/1.7/contribute/contribution-guidelines/project-modules/
 [AFL-3.0]: https://opensource.org/licenses/AFL-3.0
+
