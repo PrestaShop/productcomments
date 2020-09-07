@@ -34,7 +34,7 @@ use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
 
 class ProductComments extends Module implements WidgetInterface
-{ 
+{
     const INSTALL_SQL_FILE = 'install.sql';
 
     private $_html = '';
