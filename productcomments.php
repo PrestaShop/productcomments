@@ -941,27 +941,24 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderWidget($hookName = null, array $configuration = [])
     {
+        $variables = [];
 
         if('displayProductListReviews' === $hookName || isset($configuration['type']) && 'product_list' === $configuration['type']) {
-
             $product = $configuration['product'];
-            $id_product = $product['id_product'];
-            $variables = $this->getWidgetVariables($hookName, array('id_product' => $id_product));
+            $idProduct = $product['id_product'];
+            $variables = $this->getWidgetVariables($hookName, array('id_product' => $idProduct));
 
             $variables = array_merge($variables, array(
                 'product' => $product,
                 'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade')
             ));
 
-            $file_path = 'module:productcomments/views/templates/hook/product-list-reviews.tpl';
-
+            $filePath = 'module:productcomments/views/templates/hook/product-list-reviews.tpl';
         } elseif ($this->context->controller instanceof ProductControllerCore) {
+            $idProduct = Tools::getValue('id_product');
+            $variables = $this->getWidgetVariables($hookName, array('id_product' => $idProduct));
 
-            $id_product = Tools::getValue('id_product');
-            $variables = $this->getWidgetVariables($hookName, array('id_product' => $id_product));
-
-            $file_path = 'quickview' === Tools::getValue('action') ? 'module:productcomments/views/templates/hook/product-additional-info-quickview.tpl' : 'module:productcomments/views/templates/hook/product-additional-info.tpl';
-    
+            $filePath = 'quickview' === Tools::getValue('action') ? 'module:productcomments/views/templates/hook/product-additional-info-quickview.tpl' : 'module:productcomments/views/templates/hook/product-additional-info.tpl';
         }
 
         if (empty($variables)) {
@@ -970,7 +967,7 @@ class ProductComments extends Module implements WidgetInterface
 
         $this->smarty->assign($variables);
 
-        return $this->fetch($file_path);
+        return $this->fetch($filePath);
     }
 
 }
