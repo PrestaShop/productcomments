@@ -942,6 +942,7 @@ class ProductComments extends Module implements WidgetInterface
     public function renderWidget($hookName = null, array $configuration = [])
     {
         $variables = [];
+        $tplHookPath = 'module:productcomments/views/templates/hook/';
 
         if('displayProductListReviews' === $hookName || isset($configuration['type']) && 'product_list' === $configuration['type']) {
             $product = $configuration['product'];
@@ -953,12 +954,12 @@ class ProductComments extends Module implements WidgetInterface
                 'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade')
             ));
 
-            $filePath = 'module:productcomments/views/templates/hook/product-list-reviews.tpl';
+            $filePath = $tplHookPath . 'product-list-reviews.tpl';
         } elseif ($this->context->controller instanceof ProductControllerCore) {
-            $idProduct = Tools::getValue('id_product');
+            $idProduct = $this->context->controller->getProduct()->id;
             $variables = $this->getWidgetVariables($hookName, array('id_product' => $idProduct));
 
-            $filePath = 'quickview' === Tools::getValue('action') ? 'module:productcomments/views/templates/hook/product-additional-info-quickview.tpl' : 'module:productcomments/views/templates/hook/product-additional-info.tpl';
+            $filePath = 'quickview' === Tools::getValue('action') ? $tplHookPath . 'product-additional-info-quickview.tpl' : $tplHookPath . 'product-additional-info.tpl';
         }
 
         if (empty($variables)) {
