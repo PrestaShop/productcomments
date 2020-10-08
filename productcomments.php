@@ -301,12 +301,12 @@ class ProductComments extends Module
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
@@ -319,12 +319,12 @@ class ProductComments extends Module
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
@@ -337,12 +337,12 @@ class ProductComments extends Module
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                             ),
                         ),
                     ),
@@ -356,12 +356,12 @@ class ProductComments extends Module
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                             ),
                         ),
                     ),
@@ -765,12 +765,12 @@ class ProductComments extends Module
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
