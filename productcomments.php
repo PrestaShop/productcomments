@@ -27,12 +27,13 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
 
-class ProductComments extends Module
+class ProductComments extends Module implements WidgetInterface
 {
     const INSTALL_SQL_FILE = 'install.sql';
 
@@ -950,65 +951,52 @@ class ProductComments extends Module
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
     }
 
-    /**
-     * Display the review in the product miniatures
-     *
-     * @param $params
-     *
-     * @return string
-     *
-     * @throws SmartyException
-     */
-    public function hookDisplayProductListReviews($params)
+
+    public function getWidgetVariables($hookName = null, array $configuration = [])
     {
-        /** @var ProductLazyArray $product */
-        $product = $params['product'];
-        /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
-        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $averageGrade = $productCommentRepository->getAverageGrade($configuration['id_product'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $commentsNb = $productCommentRepository->getCommentsNumber($configuration['id_product'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $isPostAllowed = $productCommentRepository->isPostAllowed($configuration['id_product'], (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
-        $this->context->smarty->assign(array(
-            'product' => $product,
-            'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade'),
-            'nb_comments' => $commentsNb,
-            'average_grade' => $averageGrade,
-        ));
-
-        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-list-reviews.tpl');
-    }
-
-    /**
-     * Display average grade and buttons in the product page under checkout and share buttons
-     *
-     * @param $params
-     *
-     * @return string
-     *
-     * @throws PrestaShopException
-     * @throws SmartyException
-     */
-    public function hookDisplayProductAdditionalInfo($params)
-    {
-        /** @var ProductLazyArray $product */
-        $product = $params['product'];
-        /** @var ProductCommentRepository $productCommentRepository */
-        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
-
-        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $isPostAllowed = $productCommentRepository->isPostAllowed($product->getId(), (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
-
-        $this->context->smarty->assign(array(
+        return array(
             'average_grade' => $averageGrade,
             'nb_comments' => $commentsNb,
             'post_allowed' => $isPostAllowed,
-        ));
+        );
+    }
 
-        if ('quickview' === Tools::getValue('action')) {
-            return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info-quickview.tpl');
+
+    public function renderWidget($hookName = null, array $configuration = [])
+    {
+        $variables = [];
+        $tplHookPath = 'module:productcomments/views/templates/hook/';
+
+        if('displayProductListReviews' === $hookName || isset($configuration['type']) && 'product_list' === $configuration['type']) {
+            $product = $configuration['product'];
+            $idProduct = $product['id_product'];
+            $variables = $this->getWidgetVariables($hookName, array('id_product' => $idProduct));
+
+            $variables = array_merge($variables, array(
+                'product' => $product,
+                'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade')
+            ));
+
+            $filePath = $tplHookPath . 'product-list-reviews.tpl';
+        } elseif ($this->context->controller instanceof ProductControllerCore) {
+            $idProduct = $this->context->controller->getProduct()->id;
+            $variables = $this->getWidgetVariables($hookName, array('id_product' => $idProduct));
+
+            $filePath = 'quickview' === Tools::getValue('action') ? $tplHookPath . 'product-additional-info-quickview.tpl' : $tplHookPath . 'product-additional-info.tpl';
         }
 
-        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
+        if (empty($variables)) {
+            return false;
+        }
+
+        $this->smarty->assign($variables);
+
+        return $this->fetch($filePath);
     }
+
 }
