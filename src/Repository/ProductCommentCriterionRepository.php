@@ -88,4 +88,23 @@ class ProductCommentCriterionRepository
 
         return $qb->execute()->fetchAll();
     }
+
+    /**
+     * @param bool $active
+     *
+     * @return int
+     */
+    public function count($active = false)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->from($this->databasePrefix . 'product_comment_criterion', 'pcc')
+        ;
+        if ($active) {
+            $qb->andWhere('pcc.active = 1');
+        }
+
+        return $qb->execute()->rowCount();
+    }
 }

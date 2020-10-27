@@ -29,6 +29,7 @@ if (!defined('_PS_VERSION_')) {
 
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
+use PrestaShop\Module\ProductComment\Database\DatabaseUpdater;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
@@ -58,7 +59,7 @@ class ProductComments extends Module implements WidgetInterface
         $this->displayName = $this->trans('Product Comments', [], 'Modules.Productcomments.Admin');
         $this->description = $this->trans('Allows users to post reviews and rate products on specific criteria.', [], 'Modules.Productcomments.Admin');
 
-        $this->ps_versions_compliancy = array('min' => '1.7.6', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.7.7', 'max' => _PS_VERSION_);
     }
 
     public function install($keep = true)
@@ -68,19 +69,9 @@ class ProductComments extends Module implements WidgetInterface
         }
 
         if ($keep) {
-            if (!file_exists(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
-                return false;
-            } elseif (!$sql = file_get_contents(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
-                return false;
-            }
-            $sql = str_replace(array('PREFIX_', 'ENGINE_TYPE'), array(_DB_PREFIX_, _MYSQL_ENGINE_), $sql);
-            $sql = preg_split("/;\s*[\r\n]+/", trim($sql));
-
-            foreach ($sql as $query) {
-                if (!Db::getInstance()->execute(trim($query))) {
-                    return false;
-                }
-            }
+            /** @var DatabaseUpdater $databaseUpdater */
+            $databaseUpdater = $this->get('product_comment_database_updater');
+            $databaseUpdater->installDatabase($this->name);
         }
 
         if (parent::install() == false ||
@@ -107,7 +98,13 @@ class ProductComments extends Module implements WidgetInterface
 
     public function uninstall($keep = true)
     {
-        if (!parent::uninstall() || ($keep && !$this->deleteTables()) ||
+        if ($keep) {
+            /** @var DatabaseUpdater $databaseUpdater */
+            $databaseUpdater = $this->get('product_comment_database_updater');
+            $databaseUpdater->uninstallDatabase($this->name);
+        }
+
+        if (!parent::uninstall() ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_COMMENTS_PER_PAGE') ||
             !Configuration::deleteByName('PRODUCT_COMMENTS_ANONYMISATION') ||
@@ -139,20 +136,6 @@ class ProductComments extends Module implements WidgetInterface
         }
 
         return true;
-    }
-
-    public function deleteTables()
-    {
-        return Db::getInstance()->execute('
-			DROP TABLE IF EXISTS
-			`' . _DB_PREFIX_ . 'product_comment`,
-			`' . _DB_PREFIX_ . 'product_comment_criterion`,
-			`' . _DB_PREFIX_ . 'product_comment_criterion_product`,
-			`' . _DB_PREFIX_ . 'product_comment_criterion_lang`,
-			`' . _DB_PREFIX_ . 'product_comment_criterion_category`,
-			`' . _DB_PREFIX_ . 'product_comment_grade`,
-			`' . _DB_PREFIX_ . 'product_comment_usefulness`,
-			`' . _DB_PREFIX_ . 'product_comment_report`');
     }
 
     public function getCacheId($id_product = null)
