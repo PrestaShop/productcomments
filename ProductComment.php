@@ -277,18 +277,43 @@ class ProductComment extends ObjectModel
      *
      * @return array Comments
      */
-    public static function getByValidate($validate = '0', $deleted = false)
+    public static function getByValidate($validate = '0', $deleted = false, $p = null, $limit = null, $skip_validate = false)
     {
         $sql = '
 			SELECT pc.`id_product_comment`, pc.`id_product`, IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, pc.`title`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
 			LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (c.`id_customer` = pc.`id_customer`)
-			LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (pl.`id_product` = pc.`id_product` AND pl.`id_lang` = ' . (int) Context::getContext()->language->id . Shop::addSqlRestrictionOnLang('pl') . ')
-			WHERE pc.`validate` = ' . (int) $validate;
+            LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (pl.`id_product` = pc.`id_product` AND pl.`id_lang` = ' . (int) Context::getContext()->language->id . Shop::addSqlRestrictionOnLang('pl') . ')';
+         
+        if(!$skip_validate) {
+            $sql .=	' WHERE pc.`validate` = ' . (int) $validate;
+        }
 
         $sql .= ' ORDER BY pc.`date_add` DESC';
 
+        if($p && $limit) {
+            $offset = ($p - 1) * $limit;
+            $sql .= ' LIMIT ' . (int) $offset . ',' . (int) $limit;
+        }
+
         return Db::getInstance()->executeS($sql);
+    }
+    /**
+     * Get numbers of comments by Validation
+     *
+     * @return int Count of comments
+     */
+    public static function getCountByValidate($validate = '0', $skip_validate = false)
+    {
+        $sql = '
+            SELECT COUNT(*) 
+            FROM `' . _DB_PREFIX_ . 'product_comment`';
+
+        if(!$skip_validate) {
+            $sql .=	' WHERE `validate` = ' . (int) $validate;
+        }
+
+        return Db::getInstance()->getValue($sql);
     }
 
     /**
