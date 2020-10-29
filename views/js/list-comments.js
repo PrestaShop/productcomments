@@ -36,7 +36,7 @@ jQuery(document).ready(function () {
   $('.grade-stars').rating();
 
   prestashop.on('updatedProduct', function() {
-    $('.grade-stars').rating();
+    $('.product-comments-additional-info .grade-stars').rating();
   })
 
   document.addEventListener('updateRating', function() {
