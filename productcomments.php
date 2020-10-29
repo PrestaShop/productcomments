@@ -241,6 +241,7 @@ class ProductComments extends Module implements WidgetInterface
             $comment->validate();
         } elseif ($id_product_comment = (int) Tools::getValue('noabuseComment')) {
             ProductComment::deleteReports($id_product_comment);
+            Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name]));
         }
 
         $this->_clearcache('productcomments_reviews.tpl');
