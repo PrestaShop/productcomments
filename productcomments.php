@@ -56,7 +56,7 @@ class ProductComments extends Module implements WidgetInterface
         $this->secure_key = Tools::encrypt($this->name);
 
         $this->displayName = $this->trans('Product Comments', [], 'Modules.Productcomments.Admin');
-        $this->description = $this->trans('Allows users to post reviews and rate products on specific criteria.', [], 'Modules.Productcomments.Admin');
+        $this->description = $this->trans('Allow users to post reviews on your products and/or rate them based on specific criteria.', [], 'Modules.Productcomments.Admin');
 
         $this->ps_versions_compliancy = array('min' => '1.7.6', 'max' => _PS_VERSION_);
     }
