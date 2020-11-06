@@ -1,0 +1,17 @@
+includes:
+	- %currentWorkingDirectory%/vendor/prestashop/php-dev-tools/phpstan/ps-module-extension.neon
+
+parameters:
+  paths:
+    # From PHPStan 0.12, paths to check are relative to the neon file
+    - ../../productcomments.php
+    - ../../ProductComment.php
+    - ../../ProductCommentCriterion.php
+    - ../../ProductCriterion.php
+    - ../../controllers/
+    - ../../src/
+    - ../../upgrade/
+  ignoreErrors:
+    - '#Call to method assign\(\) on an unknown class Smarty_Data#'
+  reportUnmatchedIgnoredErrors: false
+  level: 5
