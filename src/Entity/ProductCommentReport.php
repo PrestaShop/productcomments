@@ -38,21 +38,22 @@ class ProductCommentReport
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="ProductComment")
      * @ORM\JoinColumn(name="id_product_comment", referencedColumnName="id_product_comment")
+     *
+     * @var ProductComment
      */
     private $comment;
 
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\Column(name="id_customer", type="integer")
+     *
+     * @var int
      */
     private $customerId;
 
     /**
      * @param ProductComment $comment
      * @param int $customerId
-     * @param bool $usefulness
      */
     public function __construct(
         ProductComment $comment,
@@ -63,7 +64,7 @@ class ProductCommentReport
     }
 
     /**
-     * @return mixed
+     * @return ProductComment
      */
     public function getComment()
     {

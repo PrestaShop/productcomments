@@ -71,13 +71,14 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
         }
 
         $id_product_comment = (int) Tools::getValue('id_product_comment');
-        $usefulness = (int) Tools::getValue('usefulness');
+        $usefulness = (bool) Tools::getValue('usefulness');
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
-        $productCommentEntityRepository = $entityManager->getRepository(ProductComment::class);
 
-        $productComment = $productCommentEntityRepository->findOneById($id_product_comment);
+        $productCommentEntityRepository = $entityManager->getRepository(ProductComment::class);
+        /** @var ProductComment|null $productComment */
+        $productComment = $productCommentEntityRepository->findOneBy(['id' => $id_product_comment]);
         if (!$productComment) {
             $this->ajaxRender(
                 json_encode(
@@ -92,7 +93,7 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
         }
 
         $productCommentUsefulnesRepository = $entityManager->getRepository(ProductCommentUsefulness::class);
-        /** @var ProductCommentUsefulness $productCommentUsefulness */
+        /** @var ProductCommentUsefulness|null $productCommentUsefulness */
         $productCommentUsefulness = $productCommentUsefulnesRepository->findOneBy([
             'comment' => $id_product_comment,
             'customerId' => $customerId,

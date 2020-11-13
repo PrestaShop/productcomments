@@ -30,7 +30,7 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
     public function display()
     {
         $idProducts = Tools::getValue('id_products');
-        /** @var ProductCommentRepository $productCommentRepository */
+        /* @var ProductCommentRepository $productCommentRepository */
 
         header('Content-Type: application/json');
 
@@ -46,17 +46,17 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
         $resultFormated = [];
 
         foreach ($idProducts as $i => $id) {
-            $resultFormated []= [
+            $resultFormated[] = [
                 'id_product' => $id,
                 'comments_nb' => $productsCommentsNb[$id],
-                'average_grade' => $averageGrade[$id]
+                'average_grade' => $averageGrade[$id],
             ];
         }
 
         $this->ajaxRender(
             json_encode(
                 [
-                    'products' => $resultFormated
+                    'products' => $resultFormated,
                 ]
             )
         );

@@ -38,10 +38,13 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
         $productComments = $productCommentRepository->paginate(
             $idProduct,
             $page,
-            Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'),
-            Configuration::get('PRODUCT_COMMENTS_MODERATE')
+            (int) Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'),
+            (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE')
         );
-        $productCommentsNb = $productCommentRepository->getCommentsNumber($idProduct, Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $productCommentsNb = $productCommentRepository->getCommentsNumber(
+            $idProduct,
+            (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE')
+        );
 
         $responseArray = [
             'comments_nb' => $productCommentsNb,
@@ -62,7 +65,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
 
-            if($isLastNameAnynomus) {
+            if ($isLastNameAnynomus) {
                 $productComment['lastname'] = substr($productComment['lastname'], 0, 1) . '.';
             }
 

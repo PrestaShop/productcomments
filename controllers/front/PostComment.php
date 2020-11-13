@@ -23,10 +23,10 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
+use Doctrine\ORM\EntityManagerInterface;
 use PrestaShop\Module\ProductComment\Entity\ProductComment;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentGrade;
-use Doctrine\ORM\EntityManagerInterface;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 
 class ProductCommentsPostCommentModuleFrontController extends ModuleFrontController
@@ -140,7 +140,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $averageGrade = 0;
 
         foreach ($criterions as $criterionId => $grade) {
-            $criterion = $criterionRepository->findOneById($criterionId);
+            $criterion = $criterionRepository->findOneBy(['id' => $criterionId]);
             $criterionGrade = new ProductCommentGrade(
                 $productComment,
                 $criterion,

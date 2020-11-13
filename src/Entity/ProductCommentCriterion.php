@@ -59,7 +59,7 @@ class ProductCommentCriterion
      *
      * @ORM\Column(name="active", type="boolean")
      */
-    private $active = 0;
+    private $active = false;
 
     /**
      * @return int

@@ -51,9 +51,10 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
-        $productCommentEntityRepository = $entityManager->getRepository(ProductComment::class);
 
-        $productComment = $productCommentEntityRepository->findOneById($id_product_comment);
+        $productCommentEntityRepository = $entityManager->getRepository(ProductComment::class);
+        /** @var ProductComment|null $productComment */
+        $productComment = $productCommentEntityRepository->findOneBy(['id' => $id_product_comment]);
         if (!$productComment) {
             $this->ajaxRender(
                 json_encode(
@@ -68,7 +69,7 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
         }
 
         $productCommentAbuseRepository = $entityManager->getRepository(ProductCommentReport::class);
-        /** @var ProductCommentReport $productCommentAbuse */
+        /** @var ProductCommentReport|null $productCommentAbuse */
         $productCommentAbuse = $productCommentAbuseRepository->findOneBy([
             'comment' => $id_product_comment,
             'customerId' => $customerId,
