@@ -31,12 +31,18 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
 {
     public function display()
     {
+        header('Content-Type: application/json');
+
         $customerId = (int) $this->context->cookie->id_customer;
         if (!$customerId) {
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'error' => $this->trans('You need to be logged in to report a review.', [], 'Modules.Productcomments.Shop'),
-            ]));
+            $this->ajaxRender(
+                json_encode(
+                    [
+                        'success' => false,
+                        'error' => $this->trans('You need to be logged in to report a review.', [], 'Modules.Productcomments.Shop'),
+                    ]
+                )
+            );
 
             return false;
         }
@@ -49,10 +55,14 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
 
         $productComment = $productCommentEntityRepository->findOneById($id_product_comment);
         if (!$productComment) {
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'error' => $this->trans('Cannot find the requested product review.', [], 'Modules.Productcomments.Shop'),
-            ]));
+            $this->ajaxRender(
+                json_encode(
+                    [
+                        'success' => false,
+                        'error' => $this->trans('Cannot find the requested product review.', [], 'Modules.Productcomments.Shop'),
+                    ]
+                )
+            );
 
             return false;
         }
@@ -63,11 +73,16 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
             'comment' => $id_product_comment,
             'customerId' => $customerId,
         ]);
+
         if ($productCommentAbuse) {
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'error' => $this->trans('You already reported this review as abusive.', [], 'Modules.Productcomments.Shop'),
-            ]));
+            $this->ajaxRender(
+                json_encode(
+                    [
+                        'success' => false,
+                        'error' => $this->trans('You already reported this review as abusive.', [], 'Modules.Productcomments.Shop'),
+                    ]
+                )
+            );
 
             return false;
         }
@@ -79,9 +94,13 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
         $entityManager->persist($productCommentAbuse);
         $entityManager->flush();
 
-        $this->ajaxRender(json_encode([
-            'success' => true,
-            'id_product_comment' => $id_product_comment,
-        ]));
+        $this->ajaxRender(
+            json_encode(
+                [
+                    'success' => true,
+                    'id_product_comment' => $id_product_comment,
+                ]
+            )
+        );
     }
 }
