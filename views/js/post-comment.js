@@ -84,12 +84,7 @@ jQuery(document).ready(function () {
     if (!validateFormData(formData)) {
       return;
     }
-    $.post($(this).attr('action'), $(this).serialize(), function(jsonResponse) {
-      var jsonData = false;
-      try {
-        jsonData = JSON.parse(jsonResponse);
-      } catch (e) {
-      }
+    $.post($(this).attr('action'), $(this).serialize(), function(jsonData) {
       if (jsonData) {
         if (jsonData.success) {
           clearPostCommentForm();
