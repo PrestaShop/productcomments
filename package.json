@@ -1,6 +1,5 @@
 {
   "name": "productcomments",
-  "version": "4.1.0",
   "description": "Allows users to post reviews and rate products on specific criteria.",
   "main": "index.js",
   "scripts": {
