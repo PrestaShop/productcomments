@@ -86,7 +86,7 @@ var productListingComments = (function () {
             seenIds[id] = true;
         });
 
-        
+
         var IDsArray = Object.keys(seenIds);
         var prevDataIDs = data.productIDs.splice(0);
         data.productIDs = prevDataIDs.concat(IDsArray);
@@ -97,24 +97,17 @@ var productListingComments = (function () {
     }
 
     function loadProductsData() {
-        if (data.productIDs.length === 0) 
+        if (data.productIDs.length === 0)
             return;
 
         data.commentsLoadingInProgress = true;
 
         var dataIDsCopy = data.productIDs.slice(0);
             selectedProductIDs = dataIDsCopy.splice(0, data.ajaxIDsLimit);
-        
 
-        $.get(data.ajaxUrl, { id_products: selectedProductIDs }, function (jsonResponse) {
-            var jsonData = false;
-            try {
-                jsonData = JSON.parse(jsonResponse);
-            } catch (e) {
-            }
 
+        $.get(data.ajaxUrl, { id_products: selectedProductIDs }, function (jsonData) {
             if (jsonData) {
-
                 $.each(jsonData.products, function(i, elem) {
                     var productData = elem;
                     var $productsReviewsContainer = $('.product-list-reviews[data-id="' + productData.id_product + '"]');
@@ -126,7 +119,7 @@ var productListingComments = (function () {
                             $self.find(DOMStrings.productListReviewsStarsContainer).rating({ grade: productData.average_grade, starWidth: 16 });
                             $self.find(DOMStrings.productListReviewsNumberOfComments).text('(' + productData.comments_nb + ')');
                             $self.closest(DOMStrings.productContainer).addClass(DOMClasses.hasReviews);
-                            $self.css('visibility', 'visible');                            
+                            $self.css('visibility', 'visible');
                         }
 
                         $self.closest(DOMStrings.productContainer).addClass(DOMClasses.reviewsLoaded);
@@ -156,4 +149,3 @@ var productListingComments = (function () {
         }
     }
 })();
-

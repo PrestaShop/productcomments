@@ -27,12 +27,13 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
 
-class ProductComments extends Module
+class ProductComments extends Module implements WidgetInterface
 {
     const INSTALL_SQL_FILE = 'install.sql';
 
@@ -45,7 +46,7 @@ class ProductComments extends Module
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '4.1.0';
+        $this->version = '4.2.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -55,7 +56,7 @@ class ProductComments extends Module
         $this->secure_key = Tools::encrypt($this->name);
 
         $this->displayName = $this->trans('Product Comments', [], 'Modules.Productcomments.Admin');
-        $this->description = $this->trans('Allows users to post reviews and rate products on specific criteria.', [], 'Modules.Productcomments.Admin');
+        $this->description = $this->trans('Allow users to post reviews on your products and/or rate them based on specific criteria.', [], 'Modules.Productcomments.Admin');
 
         $this->ps_versions_compliancy = array('min' => '1.7.6', 'max' => _PS_VERSION_);
     }
@@ -301,12 +302,12 @@ class ProductComments extends Module
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
@@ -319,12 +320,12 @@ class ProductComments extends Module
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
@@ -337,12 +338,12 @@ class ProductComments extends Module
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                             ),
                         ),
                     ),
@@ -356,12 +357,12 @@ class ProductComments extends Module
                             array(
                                 'id' => 'active_on',
                                 'value' => 1,
-                                'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                             ),
                             array(
                                 'id' => 'active_off',
                                 'value' => 0,
-                                'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                             ),
                         ),
                     ),
@@ -556,28 +557,36 @@ class ProductComments extends Module
     {
         require_once dirname(__FILE__) . '/ProductComment.php';
 
-        $comments = ProductComment::getByValidate(1, false);
-        $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
-        if (empty($moderate)) {
-            $comments = array_merge($comments, ProductComment::getByValidate(0, false));
-        }
-
         $fields_list = $this->getStandardFieldList();
 
         $helper = new HelperList();
         $helper->list_id = 'form-productcomments-list';
         $helper->shopLinkType = '';
-        $helper->simple_header = true;
+        $helper->simple_header = false;
         $helper->actions = array('delete');
         $helper->show_toolbar = false;
         $helper->module = $this;
-        $helper->listTotal = count($comments);
         $helper->identifier = 'id_product_comment';
         $helper->title = $this->trans('Approved Reviews', [], 'Modules.Productcomments.Admin');
         $helper->table = $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
         $helper->no_link = true;
+
+
+        $page = ($page = Tools::getValue('submitFilter' . $helper->list_id)) ? $page : 1;
+        $pagination = ($pagination = Tools::getValue($helper->list_id . '_pagination')) ? $pagination : 50;
+
+        $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
+        if (empty($moderate)) {
+            $comments = ProductComment::getByValidate(0, false, (int)$page, (int)$pagination, true);
+            $count = (int)ProductComment::getCountByValidate(0, true);
+        } else {
+            $comments = ProductComment::getByValidate(1, false, (int)$page, (int)$pagination);
+            $count = (int)ProductComment::getCountByValidate(1);
+        }
+
+        $helper->listTotal = $count;
 
         return $helper->generateList($comments, $fields_list);
     }
@@ -630,31 +639,38 @@ class ProductComments extends Module
             'id_product_comment' => array(
                 'title' => $this->trans('ID', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'title' => array(
                 'title' => $this->trans('Review title', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'content' => array(
                 'title' => $this->trans('Review', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'grade' => array(
                 'title' => $this->trans('Rating', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'suffix' => '/5',
+                'search' => false,
             ),
             'customer_name' => array(
                 'title' => $this->trans('Author', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'name' => array(
                 'title' => $this->trans('Product', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
+                'search' => false,
             ),
             'date_add' => array(
                 'title' => $this->trans('Time of publication', [], 'Modules.Productcomments.Admin'),
                 'type' => 'date',
+                'search' => false,
             ),
         );
     }
@@ -765,12 +781,12 @@ class ProductComments extends Module
                                         array(
                                             'id' => 'active_on',
                                             'value' => 1,
-                                            'label' => $this->trans('Enabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('Yes', [], 'Modules.Productcomments.Admin'),
                                         ),
                                         array(
                                             'id' => 'active_off',
                                             'value' => 0,
-                                            'label' => $this->trans('Disabled', [], 'Modules.Productcomments.Admin'),
+                                            'label' => $this->trans('No', [], 'Modules.Productcomments.Admin'),
                                         ),
                                     ),
                     ),
@@ -950,65 +966,63 @@ class ProductComments extends Module
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
     }
 
-    /**
-     * Display the review in the product miniatures
-     *
-     * @param $params
-     *
-     * @return string
-     *
-     * @throws SmartyException
-     */
-    public function hookDisplayProductListReviews($params)
+
+    public function getWidgetVariables($hookName = null, array $configuration = [])
     {
-        /** @var ProductLazyArray $product */
-        $product = $params['product'];
-        /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
-        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $averageGrade = $productCommentRepository->getAverageGrade($configuration['id_product'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $commentsNb = $productCommentRepository->getCommentsNumber($configuration['id_product'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $isPostAllowed = $productCommentRepository->isPostAllowed($configuration['id_product'], (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
-        $this->context->smarty->assign(array(
-            'product' => $product,
-            'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade'),
-            'nb_comments' => $commentsNb,
-            'average_grade' => $averageGrade,
-        ));
-
-        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-list-reviews.tpl');
-    }
-
-    /**
-     * Display average grade and buttons in the product page under checkout and share buttons
-     *
-     * @param $params
-     *
-     * @return string
-     *
-     * @throws PrestaShopException
-     * @throws SmartyException
-     */
-    public function hookDisplayProductAdditionalInfo($params)
-    {
-        /** @var ProductLazyArray $product */
-        $product = $params['product'];
-        /** @var ProductCommentRepository $productCommentRepository */
-        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
-
-        $averageGrade = $productCommentRepository->getAverageGrade($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $commentsNb = $productCommentRepository->getCommentsNumber($product->getId(), Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $isPostAllowed = $productCommentRepository->isPostAllowed($product->getId(), (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
-
-        $this->context->smarty->assign(array(
+        return array(
             'average_grade' => $averageGrade,
             'nb_comments' => $commentsNb,
             'post_allowed' => $isPostAllowed,
-        ));
+        );
+    }
 
-        if ('quickview' === Tools::getValue('action')) {
-            return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info-quickview.tpl');
+
+    public function renderWidget($hookName = null, array $configuration = [])
+    {
+        $variables = [];
+        $tplHookPath = 'module:productcomments/views/templates/hook/';
+
+        if('displayProductListReviews' === $hookName || isset($configuration['type']) && 'product_list' === $configuration['type']) {
+            $product = $configuration['product'];
+            $idProduct = $product['id_product'];
+            $variables = $this->getWidgetVariables($hookName, array('id_product' => $idProduct));
+
+            $variables = array_merge($variables, array(
+                'product' => $product,
+                'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade')
+            ));
+
+            $filePath = $tplHookPath . 'product-list-reviews.tpl';
+        } elseif ($this->context->controller instanceof ProductControllerCore) {
+            $idProduct = $this->context->controller->getProduct()->id;
+            $variables = $this->getWidgetVariables($hookName, array('id_product' => $idProduct));
+
+            $filePath = 'quickview' === Tools::getValue('action') ? $tplHookPath . 'product-additional-info-quickview.tpl' : $tplHookPath . 'product-additional-info.tpl';
         }
 
-        return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-additional-info.tpl');
+        if (empty($variables)) {
+            return false;
+        }
+
+        $this->smarty->assign($variables);
+
+        return $this->fetch($filePath);
+    }
+
+    /**
+     * empty listener for registerGDPRConsent hook
+     */
+    public function hookRegisterGDPRConsent()
+    {
+        /* registerGDPRConsent is a special kind of hook that doesn't need a listener, see :
+           https://build.prestashop.com/howtos/module/how-to-make-your-module-compliant-with-prestashop-official-gdpr-compliance-module/
+          However since Prestashop 1.7.8, modules must implement a listener for all the hooks they register: a check is made
+          at module installation.
+        */
     }
 }

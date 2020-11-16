@@ -32,6 +32,8 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
         $idProducts = Tools::getValue('id_products');
         /** @var ProductCommentRepository $productCommentRepository */
 
+        header('Content-Type: application/json');
+
         if (!is_array($idProducts)) {
             return $this->ajaxRender(null);
         }
@@ -51,8 +53,12 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
             ];
         }
 
-        $this->ajaxRender(json_encode([
-            'products' => $resultFormated
-        ]));
+        $this->ajaxRender(
+            json_encode(
+                [
+                    'products' => $resultFormated
+                ]
+            )
+        );
     }
 }

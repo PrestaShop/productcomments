@@ -2,7 +2,7 @@
 
 ## About
 
-Allows users to post reviews and rate products on specific criteria.
+Allow users to post reviews on your products and/or rate them based on specific criteria.
 
 ## Multistore compatibility
 

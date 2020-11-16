@@ -33,20 +33,25 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
 {
     public function display()
     {
+        header('Content-Type: application/json');
         if (!(int) $this->context->cookie->id_customer && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')) {
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'error' => $this->trans(
-                    'You need to be [1]logged in[/1] or [2]create an account[/2] to post your review.',
+            $this->ajaxRender(
+                json_encode(
                     [
-                        '[1]' => '<a href="' . $this->context->link->getPageLink('my-account') . '">',
-                        '[/1]' => '</a>',
-                        '[2]' => '<a href="' . $this->context->link->getPageLink('authentication&create_account=1') . '">',
-                        '[/2]' => '</a>',
-                    ],
-                    'Modules.Productcomments.Shop'
-                ),
-            ]));
+                        'success' => false,
+                        'error' => $this->trans(
+                            'You need to be [1]logged in[/1] or [2]create an account[/2] to post your review.',
+                            [
+                                '[1]' => '<a href="' . $this->context->link->getPageLink('my-account') . '">',
+                                '[/1]' => '</a>',
+                                '[2]' => '<a href="' . $this->context->link->getPageLink('authentication&create_account=1') . '">',
+                                '[/2]' => '</a>',
+                            ],
+                            'Modules.Productcomments.Shop'
+                        ),
+                    ]
+                )
+            );
 
             return false;
         }
@@ -59,12 +64,20 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
 
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
-        $isPostAllowed = $productCommentRepository->isPostAllowed($id_product, (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
+        $isPostAllowed = $productCommentRepository->isPostAllowed(
+            $id_product,
+            (int) $this->context->cookie->id_customer,
+            (int) $this->context->cookie->id_guest
+        );
         if (!$isPostAllowed) {
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'error' => $this->trans('You are not allowed to post a review at the moment, please try again later.', [], 'Modules.Productcomments.Shop'),
-            ]));
+            $this->ajaxRender(
+                json_encode(
+                    [
+                        'success' => false,
+                        'error' => $this->trans('You are not allowed to post a review at the moment, please try again later.', [], 'Modules.Productcomments.Shop'),
+                    ]
+                )
+            );
 
             return false;
         }
@@ -87,21 +100,30 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $this->addCommentGrades($productComment, $criterions);
 
         //Validate comment
-        if (!empty($errors = $this->validateComment($productComment))) {
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'errors' => $errors,
-            ]));
+        $errors = $this->validateComment($productComment);
+        if (!empty($errors)) {
+            $this->ajaxRender(
+                json_encode(
+                    [
+                        'success' => false,
+                        'errors' => $errors,
+                    ]
+                )
+            );
 
             return false;
         }
 
         $entityManager->flush();
 
-        $this->ajaxRender(json_encode([
-            'success' => true,
-            'product_comment' => $productComment->toArray(),
-        ]));
+        $this->ajaxRender(
+            json_encode(
+                [
+                    'success' => true,
+                    'product_comment' => $productComment->toArray(),
+                ]
+            )
+        );
     }
 
     /**
@@ -116,6 +138,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
         $criterionRepository = $entityManager->getRepository(ProductCommentCriterion::class);
         $averageGrade = 0;
+
         foreach ($criterions as $criterionId => $grade) {
             $criterion = $criterionRepository->findOneById($criterionId);
             $criterionGrade = new ProductCommentGrade(
@@ -123,9 +146,11 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
                 $criterion,
                 $grade
             );
+
             $entityManager->persist($criterionGrade);
             $averageGrade += $grade;
         }
+
         $averageGrade /= count($criterions);
         $productComment->setGrade($averageGrade);
     }
