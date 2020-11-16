@@ -46,7 +46,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '4.1.0';
+        $this->version = '4.2.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
