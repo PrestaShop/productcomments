@@ -1,0 +1,27 @@
+includes:
+	- %currentWorkingDirectory%/vendor/prestashop/php-dev-tools/phpstan/ps-module-extension.neon
+
+parameters:
+  paths:
+    # From PHPStan 0.12, paths to check are relative to the neon file
+    - ../../productcomments.php
+    - ../../ProductComment.php
+    - ../../ProductCommentCriterion.php
+    - ../../ProductCriterion.php
+    - ../../controllers/
+    - ../../src/
+    - ../../upgrade/
+  ignoreErrors:
+    - '#Access to an undefined property Cookie::\$id_customer.#'
+    - '#Access to an undefined property Cookie::\$id_guest.#'
+    - '#Access to an undefined property HelperList::\$list_id.#'
+    - '#Access to an undefined property HelperList::\$shopLinkType.#'
+    - '#Call to an undefined method [A-Za-z]+::ajaxRender\(\).#'
+    - '#Call to an undefined method AdminController|FrontController::getContainer\(\).#'
+    - '#Call to method assign\(\) on an unknown class Smarty_Data#'
+    - '#Call to method get\(\) on an unknown class ContainerBuilder.#'
+    - '#Parameter \#1 \$idCategory of class Category constructor expects null, int given.#'
+    - '#Parameter \#1 \$value of method ControllerCore::ajaxRender\(\) expects null, string\|false given.#'
+    - '#Parameter \#2 \$value of static method CacheCore::store\(\) expects string, [A-Za-z\|_]+ given.#'
+  reportUnmatchedIgnoredErrors: false
+  level: 5

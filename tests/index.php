@@ -23,59 +23,12 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 
-namespace PrestaShop\Module\ProductComment\Entity;
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
 
-use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @ORM\Table()
- * @ORM\Entity()
- */
-class ProductCommentReport
-{
-    /**
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="ProductComment")
-     * @ORM\JoinColumn(name="id_product_comment", referencedColumnName="id_product_comment")
-     *
-     * @var ProductComment
-     */
-    private $comment;
-
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id_customer", type="integer")
-     *
-     * @var int
-     */
-    private $customerId;
-
-    /**
-     * @param ProductComment $comment
-     * @param int $customerId
-     */
-    public function __construct(
-        ProductComment $comment,
-        $customerId
-    ) {
-        $this->comment = $comment;
-        $this->customerId = $customerId;
-    }
-
-    /**
-     * @return ProductComment
-     */
-    public function getComment()
-    {
-        return $this->comment;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCustomerId()
-    {
-        return $this->customerId;
-    }
-}
+header('Location: ../');
+exit;

@@ -26,7 +26,6 @@
 
 namespace PrestaShop\Module\ProductComment\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -101,14 +100,14 @@ class ProductComment
      *
      * @ORM\Column(name="validate", type="boolean")
      */
-    private $validate = 0;
+    private $validate = false;
 
     /**
      * @var bool
      *
      * @ORM\Column(name="deleted", type="boolean")
      */
-    private $deleted = 0;
+    private $deleted = false;
 
     /**
      * @var \DateTime
@@ -116,11 +115,6 @@ class ProductComment
      * @ORM\Column(name="date_add", type="datetime")
      */
     private $dateAdd;
-
-    public function __construct()
-    {
-        $this->criterions = new ArrayCollection();
-    }
 
     /**
      * @return int

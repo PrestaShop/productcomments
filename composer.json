@@ -16,25 +16,30 @@
     "symfony/css-selector": "^3.4 || ^4.4 || ^5.0",
     "guzzlehttp/cache-subscriber": "^0.2.0"
   },
+  "require-dev": {
+    "prestashop/php-dev-tools": "^3.4"
+  },
   "repositories": [
     {
       "type": "vcs",
       "url": "git@github.com:jolelievre/circuit-breaker.git"
     }
   ],
+  "config": {
+    "preferred-install": "dist",
+    "classmap-authoritative": true,
+    "optimize-autoloader": true,
+    "prepend-autoloader": false,
+    "platform": {
+      "php": "5.6"
+    }
+  },
   "autoload": {
     "psr-4": {
       "PrestaShop\\Module\\ProductComment\\": "src/"
     },
     "classmap": ["productcomments.php"],
     "exclude-from-classmap": []
-  },
-  "config": {
-    "preferred-install": "dist",
-    "prepend-autoloader": false,
-    "platform": {
-      "php": "5.6"
-    }
   },
   "type": "prestashop-module"
 }

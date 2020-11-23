@@ -242,7 +242,6 @@ class ProductCommentRepository
      */
     public function getCommentsNumberForProducts(array $productIds, $validatedOnly)
     {
-      
         $sql = 'SELECT';
 
         $count = count($productIds);
@@ -332,7 +331,7 @@ class ProductCommentRepository
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->update($this->databasePrefix . 'product_comment', 'pc')
-            ->set('id_customer', 0)
+            ->set('id_customer', (string) 0)
             ->andWhere('pc.id_customer = :id_customer')
             ->setParameter('id_customer', $customerId)
         ;

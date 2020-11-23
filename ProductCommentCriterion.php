@@ -35,17 +35,17 @@ class ProductCommentCriterion extends ObjectModel
     /**
      * @see ObjectModel::$definition
      */
-    public static $definition = array(
+    public static $definition = [
         'table' => 'product_comment_criterion',
         'primary' => 'id_product_comment_criterion',
         'multilang' => true,
-        'fields' => array(
-            'id_product_comment_criterion_type' => array('type' => self::TYPE_INT),
-            'active' => array('type' => self::TYPE_BOOL),
+        'fields' => [
+            'id_product_comment_criterion_type' => ['type' => self::TYPE_INT],
+            'active' => ['type' => self::TYPE_BOOL],
             // Lang fields
-            'name' => array('type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName', 'required' => true, 'size' => self::NAME_MAX_LENGTH),
-        ),
-    );
+            'name' => ['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName', 'required' => true, 'size' => self::NAME_MAX_LENGTH],
+        ],
+    ];
 
     public function delete()
     {
@@ -230,7 +230,7 @@ class ProductCommentCriterion extends ObjectModel
 			SELECT pccp.id_product, pccp.id_product_comment_criterion
 			FROM `' . _DB_PREFIX_ . 'product_comment_criterion_product` pccp
 			WHERE pccp.id_product_comment_criterion = ' . (int) $this->id);
-        $products = array();
+        $products = [];
         if ($res) {
             foreach ($res as $row) {
                 $products[] = (int) $row['id_product'];
@@ -246,7 +246,7 @@ class ProductCommentCriterion extends ObjectModel
 			SELECT pccc.id_category, pccc.id_product_comment_criterion
 			FROM `' . _DB_PREFIX_ . 'product_comment_criterion_category` pccc
 			WHERE pccc.id_product_comment_criterion = ' . (int) $this->id);
-        $criterions = array();
+        $criterions = [];
         if ($res) {
             foreach ($res as $row) {
                 $criterions[] = (int) $row['id_category'];
@@ -275,10 +275,10 @@ class ProductCommentCriterion extends ObjectModel
         // Instance of module class for translations
         $module = new ProductComments();
 
-        return array(
+        return [
             1 => $module->getTranslator()->trans('Valid for the entire catalog', [], 'Modules.Productcomments.Admin'),
             2 => $module->getTranslator()->trans('Restricted to some categories', [], 'Modules.Productcomments.Admin'),
             3 => $module->getTranslator()->trans('Restricted to some products', [], 'Modules.Productcomments.Admin'),
-        );
+        ];
     }
 }
