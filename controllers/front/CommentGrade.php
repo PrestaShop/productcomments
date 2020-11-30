@@ -29,7 +29,7 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
 {
     public function display()
     {
-        $idProducts = array_unique(array_map('intval', Tools::getValue('id_products')));
+        $idProducts = Tools::getValue('id_products');
         /* @var ProductCommentRepository $productCommentRepository */
 
         header('Content-Type: application/json');
@@ -37,6 +37,8 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
         if (!is_array($idProducts)) {
             return $this->ajaxRender(null);
         }
+
+        $idProducts = array_unique(array_map('intval', $idProducts));
 
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
