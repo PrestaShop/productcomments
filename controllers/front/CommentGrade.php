@@ -29,7 +29,7 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
 {
     public function display()
     {
-        $idProducts = Tools::getValue('id_products');
+        $idProducts = array_unique(array_map('intval', Tools::getValue('id_products')));
         /* @var ProductCommentRepository $productCommentRepository */
 
         header('Content-Type: application/json');

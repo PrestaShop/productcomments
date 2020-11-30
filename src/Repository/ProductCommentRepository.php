@@ -179,7 +179,7 @@ class ProductCommentRepository
         $count = count($productIds);
 
         foreach ($productIds as $index => $id) {
-            $esqID = pSQL($id);
+            $esqID = pSQL((int) $id);
 
             $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
             if ($validatedOnly) {
@@ -247,7 +247,7 @@ class ProductCommentRepository
         $count = count($productIds);
 
         foreach ($productIds as $index => $id) {
-            $esqID = pSQL($id);
+            $esqID = pSQL((int) $id);
 
             $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
             if ($validatedOnly) {
