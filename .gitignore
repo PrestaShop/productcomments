@@ -1,3 +1,4 @@
-config_*
-vendor
-node_modules
+/config_*
+/node_modules
+/vendor
+/.php_cs.cache

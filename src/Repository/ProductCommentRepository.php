@@ -179,7 +179,7 @@ class ProductCommentRepository
         $count = count($productIds);
 
         foreach ($productIds as $index => $id) {
-            $esqID = pSQL($id);
+            $esqID = (int) $id;
 
             $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
             if ($validatedOnly) {
@@ -242,13 +242,12 @@ class ProductCommentRepository
      */
     public function getCommentsNumberForProducts(array $productIds, $validatedOnly)
     {
-      
         $sql = 'SELECT';
 
         $count = count($productIds);
 
         foreach ($productIds as $index => $id) {
-            $esqID = pSQL($id);
+            $esqID = (int) $id;
 
             $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
             if ($validatedOnly) {
@@ -332,7 +331,7 @@ class ProductCommentRepository
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->update($this->databasePrefix . 'product_comment', 'pc')
-            ->set('id_customer', 0)
+            ->set('id_customer', (string) 0)
             ->andWhere('pc.id_customer = :id_customer')
             ->setParameter('id_customer', $customerId)
         ;

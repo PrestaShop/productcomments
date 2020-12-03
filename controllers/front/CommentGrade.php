@@ -30,13 +30,15 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
     public function display()
     {
         $idProducts = Tools::getValue('id_products');
-        /** @var ProductCommentRepository $productCommentRepository */
+        /* @var ProductCommentRepository $productCommentRepository */
 
         header('Content-Type: application/json');
 
         if (!is_array($idProducts)) {
             return $this->ajaxRender(null);
         }
+
+        $idProducts = array_unique(array_map('intval', $idProducts));
 
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
@@ -46,17 +48,17 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
         $resultFormated = [];
 
         foreach ($idProducts as $i => $id) {
-            $resultFormated []= [
+            $resultFormated[] = [
                 'id_product' => $id,
                 'comments_nb' => $productsCommentsNb[$id],
-                'average_grade' => $averageGrade[$id]
+                'average_grade' => $averageGrade[$id],
             ];
         }
 
         $this->ajaxRender(
             json_encode(
                 [
-                    'products' => $resultFormated
+                    'products' => $resultFormated,
                 ]
             )
         );

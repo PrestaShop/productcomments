@@ -29,8 +29,8 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
 {
     public function display()
     {
-        $idProduct = Tools::getValue('id_product');
-        $page = Tools::getValue('page', 1);
+        $idProduct = (int) Tools::getValue('id_product');
+        $page = (int) Tools::getValue('page', 1);
         $isLastNameAnynomus = Configuration::get('PRODUCT_COMMENTS_ANONYMISATION');
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
@@ -38,10 +38,13 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
         $productComments = $productCommentRepository->paginate(
             $idProduct,
             $page,
-            Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'),
-            Configuration::get('PRODUCT_COMMENTS_MODERATE')
+            (int) Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'),
+            (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE')
         );
-        $productCommentsNb = $productCommentRepository->getCommentsNumber($idProduct, Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $productCommentsNb = $productCommentRepository->getCommentsNumber(
+            $idProduct,
+            (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE')
+        );
 
         $responseArray = [
             'comments_nb' => $productCommentsNb,
@@ -62,7 +65,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
 
-            if($isLastNameAnynomus) {
+            if ($isLastNameAnynomus) {
                 $productComment['lastname'] = substr($productComment['lastname'], 0, 1) . '.';
             }
 

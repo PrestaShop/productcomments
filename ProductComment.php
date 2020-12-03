@@ -29,33 +29,35 @@ if (!defined('_PS_VERSION_')) {
 
 class ProductComment extends ObjectModel
 {
+    /** @var int */
     public $id;
 
-    /** @var int Product's id */
+    /** @var int */
     public $id_product;
 
-    /** @var int Customer's id */
+    /** @var int */
     public $id_customer;
 
-    /** @var int Guest's id */
+    /** @var int */
     public $id_guest;
 
-    /** @var int Customer name */
+    /** @var int */
     public $customer_name;
 
-    /** @var string Title */
+    /** @var string */
     public $title;
 
-    /** @var string Content */
+    /** @var string */
     public $content;
 
-    /** @var int Grade */
+    /** @var int */
     public $grade;
 
-    /** @var bool Validate */
-    public $validate = 0;
+    /** @var bool */
+    public $validate = false;
 
-    public $deleted = 0;
+    /** @var bool */
+    public $deleted = false;
 
     /** @var string Object creation date */
     public $date_add;
@@ -63,34 +65,34 @@ class ProductComment extends ObjectModel
     /**
      * @see ObjectModel::$definition
      */
-    public static $definition = array(
+    public static $definition = [
         'table' => 'product_comment',
         'primary' => 'id_product_comment',
-        'fields' => array(
-            'id_product' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true),
-            'id_customer' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true),
-            'id_guest' => array('type' => self::TYPE_INT),
-            'customer_name' => array('type' => self::TYPE_STRING),
-            'title' => array('type' => self::TYPE_STRING),
-            'content' => array('type' => self::TYPE_STRING, 'validate' => 'isMessage', 'size' => 65535, 'required' => true),
-            'grade' => array('type' => self::TYPE_FLOAT, 'validate' => 'isFloat'),
-            'validate' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
-            'deleted' => array('type' => self::TYPE_BOOL),
-            'date_add' => array('type' => self::TYPE_DATE),
-        ),
-    );
+        'fields' => [
+            'id_product' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true],
+            'id_customer' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true],
+            'id_guest' => ['type' => self::TYPE_INT],
+            'customer_name' => ['type' => self::TYPE_STRING],
+            'title' => ['type' => self::TYPE_STRING],
+            'content' => ['type' => self::TYPE_STRING, 'validate' => 'isMessage', 'size' => 65535, 'required' => true],
+            'grade' => ['type' => self::TYPE_FLOAT, 'validate' => 'isFloat'],
+            'validate' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool'],
+            'deleted' => ['type' => self::TYPE_BOOL],
+            'date_add' => ['type' => self::TYPE_DATE],
+        ],
+    ];
 
     /**
      * Get comments by IdProduct
      *
-     * @return array Comments
+     * @return array|bool
      */
     public static function getByProduct($id_product, $p = 1, $n = null, $id_customer = null)
     {
         if (!Validate::isUnsignedId($id_product)) {
             return false;
         }
-        $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
+        $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');
         $p = (int) $p;
         $n = (int) $n;
         if ($p <= 1) {
@@ -102,7 +104,7 @@ class ProductComment extends ObjectModel
 
         $cache_id = 'ProductComment::getByProduct_' . (int) $id_product . '-' . (int) $p . '-' . (int) $n . '-' . (int) $id_customer . '-' . (bool) $validate;
         if (!Cache::isStored($cache_id)) {
-            $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+            $result = Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->executeS('
 			SELECT pc.`id_product_comment`,
 			(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_usefulness` pcu WHERE pcu.`id_product_comment` = pc.`id_product_comment` AND pcu.`usefulness` = 1) as total_useful,
 			(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_usefulness` pcu WHERE pcu.`id_product_comment` = pc.`id_product_comment`) as total_advice, ' .
@@ -111,7 +113,7 @@ class ProductComment extends ObjectModel
 			IF(c.id_customer, CONCAT(c.`firstname`, \' \',  LEFT(c.`lastname`, 1)), pc.customer_name) customer_name, pc.`content`, pc.`grade`, pc.`date_add`, pc.title
 			  FROM `' . _DB_PREFIX_ . 'product_comment` pc
 			LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON c.`id_customer` = pc.`id_customer`
-			WHERE pc.`id_product` = ' . (int) ($id_product) . ($validate == '1' ? ' AND pc.`validate` = 1' : '') . '
+			WHERE pc.`id_product` = ' . (int) ($id_product) . ($validate ? ' AND pc.`validate` = 1' : '') . '
 			ORDER BY pc.`date_add` DESC
 			' . ($n ? 'LIMIT ' . (int) (($p - 1) * $n) . ', ' . (int) ($n) : ''));
             Cache::store($cache_id, $result);
@@ -123,7 +125,7 @@ class ProductComment extends ObjectModel
     /**
      * Return customer's comment
      *
-     * @return arrayComments
+     * @return array Comments
      */
     public static function getByCustomer($id_product, $id_customer, $get_last = false, $id_guest = false)
     {
@@ -151,7 +153,7 @@ class ProductComment extends ObjectModel
     /**
      * Get Grade By product
      *
-     * @return array Grades
+     * @return array|bool
      */
     public static function getGradeByProduct($id_product, $id_lang)
     {
@@ -159,9 +161,9 @@ class ProductComment extends ObjectModel
             !Validate::isUnsignedId($id_lang)) {
             return false;
         }
-        $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
+        $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');
 
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+        return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->executeS('
 		SELECT pc.`id_product_comment`, pcg.`grade`, pccl.`name`, pcc.`id_product_comment_criterion`
 		FROM `' . _DB_PREFIX_ . 'product_comment` pc
 		LEFT JOIN `' . _DB_PREFIX_ . 'product_comment_grade` pcg ON (pcg.`id_product_comment` = pc.`id_product_comment`)
@@ -169,7 +171,7 @@ class ProductComment extends ObjectModel
 		LEFT JOIN `' . _DB_PREFIX_ . 'product_comment_criterion_lang` pccl ON (pccl.`id_product_comment_criterion` = pcg.`id_product_comment_criterion`)
 		WHERE pc.`id_product` = ' . (int) $id_product . '
 		AND pccl.`id_lang` = ' . (int) $id_lang .
-        ($validate == '1' ? ' AND pc.`validate` = 1' : ''));
+        ($validate ? ' AND pc.`validate` = 1' : ''));
     }
 
     public static function getRatings($id_product)
@@ -184,14 +186,14 @@ class ProductComment extends ObjectModel
 			AND pc.`deleted` = 0' .
             ($validate == '1' ? ' AND pc.`validate` = 1' : '');
 
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+        return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow($sql);
     }
 
     public static function getAverageGrade($id_product)
     {
         $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
 
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
+        return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow('
 		SELECT (SUM(pc.`grade`) / COUNT(pc.`grade`)) AS grade
 		FROM `' . _DB_PREFIX_ . 'product_comment` pc
 		WHERE pc.`id_product` = ' . (int) $id_product . '
@@ -204,12 +206,12 @@ class ProductComment extends ObjectModel
         /* Get all grades */
         $grades = ProductComment::getGradeByProduct((int) $id_product, (int) $id_lang);
         $total = ProductComment::getGradedCommentNumber((int) $id_product);
-        if (!count($grades) || (!$total)) {
-            return array();
+        if (!count($grades) || !$total) {
+            return [];
         }
 
         /* Addition grades for each criterion */
-        $criterionsGradeTotal = array();
+        $criterionsGradeTotal = [];
         $count_grades = count($grades);
         for ($i = 0; $i < $count_grades; ++$i) {
             if (array_key_exists($grades[$i]['id_product_comment_criterion'], $criterionsGradeTotal) === false) {
@@ -220,9 +222,9 @@ class ProductComment extends ObjectModel
         }
 
         /* Finally compute the averages */
-        $averages = array();
+        $averages = [];
         foreach ($criterionsGradeTotal as $key => $criterionGradeTotal) {
-            $averages[(int) ($key)] = (int) ($total) ? ((int) ($criterionGradeTotal) / (int) ($total)) : 0;
+            $averages[(int) $key] = $criterionGradeTotal / $total;
         }
 
         return $averages;
@@ -231,20 +233,20 @@ class ProductComment extends ObjectModel
     /**
      * Return number of comments and average grade by products
      *
-     * @return array Info
+     * @return array|false
      */
     public static function getCommentNumber($id_product)
     {
         if (!Validate::isUnsignedId($id_product)) {
             return false;
         }
-        $validate = (int) Configuration::get('PRODUCT_COMMENTS_MODERATE');
+        $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');
         $cache_id = 'ProductComment::getCommentNumber_' . (int) $id_product . '-' . $validate;
         if (!Cache::isStored($cache_id)) {
-            $result = (int) Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue('
+            $result = (int) Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue('
 			SELECT COUNT(`id_product_comment`) AS "nbr"
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
-			WHERE `id_product` = ' . (int) ($id_product) . ($validate == '1' ? ' AND `validate` = 1' : ''));
+			WHERE `id_product` = ' . (int) ($id_product) . ($validate ? ' AND `validate` = 1' : ''));
             Cache::store($cache_id, $result);
         }
 
@@ -254,7 +256,7 @@ class ProductComment extends ObjectModel
     /**
      * Return number of comments and average grade by products
      *
-     * @return array Info
+     * @return int|bool
      */
     public static function getGradedCommentNumber($id_product)
     {
@@ -263,7 +265,7 @@ class ProductComment extends ObjectModel
         }
         $validate = (int) Configuration::get('PRODUCT_COMMENTS_MODERATE');
 
-        $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
+        $result = Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow('
 		SELECT COUNT(pc.`id_product`) AS nbr
 		FROM `' . _DB_PREFIX_ . 'product_comment` pc
 		WHERE `id_product` = ' . (int) ($id_product) . ($validate == '1' ? ' AND `validate` = 1' : '') . '
@@ -284,20 +286,21 @@ class ProductComment extends ObjectModel
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
 			LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (c.`id_customer` = pc.`id_customer`)
             LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (pl.`id_product` = pc.`id_product` AND pl.`id_lang` = ' . (int) Context::getContext()->language->id . Shop::addSqlRestrictionOnLang('pl') . ')';
-         
-        if(!$skip_validate) {
-            $sql .=	' WHERE pc.`validate` = ' . (int) $validate;
+
+        if (!$skip_validate) {
+            $sql .= ' WHERE pc.`validate` = ' . (int) $validate;
         }
 
         $sql .= ' ORDER BY pc.`date_add` DESC';
 
-        if($p && $limit) {
+        if ($p && $limit) {
             $offset = ($p - 1) * $limit;
             $sql .= ' LIMIT ' . (int) $offset . ',' . (int) $limit;
         }
 
         return Db::getInstance()->executeS($sql);
     }
+
     /**
      * Get numbers of comments by Validation
      *
@@ -306,14 +309,14 @@ class ProductComment extends ObjectModel
     public static function getCountByValidate($validate = '0', $skip_validate = false)
     {
         $sql = '
-            SELECT COUNT(*) 
+            SELECT COUNT(*)
             FROM `' . _DB_PREFIX_ . 'product_comment`';
 
-        if(!$skip_validate) {
-            $sql .=	' WHERE `validate` = ' . (int) $validate;
+        if (!$skip_validate) {
+            $sql .= ' WHERE `validate` = ' . (int) $validate;
         }
 
-        return Db::getInstance()->getValue($sql);
+        return (int) Db::getInstance()->getValue($sql);
     }
 
     /**
@@ -347,7 +350,7 @@ class ProductComment extends ObjectModel
 		`validate` = ' . (int) $validate . '
 		WHERE `id_product_comment` = ' . (int) $this->id));
 
-        Hook::exec('actionObjectProductCommentValidateAfter', array('object' => $this));
+        Hook::exec('actionObjectProductCommentValidateAfter', ['object' => $this]);
 
         return $success;
     }
@@ -359,10 +362,10 @@ class ProductComment extends ObjectModel
      */
     public function delete()
     {
-        parent::delete();
-        ProductComment::deleteGrades($this->id);
-        ProductComment::deleteReports($this->id);
-        ProductComment::deleteUsefulness($this->id);
+        return parent::delete()
+            && ProductComment::deleteGrades($this->id)
+            && ProductComment::deleteReports($this->id)
+            && ProductComment::deleteUsefulness($this->id);
     }
 
     /**
@@ -472,7 +475,7 @@ class ProductComment extends ObjectModel
      */
     public static function getReportedComments()
     {
-        return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+        return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->executeS('
 		SELECT DISTINCT(pc.`id_product_comment`), pc.`id_product`, IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`, pc.`title`
 		FROM `' . _DB_PREFIX_ . 'product_comment_report` pcr
 		LEFT JOIN `' . _DB_PREFIX_ . 'product_comment` pc
