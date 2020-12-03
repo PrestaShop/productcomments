@@ -38,6 +38,8 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
             return $this->ajaxRender(null);
         }
 
+        $idProducts = array_unique(array_map('intval', $idProducts));
+
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
         $productsCommentsNb = $productCommentRepository->getCommentsNumberForProducts($idProducts, Configuration::get('PRODUCT_COMMENTS_MODERATE'));

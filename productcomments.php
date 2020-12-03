@@ -178,7 +178,7 @@ class ProductComments extends Module implements WidgetInterface
             $comment->delete();
         } elseif (Tools::isSubmit('submitEditCriterion')) {
             $criterion = new ProductCommentCriterion((int) Tools::getValue('id_product_comment_criterion'));
-            $criterion->id_product_comment_criterion_type = Tools::getValue('id_product_comment_criterion_type');
+            $criterion->id_product_comment_criterion_type = (int) Tools::getValue('id_product_comment_criterion_type');
             $criterion->active = Tools::getValue('active');
 
             $languages = Language::getLanguages();
