@@ -34,7 +34,7 @@ class ProductCommentCriterion
     {
         if (!Validate::isUnsignedId($id_lang) ||
             !Validate::isMessage($name)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         return Db::getInstance()->execute('
@@ -53,7 +53,7 @@ class ProductCommentCriterion
     {
         if (!Validate::isUnsignedId($id_product_comment_criterion) ||
             !Validate::isUnsignedId($id_product)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         return Db::getInstance()->execute('
@@ -72,7 +72,7 @@ class ProductCommentCriterion
     {
         if (!Validate::isUnsignedId($id_product_comment) ||
             !Validate::isUnsignedId($id_product_comment_criterion)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
         if ($grade < 0) {
             $grade = 0;
@@ -98,7 +98,7 @@ class ProductCommentCriterion
         if (!Validate::isUnsignedId($id_product_comment_criterion) ||
             !Validate::isUnsignedId($id_lang) ||
             !Validate::isMessage($name)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         return Db::getInstance()->execute('
@@ -117,7 +117,7 @@ class ProductCommentCriterion
     {
         if (!Validate::isUnsignedId($id_product) ||
             !Validate::isUnsignedId($id_lang)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         return Db::getInstance()->executeS('
@@ -136,7 +136,7 @@ class ProductCommentCriterion
     public static function get($id_lang)
     {
         if (!Validate::isUnsignedId($id_lang)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         return Db::getInstance()->executeS('
@@ -154,7 +154,7 @@ class ProductCommentCriterion
     public static function deleteByProduct($id_product)
     {
         if (!Validate::isUnsignedId($id_product)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         return Db::getInstance()->execute('
@@ -170,7 +170,7 @@ class ProductCommentCriterion
     public static function delete($id_product_comment_criterion)
     {
         if (!Validate::isUnsignedId($id_product_comment_criterion)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
         $result = Db::getInstance()->execute('
 		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_grade`
