@@ -31,7 +31,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
     {
         $idProduct = (int) Tools::getValue('id_product');
         $page = (int) Tools::getValue('page', 1);
-        $isLastNameAnynmous = Configuration::get('PRODUCT_COMMENTS_ANONYMISATION');
+        $isLastNameAnonymous = Configuration::get('PRODUCT_COMMENTS_ANONYMISATION');
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
