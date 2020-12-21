@@ -65,7 +65,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
 
-            if ($isLastNameAnynomus) {
+            if ($isLastNameAnynomus && isset($productComment['lastname'])) {
                 $productComment['lastname'] = substr($productComment['lastname'], 0, 1) . '.';
             }
 
