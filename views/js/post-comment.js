@@ -23,7 +23,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
-jQuery(document).ready(function () {
+jQuery(function () {
   const $ = jQuery;
   $('body').on('click', '.post-product-comment', function (event) {
     event.preventDefault();
@@ -75,7 +75,7 @@ jQuery(document).ready(function () {
       showPostCommentModal();
     });
 
-    $('#post-product-comment-form').submit(submitCommentForm);
+    $('#post-product-comment-form').on('submit', submitCommentForm);
   }
 
   function submitCommentForm(event) {

@@ -96,7 +96,7 @@ function deleteCriterion(id)
 	form.submit();
 }
 
-$( document ).ready(function() {
+$(function() {
 	$('select#id_product_comment_criterion_type').change(function() {
 		// PS 1.6
 		$('#categoryBox').closest('div.form-group').hide();

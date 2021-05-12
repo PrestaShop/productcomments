@@ -24,7 +24,7 @@
  */
 
 
-$(document).ready(function() {
+$(function() {
     productListingComments.init();
     productListingComments.load();
 });
