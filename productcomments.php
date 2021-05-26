@@ -435,6 +435,7 @@ class ProductComments extends Module implements WidgetInterface
             $helper->identifier = 'id_product_comment';
             $helper->title = $this->trans('Reviews waiting for approval', [], 'Modules.Productcomments.Admin');
             $helper->table = $this->name;
+            $helper->table_id = 'waiting-approval-productcomments-list';
             $helper->token = Tools::getAdminTokenLite('AdminModules');
             $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
             $helper->no_link = true;
@@ -459,6 +460,7 @@ class ProductComments extends Module implements WidgetInterface
         $helper->identifier = 'id_product_comment';
         $helper->title = $this->trans('Reported Reviews', [], 'Modules.Productcomments.Admin');
         $helper->table = $this->name;
+        $helper->table_id = 'reported-productcomments-list';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
         $helper->no_link = true;
@@ -567,6 +569,7 @@ class ProductComments extends Module implements WidgetInterface
         $helper->identifier = 'id_product_comment';
         $helper->title = $this->trans('Approved Reviews', [], 'Modules.Productcomments.Admin');
         $helper->table = $this->name;
+        $helper->table_id = 'approved-productcomments-list';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
         $helper->no_link = true;
