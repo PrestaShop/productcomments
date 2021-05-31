@@ -640,37 +640,44 @@ class ProductComments extends Module implements WidgetInterface
                 'title' => $this->trans('ID', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'search' => false,
+                'class' => 'product-comment-id'
             ],
             'title' => [
                 'title' => $this->trans('Review title', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'search' => false,
+                'class' => 'product-comment-title'
             ],
             'content' => [
                 'title' => $this->trans('Review', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'search' => false,
+                'class' => 'product-comment-content'
             ],
             'grade' => [
                 'title' => $this->trans('Rating', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'suffix' => '/5',
                 'search' => false,
+                'class' => 'product-comment-rating'
             ],
             'customer_name' => [
                 'title' => $this->trans('Author', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'search' => false,
+                'class' => 'product-comment-author'
             ],
             'name' => [
                 'title' => $this->trans('Product', [], 'Modules.Productcomments.Admin'),
                 'type' => 'text',
                 'search' => false,
+                'class' => 'product-comment-product-name'
             ],
             'date_add' => [
                 'title' => $this->trans('Time of publication', [], 'Modules.Productcomments.Admin'),
                 'type' => 'date',
                 'search' => false,
+                'class' => 'product-comment-date'
             ],
         ];
     }
