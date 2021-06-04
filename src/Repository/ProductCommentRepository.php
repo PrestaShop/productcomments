@@ -51,6 +51,8 @@ class ProductCommentRepository
      */
     private $commentsMinimalTime;
 
+    const DEFAULT_COMMENTS_PER_PAGE = 5;
+
     /**
      * @param Connection $connection
      * @param string $databasePrefix
@@ -80,7 +82,7 @@ class ProductCommentRepository
     public function paginate($productId, $page, $commentsPerPage, $validatedOnly)
     {
         if (empty($commentsPerPage)) {
-            $commentsPerPage = 5;
+            $commentsPerPage = self::DEFAULT_COMMENTS_PER_PAGE;
         }
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
