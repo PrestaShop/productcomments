@@ -79,6 +79,9 @@ class ProductCommentRepository
      */
     public function paginate($productId, $page, $commentsPerPage, $validatedOnly)
     {
+        if (empty($commentsPerPage)) {
+            $commentsPerPage = 5;
+        }
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb
