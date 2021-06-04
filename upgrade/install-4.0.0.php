@@ -40,5 +40,5 @@ function upgrade_module_4_0_0($object)
     $res &= (bool) $object->registerHook('displayProductAdditionalInfo');
     $res &= (bool) $object->registerHook('displayFooterProduct');
 
-    return $res;
+    return (bool) $res;
 }
