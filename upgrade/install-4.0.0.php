@@ -31,10 +31,10 @@ function upgrade_module_4_0_0($object)
 {
     $res = true;
     if (!Configuration::hasKey('PRODUCT_COMMENTS_COMMENTS_PER_PAGE')) {
-        $res &= (bool) Configuration::set('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5);
+        $res &= (bool) Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5);
     }
     if (!Configuration::hasKey('PRODUCT_COMMENTS_USEFULNESS')) {
-        $res &= (bool) Configuration::set('PRODUCT_COMMENTS_USEFULNESS', 1);
+        $res &= (bool) Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', 1);
     }
     $res &= (bool) $object->unregisterHook('displayRightColumnProduct');
     $res &= (bool) $object->registerHook('displayProductAdditionalInfo');
