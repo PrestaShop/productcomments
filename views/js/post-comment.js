@@ -49,7 +49,9 @@ jQuery(document).ready(function () {
     postCommentModal.modal('hide');
     commentPostErrorModal.modal('hide');
     clearPostCommentForm();
-    commentPostedModal.modal('show');
+    window.setTimeout(function() {
+      commentPostedModal.modal('show');
+    }, 500);
   }
 
   function showPostErrorModal(errorMessage) {
