@@ -4,4 +4,5 @@
 
 "simplePagination.js@https://github.com/flaviusmatis/simplePagination.js.git":
   version "0.0.0"
-  resolved "https://github.com/flaviusmatis/simplePagination.js.git#e32c66e0f188d9ee022c1d2748de487fa9b77d58"
+  uid da9710471a235dfea861401027c0adf5b45286fb
+  resolved "https://github.com/flaviusmatis/simplePagination.js.git#da9710471a235dfea861401027c0adf5b45286fb"

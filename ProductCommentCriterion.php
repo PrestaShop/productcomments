@@ -100,7 +100,7 @@ class ProductCommentCriterion extends ObjectModel
     public function addProduct($id_product)
     {
         if (!Validate::isUnsignedId($id_product)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         return Db::getInstance()->execute('
@@ -117,7 +117,7 @@ class ProductCommentCriterion extends ObjectModel
     public function addCategory($id_category)
     {
         if (!Validate::isUnsignedId($id_category)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         return Db::getInstance()->execute('
@@ -134,7 +134,7 @@ class ProductCommentCriterion extends ObjectModel
     public function addGrade($id_product_comment, $grade)
     {
         if (!Validate::isUnsignedId($id_product_comment)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
         if ($grade < 0) {
             $grade = 0;
@@ -159,7 +159,7 @@ class ProductCommentCriterion extends ObjectModel
     {
         if (!Validate::isUnsignedId($id_product) ||
             !Validate::isUnsignedId($id_lang)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
         $alias = 'p';
         $table = '';
@@ -205,7 +205,7 @@ class ProductCommentCriterion extends ObjectModel
     public static function getCriterions($id_lang, $type = false, $active = false)
     {
         if (!Validate::isUnsignedId($id_lang)) {
-            die(Tools::displayError());
+            exit(Tools::displayError());
         }
 
         $sql = '
