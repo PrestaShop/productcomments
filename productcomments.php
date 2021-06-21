@@ -28,7 +28,6 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
@@ -263,9 +262,6 @@ class ProductComments extends Module implements WidgetInterface
             $this->_html .= $this->renderModerateLists();
             $this->_html .= $this->renderCriterionList();
             $this->_html .= $this->renderCommentsList();
-
-            $this->context->controller->addCss($this->_path . 'views/css/module-addons-suggestion.css');
-            $this->_html .= $this->renderAddonsSuggestion();
         }
 
         $this->_setBaseUrl();
@@ -594,24 +590,6 @@ class ProductComments extends Module implements WidgetInterface
         $helper->listTotal = $count;
 
         return $helper->generateList($comments, $fields_list);
-    }
-
-    public function renderAddonsSuggestion()
-    {
-        $categoryFetcher = new CategoryFetcher(
-            480,
-            [
-                'name' => 'Customer reviews',
-                'link' => '/en/480-customer-reviews',
-                'description' => '<h2>Display customer reviews on your store!</h2>Customer reviews reassure your visitors and help you improve conversion! Encourage your customers to leave a review, display them, and do not forget to use rich snippets to show your products’ satisfaction ratings on search engines: they will be more visible!',
-            ]
-        );
-        $category = $categoryFetcher->getData($this->context->language->iso_code);
-        $this->context->smarty->assign([
-            'addons_category' => $category,
-        ]);
-
-        return $this->context->smarty->fetch('module:productcomments/views/templates/admin/addons-suggestion.tpl');
     }
 
     public function getConfigFieldsValues()
