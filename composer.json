@@ -11,7 +11,6 @@
   ],
   "require": {
     "php": ">=5.6.0",
-    "prestashop/circuit-breaker": "^3.0.0",
     "doctrine/cache": "^1.6",
     "symfony/css-selector": "^3.4 || ^4.4 || ^5.0",
     "guzzlehttp/cache-subscriber": "^0.2.0"
@@ -19,12 +18,6 @@
   "require-dev": {
     "prestashop/php-dev-tools": "^3.4"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:jolelievre/circuit-breaker.git"
-    }
-  ],
   "config": {
     "preferred-install": "dist",
     "classmap-authoritative": true,
