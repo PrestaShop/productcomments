@@ -311,7 +311,7 @@
 				} else {
 					$link = $('<span >' + (options.text) + '</span>');
 				}
-				$link.click(function(event){
+				$link.on('click', function(event){
 					return methods._selectPage.call(self, pageIndex, event);
 				});
 			}
@@ -344,7 +344,7 @@
 				o = this.data('pagination'),
 				$ellip = $panel.find('.ellipse');
 			$ellip.addClass('clickable').parent().removeClass('disabled');
-			$ellip.click(function(event) {
+			$ellip.on('click', function(event) {
 				if (!o.disable) {
 					var $this = $(this),
 						val = (parseInt($this.parent().prev().text(), 10) || 0) + 1;
@@ -352,7 +352,7 @@
 						.html('<input type="number" min="1" max="' + o.pages + '" step="1" value="' + val + '">')
 						.find('input')
 						.focus()
-						.click(function(event) {
+						.on('click', function(event) {
 							// prevent input number arrows from bubbling a click event on $ellip
 							event.stopPropagation();
 						})

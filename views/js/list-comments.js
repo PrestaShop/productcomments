@@ -23,7 +23,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
 
-jQuery(document).ready(function () {
+jQuery(function () {
   const $ = jQuery;
   const commentsList = $('#product-comments-list');
   const emptyProductComment = $('#empty-product-comment');
@@ -111,13 +111,13 @@ jQuery(document).ready(function () {
     $('.grade-stars', $comment).rating({
       grade: comment.grade
     });
-    $('.useful-review', $comment).click(function() {
+    $('.useful-review', $comment).on('click', function() {
       updateCommentUsefulness($comment, comment.id_product_comment, 1);
     });
-    $('.not-useful-review', $comment).click(function() {
+    $('.not-useful-review', $comment).on('click', function() {
       updateCommentUsefulness($comment, comment.id_product_comment, 0);
     });
-    $('.report-abuse', $comment).click(function() {
+    $('.report-abuse', $comment).on('click', function() {
       confirmCommentAbuse(comment.id_product_comment);
     });
 

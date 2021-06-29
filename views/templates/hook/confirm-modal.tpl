@@ -34,10 +34,10 @@
       confirmModal.trigger('modal:confirm', false);
     });
 
-    $('.confirm-button', confirmModal).click(function() {
+    $('.confirm-button', confirmModal).on('click', function() {
       confirmModal.trigger('modal:confirm', true);
     });
-    $('.refuse-button', confirmModal).click(function() {
+    $('.refuse-button', confirmModal).on('click', function() {
       confirmModal.trigger('modal:confirm', false);
     });
   });
