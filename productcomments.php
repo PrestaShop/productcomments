@@ -86,7 +86,7 @@ class ProductComments extends Module implements WidgetInterface
             !$this->registerHook('header') || //Adds css and javascript on front
             !$this->registerHook('displayProductListReviews') || //Product list miniature
             !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
-
+            !$this->registerHook('filterProductContent') || // Add infos to Product page
             !$this->registerHook('registerGDPRConsent') ||
             !$this->registerHook('actionDeleteGDPRCustomer') ||
             !$this->registerHook('actionExportGDPRData') ||
@@ -894,6 +894,31 @@ class ProductComments extends Module implements WidgetInterface
     public function hookDisplayFooterProduct($params)
     {
         return $this->renderProductCommentsList($params['product']) . $this->renderProductCommentModal($params['product']);
+    }
+
+    /**
+     * Inject data about productcomments in the product object for frontoffice
+     *
+     * @param array $params
+     *
+     * @return void
+     */
+    public function hookFilterProductContent(array $params)
+    {
+        if (empty($params['object']->id)) {
+            return;
+        }
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
+
+        $averageRating = $productCommentRepository->getAverageGrade($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $nbComments = $productCommentRepository->getCommentsNumber($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+
+        /* @phpstan-ignore-next-line */
+        $params['object']->productComments = [
+            'averageRating' => $averageRating,
+            'nbComments' => $nbComments,
+        ];
     }
 
     /**
