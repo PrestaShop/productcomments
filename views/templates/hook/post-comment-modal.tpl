@@ -117,7 +117,7 @@
 
           <div class="row">
             <div class="col-md-12 col-sm-12">
-              {hook h='displayGDPRConsent' mod='psgdpr' id_module={$id_module}}
+              {hook h='displayGDPRConsent' mod='psgdpr' id_module=$id_module}
             </div>
           </div>
 
