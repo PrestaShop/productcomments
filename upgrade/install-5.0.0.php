@@ -29,5 +29,5 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_5_0_0($object)
 {
-    return $object->registerHook('filterProductContent');
+    return $object->registerHook('filterProductContent') && $object->registerHook('displayGDPRConsent');
 }
