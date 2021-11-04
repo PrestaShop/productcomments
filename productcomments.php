@@ -263,8 +263,6 @@ class ProductComments extends Module implements WidgetInterface
             $this->_html .= $this->renderModerateLists();
             $this->_html .= $this->renderCriterionList();
             $this->_html .= $this->renderCommentsList();
-
-            $this->_html .= $this->renderAddonsSuggestion();
         }
 
         $this->_setBaseUrl();
