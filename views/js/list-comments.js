@@ -104,6 +104,7 @@ jQuery(document).ready(function () {
     commentTemplate = commentTemplate.replace(/@COMMENT_TITLE@/, comment.title);
     commentTemplate = commentTemplate.replace(/@COMMENT_COMMENT@/, comment.content);
     commentTemplate = commentTemplate.replace(/@COMMENT_USEFUL_ADVICES@/, comment.usefulness);
+    commentTemplate = commentTemplate.replace(/@COMMENT_GRADE@/, comment.grade);
     commentTemplate = commentTemplate.replace(/@COMMENT_NOT_USEFUL_ADVICES@/, (comment.total_usefulness - comment.usefulness));
     commentTemplate = commentTemplate.replace(/@COMMENT_TOTAL_ADVICES@/, comment.total_usefulness);
 
