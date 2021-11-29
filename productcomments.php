@@ -28,7 +28,6 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-use PrestaShop\Module\ProductComment\Addons\CategoryFetcher;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
@@ -46,7 +45,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '4.2.2';
+        $this->version = '5.0.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -87,10 +86,11 @@ class ProductComments extends Module implements WidgetInterface
             !$this->registerHook('header') || //Adds css and javascript on front
             !$this->registerHook('displayProductListReviews') || //Product list miniature
             !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
-
+            !$this->registerHook('filterProductContent') || // Add infos to Product page
             !$this->registerHook('registerGDPRConsent') ||
             !$this->registerHook('actionDeleteGDPRCustomer') ||
             !$this->registerHook('actionExportGDPRData') ||
+            !$this->registerHook('displayGDPRConsent') ||
 
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
@@ -263,9 +263,6 @@ class ProductComments extends Module implements WidgetInterface
             $this->_html .= $this->renderModerateLists();
             $this->_html .= $this->renderCriterionList();
             $this->_html .= $this->renderCommentsList();
-
-            $this->context->controller->addCss($this->_path . 'views/css/module-addons-suggestion.css');
-            $this->_html .= $this->renderAddonsSuggestion();
         }
 
         $this->_setBaseUrl();
@@ -596,24 +593,6 @@ class ProductComments extends Module implements WidgetInterface
         return $helper->generateList($comments, $fields_list);
     }
 
-    public function renderAddonsSuggestion()
-    {
-        $categoryFetcher = new CategoryFetcher(
-            480,
-            [
-                'name' => 'Customer reviews',
-                'link' => '/en/480-customer-reviews',
-                'description' => '<h2>Display customer reviews on your store!</h2>Customer reviews reassure your visitors and help you improve conversion! Encourage your customers to leave a review, display them, and do not forget to use rich snippets to show your products’ satisfaction ratings on search engines: they will be more visible!',
-            ]
-        );
-        $category = $categoryFetcher->getData($this->context->language->iso_code);
-        $this->context->smarty->assign([
-            'addons_category' => $category,
-        ]);
-
-        return $this->context->smarty->fetch('module:productcomments/views/templates/admin/addons-suggestion.tpl');
-    }
-
     public function getConfigFieldsValues()
     {
         return [
@@ -919,6 +898,31 @@ class ProductComments extends Module implements WidgetInterface
     }
 
     /**
+     * Inject data about productcomments in the product object for frontoffice
+     *
+     * @param array $params
+     *
+     * @return void
+     */
+    public function hookFilterProductContent(array $params)
+    {
+        if (empty($params['object']->id)) {
+            return;
+        }
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
+
+        $averageRating = $productCommentRepository->getAverageGrade($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $nbComments = $productCommentRepository->getCommentsNumber($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+
+        /* @phpstan-ignore-next-line */
+        $params['object']->productComments = [
+            'averageRating' => $averageRating,
+            'nbComments' => $nbComments,
+        ];
+    }
+
+    /**
      * Used to render the product comments list
      *
      * @param Product $product
@@ -986,6 +990,7 @@ class ProductComments extends Module implements WidgetInterface
             'moderation_active' => (int) Configuration::get('PRODUCT_COMMENTS_MODERATE'),
             'criterions' => $criterions,
             'product' => $product,
+            'id_module' => $this->id,
         ]);
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/post-comment-modal.tpl');
@@ -1025,7 +1030,9 @@ class ProductComments extends Module implements WidgetInterface
             $idProduct = $this->context->controller->getProduct()->id;
             $variables = $this->getWidgetVariables($hookName, ['id_product' => $idProduct]);
 
-            $filePath = 'quickview' === Tools::getValue('action') ? $tplHookPath . 'product-additional-info-quickview.tpl' : $tplHookPath . 'product-additional-info.tpl';
+            $filePath = 'quickview' === Tools::getValue('action') || 'displayGDPRConsent' === $hookName
+                ? $tplHookPath . 'product-additional-info-quickview.tpl'
+                : $tplHookPath . 'product-additional-info.tpl';
         }
 
         if (empty($variables) || empty($filePath)) {

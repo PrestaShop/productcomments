@@ -116,6 +116,12 @@
           </div>
 
           <div class="row">
+            <div class="col-md-12 col-sm-12">
+              {hook h='displayGDPRConsent' mod='psgdpr' id_module=$id_module}
+            </div>
+          </div>
+
+          <div class="row">
             <div class="col-md-6 col-sm-6">
               <p class="required"><sup>*</sup> {l s='Required fields' d='Modules.Productcomments.Shop'}</p>
             </div>

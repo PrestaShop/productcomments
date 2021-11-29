@@ -87,7 +87,7 @@ var productListingComments = (function () {
         });
 
 
-        var IDsArray = Object.keys(seenIds);
+        var IDsArray = Object.keys(seenIds).filter(e => e !== 'undefined');
         var prevDataIDs = data.productIDs.splice(0);
         data.productIDs = prevDataIDs.concat(IDsArray);
 

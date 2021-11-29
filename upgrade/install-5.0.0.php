@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,28 +22,12 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
- *}
+ */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
-<div class="module-addons-suggestion">
-  <div class="suggestion-icon">
-  </div>
-  <div class="suggestion-category-details">
-    <div>
-      {l s='Want to go further?' d='Admin.Modules.Feature'}
-    </div>
-    <div class="category-label">
-      {$addons_category.name}
-    </div>
-    <div class="marketplace-label">
-      {l s='Addons Marketplace' d='Admin.Global'}
-    </div>
-  </div>
-  <div class="suggestion-category-description">
-    {$addons_category.description}
-  </div>
-  <div class="suggestion-link">
-    <a target="_blank" class="btn btn-primary" href="{$addons_category.link}">
-      {l s='Discover all modules' d='Admin.Modules.Feature'}
-    </a>
-  </div>
-</div>
+function upgrade_module_5_0_0($object)
+{
+    return $object->registerHook('filterProductContent') && $object->registerHook('displayGDPRConsent');
+}

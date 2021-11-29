@@ -25,7 +25,7 @@
 
 <div class="product-comment-list-item row" data-product-comment-id="@COMMENT_ID@" data-product-id="@PRODUCT_ID@">
   <div class="col-md-3 col-sm-3 comment-infos">
-    <div class="grade-stars"></div>
+    <div class="grade-stars" data-grade="@COMMENT_GRADE@"></div>
     <div class="comment-date">
       @COMMENT_DATE@
     </div>
