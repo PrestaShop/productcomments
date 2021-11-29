@@ -1030,7 +1030,9 @@ class ProductComments extends Module implements WidgetInterface
             $idProduct = $this->context->controller->getProduct()->id;
             $variables = $this->getWidgetVariables($hookName, ['id_product' => $idProduct]);
 
-            $filePath = 'quickview' === Tools::getValue('action') ? $tplHookPath . 'product-additional-info-quickview.tpl' : $tplHookPath . 'product-additional-info.tpl';
+            $filePath = 'quickview' === Tools::getValue('action') || 'displayGDPRConsent' === $hookName
+                ? $tplHookPath . 'product-additional-info-quickview.tpl'
+                : $tplHookPath . 'product-additional-info.tpl';
         }
 
         if (empty($variables) || empty($filePath)) {
