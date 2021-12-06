@@ -32,7 +32,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2>{l s='Write your review' d='Modules.Productcomments.Shop'}</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="{l s='Close' d='Shop.Theme.Global'}">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
