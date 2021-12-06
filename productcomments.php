@@ -90,7 +90,6 @@ class ProductComments extends Module implements WidgetInterface
             !$this->registerHook('registerGDPRConsent') ||
             !$this->registerHook('actionDeleteGDPRCustomer') ||
             !$this->registerHook('actionExportGDPRData') ||
-            !$this->registerHook('displayGDPRConsent') ||
 
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
