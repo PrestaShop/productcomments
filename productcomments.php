@@ -45,7 +45,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '5.0.0';
+        $this->version = '5.0.1';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -90,7 +90,6 @@ class ProductComments extends Module implements WidgetInterface
             !$this->registerHook('registerGDPRConsent') ||
             !$this->registerHook('actionDeleteGDPRCustomer') ||
             !$this->registerHook('actionExportGDPRData') ||
-            !$this->registerHook('displayGDPRConsent') ||
 
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
@@ -1030,7 +1029,7 @@ class ProductComments extends Module implements WidgetInterface
             $idProduct = $this->context->controller->getProduct()->id;
             $variables = $this->getWidgetVariables($hookName, ['id_product' => $idProduct]);
 
-            $filePath = 'quickview' === Tools::getValue('action') || 'displayGDPRConsent' === $hookName
+            $filePath = 'quickview' === Tools::getValue('action')
                 ? $tplHookPath . 'product-additional-info-quickview.tpl'
                 : $tplHookPath . 'product-additional-info.tpl';
         }
