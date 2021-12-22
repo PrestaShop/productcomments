@@ -124,4 +124,14 @@ $( document ).ready(function() {
 	});
 
 	$('select#id_product_comment_criterion_type').trigger( "change" );
+
+	$('table.table.productcomments .product-comment-author').each( function(){
+		let name = $(this).text().trim()
+		let link = $('#subtab-AdminCustomers a').attr('href');
+
+		let match = name.match(/\((\d+)\)/);
+		if (match && match[1]) {
+			$(this).html('<a href="'+link.replace('?',match[1]+'/view?')+'" target="_blank">'+name+'</a>');
+		}
+	})
 });
