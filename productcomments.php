@@ -120,7 +120,7 @@ class ProductComments extends Module implements WidgetInterface
             !$this->unregisterHook('actionExportGDPRData') ||
 
             !$this->unregisterHook('displayProductAdditionalInfo') ||
-            !$this->unregisterHook('header') ||
+            !$this->unregisterHook('displayHeader') ||
             !$this->unregisterHook('displayFooterProduct') ||
             !$this->unregisterHook('displayProductListReviews')
         ) {
@@ -860,7 +860,7 @@ class ProductComments extends Module implements WidgetInterface
     /**
      *  Inject the needed javascript and css files in the appropriate pages
      */
-    public function hookHeader()
+    public function hookDisplayHeader()
     {
         $jsList = [];
         $cssList = [];
