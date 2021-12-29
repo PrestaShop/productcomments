@@ -83,7 +83,7 @@ class ProductComments extends Module implements WidgetInterface
         if (
             parent::install() == false ||
             !$this->registerHook('displayFooterProduct') || //Product page footer
-            !$this->registerHook('header') || //Adds css and javascript on front
+            !$this->registerHook('displayHeader') || //Adds css and javascript on front
             !$this->registerHook('displayProductListReviews') || //Product list miniature
             !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
             !$this->registerHook('filterProductContent') || // Add infos to Product page
