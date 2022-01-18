@@ -569,6 +569,7 @@
 .product-list-reviews {
   position: absolute;
   top: -26px;
+  left: 0;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
