@@ -99,7 +99,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
 
         //Validate comment
         $errors = array_merge($this->validateComment($productComment), $this->validateCriterions($criterions));
-  
+
         if (!empty($errors)) {
             $this->ajaxRender(
                 json_encode(
@@ -186,6 +186,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
 
     /**
      * Valdiate criterions values
+     *
      * @todo manage validation for criterion restricted on categories or products
      *
      * @param array $criterions
