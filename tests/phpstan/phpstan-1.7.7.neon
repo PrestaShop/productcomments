@@ -1,0 +1,10 @@
+includes:
+	- %currentWorkingDirectory%/tests/phpstan/phpstan.neon
+
+parameters:
+  ignoreErrors:
+    - '#Access to an undefined property Cookie::\$id_customer.#'
+    - '#Access to an undefined property Cookie::\$id_guest.#'
+    - '#Access to an undefined property HelperList::\$list_id.#'
+    - '#Access to an undefined property HelperList::\$shopLinkType.#'
+    - '#Parameter \#1 \$value of method ControllerCore::ajaxRender\(\) expects null, string\|false given.#'

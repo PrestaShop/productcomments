@@ -233,7 +233,7 @@ class ProductComment extends ObjectModel
     /**
      * Return number of comments and average grade by products
      *
-     * @return array|false
+     * @return int|false
      */
     public static function getCommentNumber($id_product)
     {
@@ -247,10 +247,10 @@ class ProductComment extends ObjectModel
 			SELECT COUNT(`id_product_comment`) AS "nbr"
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
 			WHERE `id_product` = ' . (int) ($id_product) . ($validate ? ' AND `validate` = 1' : ''));
-            Cache::store($cache_id, $result);
+            Cache::store($cache_id, (string) $result);
         }
 
-        return Cache::retrieve($cache_id);
+        return (int) Cache::retrieve($cache_id);
     }
 
     /**
