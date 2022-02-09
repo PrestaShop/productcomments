@@ -60,7 +60,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $comment_title = Tools::getValue('comment_title');
         $comment_content = Tools::getValue('comment_content');
         $customer_name = Tools::getValue('customer_name');
-        $criterions = Tools::getValue('criterion');
+        $criterions = (array) Tools::getValue('criterion');
 
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
@@ -96,11 +96,10 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
             ->setGuestId($this->context->cookie->id_guest)
             ->setDateAdd(new \DateTime('now', new \DateTimeZone('UTC')))
         ;
-        $entityManager->persist($productComment);
-        $this->addCommentGrades($productComment, $criterions);
 
         //Validate comment
-        $errors = $this->validateComment($productComment);
+        $errors = array_merge($this->validateComment($productComment), $this->validateCriterions($criterions));
+
         if (!empty($errors)) {
             $this->ajaxRender(
                 json_encode(
@@ -113,6 +112,9 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
 
             return false;
         }
+
+        $entityManager->persist($productComment);
+        $this->addCommentGrades($productComment, $criterions);
 
         $entityManager->flush();
 
@@ -176,6 +178,33 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
                 $errors[] = $this->trans('Customer name cannot be empty', [], 'Modules.Productcomments.Shop');
             } elseif (strlen($productComment->getCustomerName()) > ProductComment::CUSTOMER_NAME_MAX_LENGTH) {
                 $errors[] = $this->trans('Customer name cannot be more than %s characters', [ProductComment::CUSTOMER_NAME_MAX_LENGTH], 'Modules.Productcomments.Shop');
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Valdiate criterions values
+     *
+     * @todo manage validation for criterion restricted on categories or products
+     *
+     * @param array $criterions
+     *
+     * @return array
+     */
+    private function validateCriterions(array $criterions)
+    {
+        $errors = [];
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $this->container->get('doctrine.orm.entity_manager');
+        $criterionRepository = $entityManager->getRepository(ProductCommentCriterion::class);
+
+        foreach ($criterions as $criterionId => $grade) {
+            // @todo manage validation for criterion restricted on categories or products
+            $criterion = $criterionRepository->findOneBy(['id' => $criterionId]);
+            if (empty($criterion)) {
+                $errors[] = $this->trans('Criterions not available', [], 'Modules.Productcomments.Shop');
             }
         }
 
