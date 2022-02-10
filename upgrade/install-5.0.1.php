@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,15 +22,14 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
- *}
+ */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
-<div id="empty-product-comment" class="product-comment-list-item">
-  {if $post_allowed}
-    <button class="btn btn-comment btn-comment-big post-product-comment">
-      <i class="material-icons shopping-cart" data-icon="edit"></i>
-      {l s='Be the first to write your review' d='Modules.Productcomments.Shop'}
-    </button>
-  {else}
-    {l s='No customer reviews for the moment.' d='Modules.Productcomments.Shop'}
-  {/if}
-</div>
+function upgrade_module_5_0_1($object)
+{
+    return $object->unregisterHook('displayGDPRConsent')
+        && $object->unregisterHook('header')
+        && $object->registerHook('displayHeader');
+}

@@ -40,7 +40,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2>
-          <i class="material-icons {$icon}">{$icon}</i>
+          <i class="material-icons {$icon}" data-icon="{$icon}"></i>
           {$modal_title}
         </h2>
       </div>

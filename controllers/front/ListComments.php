@@ -31,7 +31,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
     {
         $idProduct = (int) Tools::getValue('id_product');
         $page = (int) Tools::getValue('page', 1);
-        $isLastNameAnynomus = Configuration::get('PRODUCT_COMMENTS_ANONYMISATION');
+        $isLastNameAnonymous = Configuration::get('PRODUCT_COMMENTS_ANONYMISATION');
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
@@ -60,13 +60,19 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
                 \IntlDateFormatter::SHORT,
                 \IntlDateFormatter::SHORT
             );
-            $productComment['customer_name'] = htmlentities($productComment['customer_name']);
             $productComment['title'] = htmlentities($productComment['title']);
             $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
 
-            if ($isLastNameAnynomus && isset($productComment['lastname'])) {
+            if ($isLastNameAnonymous && isset($productComment['lastname'])) {
                 $productComment['lastname'] = substr($productComment['lastname'], 0, 1) . '.';
+            }
+
+            // if registered customer : return customer first and last name instead of using customer_name
+            if (!empty($productComment['lastname'])) {
+                $productComment['customer_name'] = htmlentities($productComment['firstname'] . ' ' . $productComment['lastname']);
+            } else {
+                $productComment['customer_name'] = htmlentities($productComment['customer_name']);
             }
 
             $usefulness = $productCommentRepository->getProductCommentUsefulness($productComment['id_product_comment']);

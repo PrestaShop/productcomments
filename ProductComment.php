@@ -233,7 +233,7 @@ class ProductComment extends ObjectModel
     /**
      * Return number of comments and average grade by products
      *
-     * @return array|false
+     * @return int|false
      */
     public static function getCommentNumber($id_product)
     {
@@ -247,10 +247,10 @@ class ProductComment extends ObjectModel
 			SELECT COUNT(`id_product_comment`) AS "nbr"
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
 			WHERE `id_product` = ' . (int) ($id_product) . ($validate ? ' AND `validate` = 1' : ''));
-            Cache::store($cache_id, $result);
+            Cache::store($cache_id, (string) $result);
         }
 
-        return Cache::retrieve($cache_id);
+        return (int) Cache::retrieve($cache_id);
     }
 
     /**
@@ -282,7 +282,7 @@ class ProductComment extends ObjectModel
     public static function getByValidate($validate = '0', $deleted = false, $p = null, $limit = null, $skip_validate = false)
     {
         $sql = '
-			SELECT pc.`id_product_comment`, pc.`id_product`, IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, pc.`title`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`
+			SELECT pc.`id_product_comment`, pc.`id_product`, c.id_customer AS customer_id, IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, pc.`title`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
 			LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON (c.`id_customer` = pc.`id_customer`)
             LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl ON (pl.`id_product` = pc.`id_product` AND pl.`id_lang` = ' . (int) Context::getContext()->language->id . Shop::addSqlRestrictionOnLang('pl') . ')';

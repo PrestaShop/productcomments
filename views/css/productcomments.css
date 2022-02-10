@@ -27,6 +27,14 @@
  *  Product comments CSS
  */
 
+.product-comment-modal .material-icons[data-icon]:before,
+.product-comment-list-item .material-icons[data-icon]:before,
+.product-comments-additional-info .material-icons[data-icon]:before,
+#product-comments-list-header .material-icons[data-icon]:before,
+#product-comments-list-footer .material-icons[data-icon]:before {
+  content: attr(data-icon);
+}
+
 .btn-comment,
 .btn-comment-inverse {
   height: 36px;
@@ -561,6 +569,7 @@
 .product-list-reviews {
   position: absolute;
   top: -26px;
+  left: 0;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;

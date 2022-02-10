@@ -45,7 +45,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '5.0.0';
+        $this->version = '5.0.1';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -83,14 +83,13 @@ class ProductComments extends Module implements WidgetInterface
         if (
             parent::install() == false ||
             !$this->registerHook('displayFooterProduct') || //Product page footer
-            !$this->registerHook('header') || //Adds css and javascript on front
+            !$this->registerHook('displayHeader') || //Adds css and javascript on front
             !$this->registerHook('displayProductListReviews') || //Product list miniature
             !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
             !$this->registerHook('filterProductContent') || // Add infos to Product page
             !$this->registerHook('registerGDPRConsent') ||
             !$this->registerHook('actionDeleteGDPRCustomer') ||
             !$this->registerHook('actionExportGDPRData') ||
-            !$this->registerHook('displayGDPRConsent') ||
 
             !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
             !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
@@ -121,7 +120,7 @@ class ProductComments extends Module implements WidgetInterface
             !$this->unregisterHook('actionExportGDPRData') ||
 
             !$this->unregisterHook('displayProductAdditionalInfo') ||
-            !$this->unregisterHook('header') ||
+            !$this->unregisterHook('displayHeader') ||
             !$this->unregisterHook('displayFooterProduct') ||
             !$this->unregisterHook('displayProductListReviews')
         ) {
@@ -650,6 +649,8 @@ class ProductComments extends Module implements WidgetInterface
                 'type' => 'text',
                 'search' => false,
                 'class' => 'product-comment-author',
+                'callback' => 'renderAuthorName',
+                'callback_object' => $this,
             ],
             'name' => [
                 'title' => $this->trans('Product', [], 'Modules.Productcomments.Admin'),
@@ -664,6 +665,28 @@ class ProductComments extends Module implements WidgetInterface
                 'class' => 'product-comment-date',
             ],
         ];
+    }
+
+    /**
+     * Renders author name for the list, with the link if the author is a customer.
+     *
+     * @param string $value
+     * @param array $row
+     *
+     * @return string
+     */
+    public function renderAuthorName($value, $row)
+    {
+        if (!empty($row['customer_id'])) {
+            $linkToCustomerProfile = $this->context->link->getAdminLink('AdminCustomers', false, [], [
+                'id_customer' => $row['customer_id'],
+                'viewcustomer' => 1,
+            ]);
+
+            return '<a href="' . $linkToCustomerProfile . '">' . $value . '</a>';
+        }
+
+        return $value;
     }
 
     public function renderCriterionForm($id_criterion = 0)
@@ -861,7 +884,7 @@ class ProductComments extends Module implements WidgetInterface
     /**
      *  Inject the needed javascript and css files in the appropriate pages
      */
-    public function hookHeader()
+    public function hookDisplayHeader()
     {
         $jsList = [];
         $cssList = [];
@@ -1030,7 +1053,7 @@ class ProductComments extends Module implements WidgetInterface
             $idProduct = $this->context->controller->getProduct()->id;
             $variables = $this->getWidgetVariables($hookName, ['id_product' => $idProduct]);
 
-            $filePath = 'quickview' === Tools::getValue('action') || 'displayGDPRConsent' === $hookName
+            $filePath = 'quickview' === Tools::getValue('action')
                 ? $tplHookPath . 'product-additional-info-quickview.tpl'
                 : $tplHookPath . 'product-additional-info.tpl';
         }
