@@ -649,6 +649,8 @@ class ProductComments extends Module implements WidgetInterface
                 'type' => 'text',
                 'search' => false,
                 'class' => 'product-comment-author',
+                'callback' => 'renderAuthorName',
+                'callback_object' => $this,
             ],
             'name' => [
                 'title' => $this->trans('Product', [], 'Modules.Productcomments.Admin'),
@@ -663,6 +665,28 @@ class ProductComments extends Module implements WidgetInterface
                 'class' => 'product-comment-date',
             ],
         ];
+    }
+
+    /**
+     * Renders author name for the list, with the link if the author is a customer.
+     *
+     * @param string $value
+     * @param array $row
+     *
+     * @return string
+     */
+    public function renderAuthorName($value, $row)
+    {
+        if (!empty($row['customer_id'])) {
+            $linkToCustomerProfile = $this->context->link->getAdminLink('AdminCustomers', false, [], [
+                'id_customer' => $row['customer_id'],
+                'viewcustomer' => 1,
+            ]);
+
+            return '<a href="' . $linkToCustomerProfile . '">' . $value . '</a>';
+        }
+
+        return $value;
     }
 
     public function renderCriterionForm($id_criterion = 0)
