@@ -930,7 +930,7 @@ class ProductComments extends Module implements WidgetInterface
     public function hookFilterProductContent(array $params)
     {
         if (empty($params['object']->id)) {
-            return;
+            return $params;
         }
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
@@ -943,6 +943,8 @@ class ProductComments extends Module implements WidgetInterface
             'averageRating' => $averageRating,
             'nbComments' => $nbComments,
         ];
+	    
+        return $params;
     }
 
     /**
