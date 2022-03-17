@@ -943,7 +943,6 @@ class ProductComments extends Module implements WidgetInterface
             'averageRating' => $averageRating,
             'nbComments' => $nbComments,
         ];
-	    
         return $params;
     }
 
