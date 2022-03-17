@@ -925,7 +925,7 @@ class ProductComments extends Module implements WidgetInterface
      *
      * @param array $params
      *
-     * @return void
+     * @return array
      */
     public function hookFilterProductContent(array $params)
     {
