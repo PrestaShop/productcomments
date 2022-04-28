@@ -929,20 +929,21 @@ class ProductComments extends Module implements WidgetInterface
      */
     public function hookFilterProductContent(array $params)
     {
-        if (empty($params['object']->id)) {
-            return;
+        if (!empty($params['object']->id)) {
+            /** @var ProductCommentRepository $productCommentRepository */
+            $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
+
+            $averageRating = $productCommentRepository->getAverageGrade($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+            $nbComments = $productCommentRepository->getCommentsNumber($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+
+            /* @phpstan-ignore-next-line */
+            $params['object']->productComments = [
+                'averageRating' => $averageRating,
+                'nbComments' => $nbComments,
+            ];
         }
-        /** @var ProductCommentRepository $productCommentRepository */
-        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
-        $averageRating = $productCommentRepository->getAverageGrade($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-        $nbComments = $productCommentRepository->getCommentsNumber($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
-
-        /* @phpstan-ignore-next-line */
-        $params['object']->productComments = [
-            'averageRating' => $averageRating,
-            'nbComments' => $nbComments,
-        ];
+        return $params;
     }
 
     /**
