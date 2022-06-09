@@ -927,8 +927,9 @@ class ProductComments extends Module implements WidgetInterface
      *
      * @return void
      */
-    public function hookFilterProductContent(array $params)
+     public function hookFilterProductContent(array $params)
     {
+        require_once dirname(__FILE__) . '/ProductComment.php';
         if (empty($params['object']->id)) {
             return;
         }
@@ -937,11 +938,13 @@ class ProductComments extends Module implements WidgetInterface
 
         $averageRating = $productCommentRepository->getAverageGrade($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $nbComments = $productCommentRepository->getCommentsNumber($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $comments = ProductComment::getByProduct($params['object']->id);
 
         /* @phpstan-ignore-next-line */
         $params['object']->productComments = [
             'averageRating' => $averageRating,
             'nbComments' => $nbComments,
+            'comments' => $comments
         ];
     }
 
