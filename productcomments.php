@@ -927,7 +927,7 @@ class ProductComments extends Module implements WidgetInterface
      *
      * @return void
      */
-     public function hookFilterProductContent(array $params)
+    public function hookFilterProductContent(array $params)
     {
         require_once dirname(__FILE__) . '/ProductComment.php';
         if (empty($params['object']->id)) {
