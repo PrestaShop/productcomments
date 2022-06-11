@@ -178,7 +178,7 @@ class ProductComment extends ObjectModel
     {
         $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
 
-        $sql = 'SELECT (SUM(pc.`grade`) / COUNT(pc.`grade`)) AS avg,
+        $sql = 'SELECT (AVG(pc.`grade`) AS avg,
 				MIN(pc.`grade`) AS min,
 				MAX(pc.`grade`) AS max
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
@@ -194,7 +194,7 @@ class ProductComment extends ObjectModel
         $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
 
         return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow('
-		SELECT (SUM(pc.`grade`) / COUNT(pc.`grade`)) AS grade
+		SELECT AVG(pc.`grade`) AS grade
 		FROM `' . _DB_PREFIX_ . 'product_comment` pc
 		WHERE pc.`id_product` = ' . (int) $id_product . '
 		AND pc.`deleted` = 0' .
