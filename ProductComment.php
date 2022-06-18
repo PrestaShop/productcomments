@@ -178,7 +178,7 @@ class ProductComment extends ObjectModel
     {
         $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
 
-        $sql = 'SELECT (AVG(pc.`grade`) AS avg,
+        $sql = 'SELECT AVG(pc.`grade`) AS avg,
 				MIN(pc.`grade`) AS min,
 				MAX(pc.`grade`) AS max
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
