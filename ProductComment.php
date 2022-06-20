@@ -92,8 +92,7 @@ class ProductComment extends ObjectModel
         if (!Validate::isUnsignedId($id_product)) {
             return false;
         }
-        $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');
-	    $id_product = (int) $id_product;
+        $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');	    
         $p = (int) $p;
         $n = (int) $n;
 	    $id_customer = (int) $id_customer;
