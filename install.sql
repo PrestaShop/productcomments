@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `PREFIX_product_comment_usefulness` (
   `id_customer` int(10) unsigned NOT NULL,
   `usefulness` tinyint(1) unsigned NOT NULL,
   PRIMARY KEY (`id_product_comment`, `id_customer`)
-) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8mb4;
+) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `PREFIX_product_comment_report` (
   `id_product_comment` int(10) unsigned NOT NULL,
