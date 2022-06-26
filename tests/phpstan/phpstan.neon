@@ -5,7 +5,7 @@ parameters:
     # From PHPStan 0.12, paths to check are relative to the neon file
     - ../../productcomments.php
     - ../../ProductComment.php
-    - ../../ProductCommentCriterion.php    
+    - ../../ProductCommentCriterion.php
     - ../../controllers/
     - ../../src/
     - ../../upgrade/
