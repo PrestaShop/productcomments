@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `PREFIX_product_comment_criterion_category` (
   `id_category` int(10) unsigned NOT NULL,
   PRIMARY KEY(`id_product_comment_criterion`, `id_category`),
   KEY `id_category` (`id_category`)
-) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8mb4;
+) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `PREFIX_product_comment_grade` (
   `id_product_comment` int(10) unsigned NOT NULL,
