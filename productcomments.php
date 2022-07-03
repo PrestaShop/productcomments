@@ -164,30 +164,28 @@ class ProductComments extends Module implements WidgetInterface
     protected function _postProcess()
     {
         if (Tools::isSubmit('submitModerate')) {
-	        $errors = [];
+            $errors = [];
             $pcmt = Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME');
             if (!Validate::isUnsignedId($pcmt)) {
                 $errors[] = $this->trans('Minimum time between 2 reviews from the same user', [], 'Modules.Productcomments.Admin')
                 . '. ' . $this->trans('The field is invalid. Please enter a positive integer.', [], 'Admin.Notifications.Error');
             }
-	        $pcpp = Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
+            $pcpp = Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
             if (!Validate::isUnsignedId($pcpp)) {
                 $errors[] = $this->trans('Number of comments per page', [], 'Modules.Productcomments.Admin')
                 . '. ' . $this->trans('The field is invalid. Please enter a positive integer.', [], 'Admin.Notifications.Error');
             }
- 	       if (count($errors)) {
+            if (count($errors)) {
                 $this->_html .= '<div class="conf confirm alert alert-danger">' . implode('<br />', $errors) .  '</div>';
-            }
-            else		
-	        {
+            } else {
                 Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int) Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
                 Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
                 Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
-	            Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', (int) Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION'));
-	            Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', $pcmt);
-                Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', $pcpp);                
+                Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', (int) Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION'));
+                Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', $pcmt);
+                Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', $pcpp);
                 $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Settings updated', [], 'Modules.Productcomments.Admin') . '</div>';
-	        }			
+            }
         } elseif (Tools::isSubmit('productcomments')) {
             $id_product_comment = (int) Tools::getValue('id_product_comment');
             $comment = new ProductComment($id_product_comment);
