@@ -95,7 +95,7 @@ class ProductComment extends ObjectModel
         $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');
         $p = (int) $p;
         $n = (int) $n;
-	    $id_customer = (int) $id_customer;
+        $id_customer = (int) $id_customer;
         if ($p <= 1) {
             $p = 1;
         }
