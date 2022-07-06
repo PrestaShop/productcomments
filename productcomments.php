@@ -176,7 +176,7 @@ class ProductComments extends Module implements WidgetInterface
                 . '. ' . $this->trans('The field is invalid. Please enter a positive integer.', [], 'Admin.Notifications.Error');
             }
             if (count($errors)) {
-                $this->_html .= '<div class="conf confirm alert alert-danger">' . implode('<br />', $errors) .  '</div>';
+                $this->_html .= '<div class="conf confirm alert alert-danger">' . implode('<br />', $errors) . '</div>';
             } else {
                 Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int) Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
                 Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
