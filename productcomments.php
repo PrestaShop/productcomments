@@ -167,13 +167,19 @@ class ProductComments extends Module implements WidgetInterface
             $errors = [];
             $pcmt = Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME');
             if (!Validate::isUnsignedId($pcmt)) {
-                $errors[] = $this->trans('Minimum time between 2 reviews from the same user', [], 'Modules.Productcomments.Admin')
-                . '. ' . $this->trans('The field is invalid. Please enter a positive integer.', [], 'Admin.Notifications.Error');
+                $errors[] = $this->trans(
+                    '%s is invalid. Please enter an integer greater than %s.',
+                    [$this->trans('Minimum time between 2 reviews from the same user', [], 'Modules.Productcomments.Admin'), '0'],
+                    'Admin.Notifications.Error'
+                );
             }
             $pcpp = Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
             if (!Validate::isUnsignedId($pcpp)) {
-                $errors[] = $this->trans('Number of comments per page', [], 'Modules.Productcomments.Admin')
-                . '. ' . $this->trans('The field is invalid. Please enter a positive integer.', [], 'Admin.Notifications.Error');
+                $errors[] = $this->trans(
+                    '%s is invalid. Please enter an integer greater than %s.',
+                    [$this->trans('Number of comments per page', [], 'Modules.Productcomments.Admin'), '0'],
+                    'Admin.Notifications.Error'
+                );
             }
             if (count($errors)) {
                 $this->_html .= '<div class="conf confirm alert alert-danger">' . implode('<br />', $errors) . '</div>';
