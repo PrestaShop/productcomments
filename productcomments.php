@@ -166,7 +166,7 @@ class ProductComments extends Module implements WidgetInterface
         if (Tools::isSubmit('submitModerate')) {
             $errors = [];
             $pcmt = Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME');
-            if (!Validate::isUnsignedId($pcmt)) {
+            if (!Validate::isUnsignedInt($productCommentsMinimalTime)) {
                 $errors[] = $this->trans(
                     '%s is invalid. Please enter an integer greater than %s.',
                     [$this->trans('Minimum time between 2 reviews from the same user', [], 'Modules.Productcomments.Admin'), '0'],
