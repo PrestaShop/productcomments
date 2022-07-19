@@ -165,7 +165,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         if (Tools::isSubmit('submitModerate')) {
             $errors = [];
-            $pcmt = Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME');
+            $productCommentsMinimalTime = Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME');
             if (!Validate::isUnsignedInt($productCommentsMinimalTime)) {
                 $errors[] = $this->trans(
                     '%s is invalid. Please enter an integer greater than %s.',
