@@ -173,8 +173,8 @@ class ProductComments extends Module implements WidgetInterface
                     'Admin.Notifications.Error'
                 );
             }
-            $pcpp = Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
-            if (!Validate::isUnsignedId($pcpp)) {
+            $productCommentsPerPage = Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
+            if (!Validate::isUnsignedInt($productCommentsPerPage)) {
                 $errors[] = $this->trans(
                     '%s is invalid. Please enter an integer greater than %s.',
                     [$this->trans('Number of comments per page', [], 'Modules.Productcomments.Admin'), '0'],
@@ -188,8 +188,8 @@ class ProductComments extends Module implements WidgetInterface
                 Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
                 Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
                 Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', (int) Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION'));
-                Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', $pcmt);
-                Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', $pcpp);
+                Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', $productCommentsMinimalTime);
+                Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', $productCommentsPerPage);
                 $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Settings updated', [], 'Modules.Productcomments.Admin') . '</div>';
             }
         } elseif (Tools::isSubmit('productcomments')) {
