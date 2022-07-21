@@ -100,7 +100,7 @@ jQuery.fn.rating = function(generalOptions) {
         fullStars.append(newStar);
       }
 
-      fullStars.mouseenter(function(){}).mouseleave(displayInteractiveGrade);
+      fullStars.on('mouseenter', function(){}).on('mouseleave', displayInteractiveGrade);
       displayInteractiveGrade();
     }
 
