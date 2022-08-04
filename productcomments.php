@@ -677,6 +677,7 @@ class ProductComments extends Module implements WidgetInterface
      */
     public function renderAuthorName($value, $row)
     {
+        $value = htmlentities($value);
         if (!empty($row['customer_id'])) {
             $linkToCustomerProfile = $this->context->link->getAdminLink('AdminCustomers', false, [], [
                 'id_customer' => $row['customer_id'],
