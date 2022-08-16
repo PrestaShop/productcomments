@@ -118,7 +118,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
 
         $entityManager->flush();
 
-        Hook::exec('actionObjectProductCommentAddAfter', ['array' => $productComment->toArray()]);
+        Hook::exec('actionObjectProductCommentAddAfter', ['comment' => $productComment->toArray()]);
 
         $this->ajaxRender(
             json_encode(
