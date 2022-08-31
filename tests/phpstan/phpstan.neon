@@ -6,7 +6,6 @@ parameters:
     - ../../productcomments.php
     - ../../ProductComment.php
     - ../../ProductCommentCriterion.php
-    - ../../ProductCriterion.php
     - ../../controllers/
     - ../../src/
     - ../../upgrade/
