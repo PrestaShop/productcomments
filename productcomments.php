@@ -166,7 +166,7 @@ class ProductComments extends Module implements WidgetInterface
         if (Tools::isSubmit('submitModerate')) {
             $errors = [];
             $productCommentsMinimalTime = Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME');
-            if (!is_numeric($productCommentsMinimalTime) || 0 >= $productCommentsMinimalTime) {
+            if (!Validate::isUnsignedInt($productCommentsMinimalTime) || 0 >= $productCommentsMinimalTime) {
                 $errors[] = $this->trans(
                     '%s is invalid. Please enter an integer greater than %s.',
                     [$this->trans('Minimum time between 2 reviews from the same user', [], 'Modules.Productcomments.Admin'), '0'],
@@ -174,7 +174,7 @@ class ProductComments extends Module implements WidgetInterface
                 );
             }
             $productCommentsPerPage = Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
-            if (!is_numeric($productCommentsPerPage) || 0 >= $productCommentsPerPage) {
+            if (!Validate::isUnsignedInt($productCommentsPerPage) || 0 >= $productCommentsPerPage) {
                 $errors[] = $this->trans(
                     '%s is invalid. Please enter an integer greater than %s.',
                     [$this->trans('Number of comments per page', [], 'Modules.Productcomments.Admin'), '0'],
