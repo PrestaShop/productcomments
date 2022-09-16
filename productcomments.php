@@ -248,7 +248,7 @@ class ProductComments extends Module implements WidgetInterface
             $productCommentCriterion = new ProductCommentCriterion((int) Tools::getValue('id_product_comment_criterion'));
             if ($productCommentCriterion->id) {
                 if ($productCommentCriterion->delete()) {
-                    $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Criterion deleted', [], 'Modules.Productcomments.Admin') . '</div>';
+                    $this->_html .= $this->displayConfirmation($this->trans('Criterion deleted', [], 'Modules.Productcomments.Admin'));
                 }
             }
         } elseif (Tools::isSubmit('statusproductcommentscriterion')) {
