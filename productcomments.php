@@ -241,7 +241,7 @@ class ProductComments extends Module implements WidgetInterface
                 if ($criterion->save()) {
                     Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'conf' => 4]));
                 } else {
-                    $this->_html .= $this->displayConfirmation($this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin'));
+                    $this->_html .= $this->displayError($this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin'));
                 }
             }
         } elseif (Tools::isSubmit('deleteproductcommentscriterion')) {
