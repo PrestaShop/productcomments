@@ -27,6 +27,7 @@
   var productCommentAbuseReportErrorMessage = '{l|escape:'javascript' s='Sorry, your abuse report cannot be sent.' d='Modules.Productcomments.Shop'}';
 </script>
 
+<div class="ps-product-comments-container">
 <div class="row">
   <div class="col-md-12 col-sm-12" id="product-comments-list-header">
     <div class="comments-nb">
@@ -58,6 +59,7 @@
       </button>
     {/if}
   </div>
+</div>
 </div>
 
 {* Appreciation post error modal *}
