@@ -723,14 +723,7 @@ class ProductComments extends Module implements WidgetInterface
             }
         }
 
-        if (version_compare(_PS_VERSION_, '1.6', '<')) {
-            $field_category_tree = [
-                'type' => 'categories_select',
-                'name' => 'categoryBox',
-                'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
-                'category_tree' => $this->initCategoriesAssociation(null, $id_criterion),
-            ];
-        } else {
+	{
             $field_category_tree = [
                 'type' => 'categories',
                 'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
