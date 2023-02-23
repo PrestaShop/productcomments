@@ -438,12 +438,7 @@ class ProductComments extends Module implements WidgetInterface
 
             $fields_list = $this->getStandardFieldList();
 
-            if (version_compare(_PS_VERSION_, '1.6', '<')) {
-                $return .= '<h1>' . $this->trans('Reviews waiting for approval', [], 'Modules.Productcomments.Admin') . '</h1>';
-                $actions = ['enable', 'delete'];
-            } else {
-                $actions = ['approve', 'delete'];
-            }
+            $actions = ['approve', 'delete'];
 
             $helper = new HelperList();
             $helper->list_id = 'form-productcomments-moderate-list';
