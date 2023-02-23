@@ -723,38 +723,36 @@ class ProductComments extends Module implements WidgetInterface
             }
         }
 
-	{
-            $field_category_tree = [
-                'type' => 'categories',
-                'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
-                'name' => 'categoryBox',
-                'desc' => $this->trans('Mark the boxes of categories to which this criterion applies.', [], 'Modules.Productcomments.Admin'),
-                'tree' => [
-                    'use_search' => false,
-                    'id' => 'categoryBox',
-                    'use_checkbox' => true,
-                    'selected_categories' => $selected_categories,
+        $field_category_tree = [
+            'type' => 'categories',
+            'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
+            'name' => 'categoryBox',
+            'desc' => $this->trans('Mark the boxes of categories to which this criterion applies.', [], 'Modules.Productcomments.Admin'),
+            'tree' => [
+                'use_search' => false,
+                'id' => 'categoryBox',
+                'use_checkbox' => true,
+                'selected_categories' => $selected_categories,
+            ],
+            //retro compat 1.5 for category tree
+            'values' => [
+                'trads' => [
+                    'Root' => Category::getTopCategory(),
+                    'selected' => $this->trans('Selected', [], 'Modules.Productcomments.Admin'),
+                    'Collapse All' => $this->trans('Collapse All', [], 'Modules.Productcomments.Admin'),
+                    'Expand All' => $this->trans('Expand All', [], 'Modules.Productcomments.Admin'),
+                    'Check All' => $this->trans('Check All', [], 'Modules.Productcomments.Admin'),
+                    'Uncheck All' => $this->trans('Uncheck All', [], 'Modules.Productcomments.Admin'),
                 ],
-                //retro compat 1.5 for category tree
-                'values' => [
-                    'trads' => [
-                        'Root' => Category::getTopCategory(),
-                        'selected' => $this->trans('Selected', [], 'Modules.Productcomments.Admin'),
-                        'Collapse All' => $this->trans('Collapse All', [], 'Modules.Productcomments.Admin'),
-                        'Expand All' => $this->trans('Expand All', [], 'Modules.Productcomments.Admin'),
-                        'Check All' => $this->trans('Check All', [], 'Modules.Productcomments.Admin'),
-                        'Uncheck All' => $this->trans('Uncheck All', [], 'Modules.Productcomments.Admin'),
-                    ],
-                    'selected_cat' => $selected_categories,
-                    'input_name' => 'categoryBox[]',
-                    'use_radio' => false,
-                    'use_search' => false,
-                    'disabled_categories' => [],
-                    'top_category' => Category::getTopCategory(),
-                    'use_context' => true,
-                ],
-            ];
-        }
+                'selected_cat' => $selected_categories,
+                'input_name' => 'categoryBox[]',
+                'use_radio' => false,
+                'use_search' => false,
+                'disabled_categories' => [],
+                'top_category' => Category::getTopCategory(),
+                'use_context' => true,
+            ],
+        ];
 
         $fields_form_1 = [
             'form' => [
