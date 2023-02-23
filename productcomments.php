@@ -270,9 +270,9 @@ class ProductComments extends Module implements WidgetInterface
     }
 
     public function getContent()
-    {
+    {        
         include_once dirname(__FILE__) . '/ProductComment.php';
-        include_once dirname(__FILE__) . '/ProductCommentCriterion.php';
+        include_once dirname(__FILE__) . '/ProductCommentCriterion.php';        
 
         $this->_html = '';
         if (Tools::isSubmit('updateproductcommentscriterion')) {
@@ -431,7 +431,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderModerateLists()
     {
-        require_once dirname(__FILE__) . '/ProductComment.php';
+        //require_once dirname(__FILE__) . '/ProductComment.php';
         $return = null;
 
         if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
@@ -532,7 +532,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderCriterionList()
     {
-        include_once dirname(__FILE__) . '/ProductCommentCriterion.php';
+        //include_once dirname(__FILE__) . '/ProductCommentCriterion.php';
 
         $criterions = ProductCommentCriterion::getCriterions($this->context->language->id, false, false);
 
@@ -577,7 +577,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderCommentsList()
     {
-        require_once dirname(__FILE__) . '/ProductComment.php';
+        //require_once dirname(__FILE__) . '/ProductComment.php';
 
         $fields_list = $this->getStandardFieldList();
 
