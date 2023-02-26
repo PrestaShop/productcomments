@@ -29,12 +29,12 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_5_0_3($object)
 {
-    return Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;')
-        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;')
-        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion_product` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;')
-        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion_lang` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;')
-        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion_category` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;')
-        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_grade` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;')
-        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_usefulness` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;')
-        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_report` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci;');
+    return Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci')
+        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci')
+        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion_product` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci')
+        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion_lang` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci')
+        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion_category` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci')
+        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_grade` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci')
+        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_usefulness` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci')
+        && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_report` CHARACTER SET = utf8mb4 COLLATE utf8mb4_general_ci');
 }
