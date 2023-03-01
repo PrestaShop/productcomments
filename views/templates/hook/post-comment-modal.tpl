@@ -39,7 +39,7 @@
       <div class="modal-body">
         <form id="post-product-comment-form" action="{$post_comment_url nofilter}" method="POST">
           <div class="row">
-            <div class="col-md-2 col-sm-2">
+            <div class="col-sm-2">
               {if isset($product) && $product}
                 {block name='product_flags'}
                   <ul class="product-flags">
@@ -60,13 +60,13 @@
                 {/block}
               {/if}
             </div>
-            <div class="col-md-4 col-sm-4">
+            <div class="col-sm-4">
               <h3>{$product.name}</h3>
               {block name='product_description_short'}
                 <div itemprop="description">{$product.description_short nofilter}</div>
               {/block}
             </div>
-            <div class="col-md-6 col-sm-6">
+            <div class="col-sm-6">
               {if $criterions|@count > 0}
                 <ul id="criterions_list">
                   {foreach from=$criterions item='criterion'}
@@ -86,46 +86,32 @@
             </div>
           </div>
 
-          <div class="row">
-            {if !$logged}
-              <div class="col-md-8 col-sm-8">
+          {if !$logged}
+            <div class="row">
+              <div class="col-sm-8">
                 <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
                 <input name="comment_title" type="text" value=""/>
               </div>
-              <div class="col-md-4 col-sm-4">
+              <div class="col-sm-4">
                 <label class="form-label" for="customer_name">{l s='Your name' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
                 <input name="customer_name" type="text" value=""/>
               </div>
-            {else}
-              <div class="col-md-12 col-sm-12">
-                <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-                <input name="comment_title" type="text" value=""/>
-              </div>
-            {/if}
-          </div>
+            </div>
+          {else}
+            <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
+            <input name="comment_title" type="text" value=""/>
+          {/if}
+
+          <label class="form-label" for="comment_content">{l s='Review' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
+          <textarea name="comment_content"></textarea>
+
+          {hook h='displayGDPRConsent' mod='psgdpr' id_module=$id_module}
 
           <div class="row">
-            <div class="col-md-12 col-sm-12">
-              <label class="form-label" for="comment_content">{l s='Review' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 col-sm-12">
-              <textarea name="comment_content"></textarea>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-12 col-sm-12">
-              {hook h='displayGDPRConsent' mod='psgdpr' id_module=$id_module}
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 col-sm-6">
+            <div class="col-sm-6">
               <p class="required"><sup>*</sup> {l s='Required fields' d='Modules.Productcomments.Shop'}</p>
             </div>
-            <div class="col-md-6 col-sm-6 post-comment-buttons">
+            <div class="col-sm-6 post-comment-buttons">
               <button type="button" class="btn btn-comment-inverse btn-comment-big" data-dismiss="modal" aria-label="{l s='Cancel' d='Modules.Productcomments.Shop'}">
                 {l s='Cancel' d='Modules.Productcomments.Shop'}
               </button>
