@@ -57,10 +57,10 @@
           {$modal_message}
         </div>
         <div class="post-comment-buttons">
-          <button type="button" class="btn btn-comment-inverse btn-comment-huge refuse-button" data-dismiss="modal" aria-label="{l s='No' d='Modules.Productcomments.Shop'}">
+          <button type="button" class="btn btn-comment-inverse btn-comment-huge refuse-button" data-dismiss="modal">
             {l s='No' d='Modules.Productcomments.Shop'}
           </button>
-          <button type="button" class="btn btn-comment btn-comment-huge confirm-button" data-dismiss="modal" aria-label="{l s='Yes' d='Modules.Productcomments.Shop'}">
+          <button type="button" class="btn btn-comment btn-comment-huge confirm-button" data-dismiss="modal">
             {l s='Yes' d='Modules.Productcomments.Shop'}
           </button>
         </div>

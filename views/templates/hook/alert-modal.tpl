@@ -49,7 +49,7 @@
           {$modal_message}
         </div>
         <div class="post-comment-buttons">
-          <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal" aria-label="{l s='OK' d='Modules.Productcomments.Shop'}">
+          <button type="button" class="btn btn-comment btn-comment-huge" data-dismiss="modal">
             {l s='OK' d='Modules.Productcomments.Shop'}
           </button>
         </div>

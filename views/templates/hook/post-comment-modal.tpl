@@ -112,7 +112,7 @@
               <p class="required"><sup>*</sup> {l s='Required fields' d='Modules.Productcomments.Shop'}</p>
             </div>
             <div class="col-sm-6 post-comment-buttons">
-              <button type="button" class="btn btn-comment-inverse btn-comment-big" data-dismiss="modal" aria-label="{l s='Cancel' d='Modules.Productcomments.Shop'}">
+              <button type="button" class="btn btn-comment-inverse btn-comment-big" data-dismiss="modal">
                 {l s='Cancel' d='Modules.Productcomments.Shop'}
               </button>
               <button type="submit" class="btn btn-comment btn-comment-big">
