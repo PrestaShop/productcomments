@@ -128,9 +128,9 @@
 
 {* Comment posted modal *}
 {if $moderation_active}
-  {assign var='comment_posted_message' value={l s='Your comment has been submitted and will be available once approved by a moderator.' d='Modules.Productcomments.Shop'}}
+  {$comment_posted_message = {l s='Your comment has been submitted and will be available once approved by a moderator.' d='Modules.Productcomments.Shop'}}
 {else}
-  {assign var='comment_posted_message' value={l s='Your comment has been added!' d='Modules.Productcomments.Shop'}}
+  {$comment_posted_message = {l s='Your comment has been added!' d='Modules.Productcomments.Shop'}}
 {/if}
 {include file='module:productcomments/views/templates/hook/alert-modal.tpl'
   modal_id='product-comment-posted-modal'

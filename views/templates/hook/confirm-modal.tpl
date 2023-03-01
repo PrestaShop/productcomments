@@ -23,8 +23,8 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-{assign var='icon' value=$icon|default:'check_circle'}
-{assign var='modal_message' value=$modal_message|default:''}
+{$icon = $icon|default:'check_circle'}
+{$modal_message = $modal_message|default:''}
 
 <script type="text/javascript">
   document.addEventListener("DOMContentLoaded", function() {
