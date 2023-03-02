@@ -31,7 +31,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>{l s='Write your review' d='Modules.Productcomments.Shop'}</h2>
+        <p class="h2">{l s='Write your review' d='Modules.Productcomments.Shop'}</p>
         <button type="button" class="close" data-dismiss="modal" aria-label="{l s='Close' d='Shop.Theme.Global'}">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -61,7 +61,7 @@
               {/if}
             </div>
             <div class="col-sm-4">
-              <h3>{$product.name}</h3>
+              <p class="h3">{$product.name}</p>
               {block name='product_description_short'}
                 <div itemprop="description">{$product.description_short nofilter}</div>
               {/block}
