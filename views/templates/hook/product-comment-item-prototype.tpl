@@ -49,7 +49,7 @@
         </a>
       {/if}
       <a class="report-abuse" title="{l s='Report abuse' d='Modules.Productcomments.Shop'}">
-        <i class="material-icons outlined_flag" data-icon="flag"></i>
+        <i class="material-icons flag" data-icon="flag"></i>
       </a>
     </div>
   </div>
