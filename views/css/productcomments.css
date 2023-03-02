@@ -123,7 +123,7 @@
   padding: 15px 30px 30px;
 }
 
-.product-comment-modal .modal-header h2 {
+.product-comment-modal .modal-header .h2 {
   float: left;
   font-size: 20px;
 }
@@ -133,7 +133,7 @@
   max-width: 774px;
 }
 
-.product-comment-modal .modal-dialog h3 {
+.product-comment-modal .modal-dialog .h3 {
   font-size: 14px;
 }
 
@@ -357,7 +357,7 @@
   margin-bottom: 20px;
 }
 
-.product-comment-list-item .comment-content h4 {
+.product-comment-list-item .comment-content .h4 {
   height: 22px;
   color: #363a41;
   font-size: 16px;

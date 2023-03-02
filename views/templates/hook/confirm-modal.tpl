@@ -23,8 +23,8 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-{assign var='icon' value=$icon|default:'check_circle'}
-{assign var='modal_message' value=$modal_message|default:''}
+{$icon = $icon|default:'check_circle'}
+{$modal_message = $modal_message|default:''}
 
 <script type="text/javascript">
   document.addEventListener("DOMContentLoaded", function() {
@@ -47,26 +47,22 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>
+        <p class="h2">
           <i class="material-icons {$icon}" data-icon="{$icon}"></i>
           {$modal_title}
-        </h2>
+        </p>
       </div>
       <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12  col-sm-12" id="{$modal_id}-message">
-            {$modal_message}
-          </div>
+        <div id="{$modal_id}-message">
+          {$modal_message}
         </div>
-        <div class="row">
-          <div class="col-md-12  col-sm-12 post-comment-buttons">
-            <button type="button" class="btn btn-comment-inverse btn-comment-huge refuse-button" data-dismiss="modal" aria-label="{l s='No' d='Modules.Productcomments.Shop'}">
-              {l s='No' d='Modules.Productcomments.Shop'}
-            </button>
-            <button type="button" class="btn btn-comment btn-comment-huge confirm-button" data-dismiss="modal" aria-label="{l s='Yes' d='Modules.Productcomments.Shop'}">
-              {l s='Yes' d='Modules.Productcomments.Shop'}
-            </button>
-          </div>
+        <div class="post-comment-buttons">
+          <button type="button" class="btn btn-comment-inverse btn-comment-huge refuse-button" data-dismiss="modal">
+            {l s='No' d='Modules.Productcomments.Shop'}
+          </button>
+          <button type="button" class="btn btn-comment btn-comment-huge confirm-button" data-dismiss="modal">
+            {l s='Yes' d='Modules.Productcomments.Shop'}
+          </button>
         </div>
       </div>
     </div>
