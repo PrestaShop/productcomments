@@ -90,20 +90,20 @@
             <div class="row">
               <div class="col-sm-8">
                 <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-                <input name="comment_title" type="text" value=""/>
+                <input id="comment_title" name="comment_title" type="text" value=""/>
               </div>
               <div class="col-sm-4">
                 <label class="form-label" for="customer_name">{l s='Your name' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-                <input name="customer_name" type="text" value=""/>
+                <input id="customer_name" name="customer_name" type="text" value=""/>
               </div>
             </div>
           {else}
             <label class="form-label" for="comment_title">{l s='Title' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-            <input name="comment_title" type="text" value=""/>
+            <input id="comment_title" name="comment_title" type="text" value=""/>
           {/if}
 
           <label class="form-label" for="comment_content">{l s='Review' d='Modules.Productcomments.Shop'}<sup class="required">*</sup></label>
-          <textarea name="comment_content"></textarea>
+          <textarea id="comment_content" name="comment_content"></textarea>
 
           {hook h='displayGDPRConsent' mod='psgdpr' id_module=$id_module}
 
