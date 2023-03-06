@@ -64,20 +64,20 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
 
-            if ($isLastNameAnonymous && isset($productComment['lastname'])) {
-                $productComment['lastname'] = substr($productComment['lastname'], 0, 1) . '.';
+            // The customer has firstname and lastname, for guest we only have customer_name field
+            $productComment['customer_name'] = !empty($productComment['customer_name'])
+                ? $productComment['customer_name']
+                : $productComment['firstname'] . ' ' . $productComment['lastname'];
+
+            if ($isLastNameAnonymous) {
+                $productComment['customer_name'] = $this->anonymizeName($productComment['customer_name']);
             }
 
-            // if registered customer : return customer first and last name instead of using customer_name
-            if (!empty($productComment['lastname'])) {
-                $productComment['customer_name'] = htmlentities($productComment['firstname'] . ' ' . $productComment['lastname']);
-            } else {
-                $productComment['customer_name'] = htmlentities($productComment['customer_name']);
-            }
+            $productComment['customer_name'] = htmlentities($productComment['customer_name']);
 
             $usefulness = $productCommentRepository->getProductCommentUsefulness($productComment['id_product_comment']);
             $productComment = array_merge($productComment, $usefulness);
-            if (empty($productComment['customer_name']) && !isset($productComment['firstname']) && !isset($productComment['lastname'])) {
+            if (empty($productComment['customer_name'])) {
                 $productComment['customer_name'] = $this->trans('Deleted account', [], 'Modules.Productcomments.Shop');
             }
 
@@ -90,5 +90,23 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
                 $responseArray
             )
         );
+    }
+
+    /**
+     * Anonymize the user's last name. Display only initials, e.g. John D.
+     *
+     * @param string $name
+     */
+    private function anonymizeName($name)
+    {
+        $parts = explode(' ', $name);
+        $firstName = $parts[0];
+        $lastName = count($parts) > 1 ? array_pop($parts) : '';
+        $name = $firstName;
+        if (!empty($lastName)) {
+            $name .= ' ' . mb_substr($lastName, 0, 1, 'UTF-8') . '.';
+        }
+
+        return $name;
     }
 }

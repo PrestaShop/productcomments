@@ -95,6 +95,7 @@ class ProductComment extends ObjectModel
         $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');
         $p = (int) $p;
         $n = (int) $n;
+        $id_customer = (int) $id_customer;
         if ($p <= 1) {
             $p = 1;
         }
@@ -102,20 +103,20 @@ class ProductComment extends ObjectModel
             $n = 5;
         }
 
-        $cache_id = 'ProductComment::getByProduct_' . (int) $id_product . '-' . (int) $p . '-' . (int) $n . '-' . (int) $id_customer . '-' . (bool) $validate;
+        $cache_id = 'ProductComment::getByProduct_' . $id_product . '-' . $p . '-' . $n . '-' . $id_customer . '-' . $validate;
         if (!Cache::isStored($cache_id)) {
             $result = Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->executeS('
 			SELECT pc.`id_product_comment`,
-			(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_usefulness` pcu WHERE pcu.`id_product_comment` = pc.`id_product_comment` AND pcu.`usefulness` = 1) as total_useful,
-			(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_usefulness` pcu WHERE pcu.`id_product_comment` = pc.`id_product_comment`) as total_advice, ' .
-            ((int) $id_customer ? '(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_usefulness` pcuc WHERE pcuc.`id_product_comment` = pc.`id_product_comment` AND pcuc.id_customer = ' . (int) $id_customer . ') as customer_advice, ' : '') .
-            ((int) $id_customer ? '(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_report` pcrc WHERE pcrc.`id_product_comment` = pc.`id_product_comment` AND pcrc.id_customer = ' . (int) $id_customer . ') as customer_report, ' : '') . '
+			(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_usefulness` pcu WHERE pcu.`id_product_comment` = pc.`id_product_comment` AND pcu.`usefulness` = 1) AS total_useful,
+			(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_usefulness` pcu WHERE pcu.`id_product_comment` = pc.`id_product_comment`) AS total_advice, ' .
+            ($id_customer ? '(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_usefulness` pcuc WHERE pcuc.`id_product_comment` = pc.`id_product_comment` AND pcuc.id_customer = ' . $id_customer . ') AS customer_advice, ' : '') .
+            ($id_customer ? '(SELECT count(*) FROM `' . _DB_PREFIX_ . 'product_comment_report` pcrc WHERE pcrc.`id_product_comment` = pc.`id_product_comment` AND pcrc.id_customer = ' . $id_customer . ') AS customer_report, ' : '') . '
 			IF(c.id_customer, CONCAT(c.`firstname`, \' \',  LEFT(c.`lastname`, 1)), pc.customer_name) customer_name, pc.`content`, pc.`grade`, pc.`date_add`, pc.title
 			  FROM `' . _DB_PREFIX_ . 'product_comment` pc
 			LEFT JOIN `' . _DB_PREFIX_ . 'customer` c ON c.`id_customer` = pc.`id_customer`
-			WHERE pc.`id_product` = ' . (int) ($id_product) . ($validate ? ' AND pc.`validate` = 1' : '') . '
+			WHERE pc.`id_product` = ' . $id_product . ($validate ? ' AND pc.`validate` = 1' : '') . '
 			ORDER BY pc.`date_add` DESC
-			' . ($n ? 'LIMIT ' . (int) (($p - 1) * $n) . ', ' . (int) ($n) : ''));
+			' . ($n ? 'LIMIT ' . (($p - 1) * $n) . ', ' . $n : ''));
             Cache::store($cache_id, $result);
         }
 
@@ -169,8 +170,8 @@ class ProductComment extends ObjectModel
 		LEFT JOIN `' . _DB_PREFIX_ . 'product_comment_grade` pcg ON (pcg.`id_product_comment` = pc.`id_product_comment`)
 		LEFT JOIN `' . _DB_PREFIX_ . 'product_comment_criterion` pcc ON (pcc.`id_product_comment_criterion` = pcg.`id_product_comment_criterion`)
 		LEFT JOIN `' . _DB_PREFIX_ . 'product_comment_criterion_lang` pccl ON (pccl.`id_product_comment_criterion` = pcg.`id_product_comment_criterion`)
-		WHERE pc.`id_product` = ' . (int) $id_product . '
-		AND pccl.`id_lang` = ' . (int) $id_lang .
+		WHERE pc.`id_product` = ' . $id_product . '
+		AND pccl.`id_lang` = ' . $id_lang .
         ($validate ? ' AND pc.`validate` = 1' : ''));
     }
 
@@ -178,7 +179,7 @@ class ProductComment extends ObjectModel
     {
         $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
 
-        $sql = 'SELECT (SUM(pc.`grade`) / COUNT(pc.`grade`)) AS avg,
+        $sql = 'SELECT AVG(pc.`grade`) AS avg,
 				MIN(pc.`grade`) AS min,
 				MAX(pc.`grade`) AS max
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
@@ -194,7 +195,7 @@ class ProductComment extends ObjectModel
         $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
 
         return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow('
-		SELECT (SUM(pc.`grade`) / COUNT(pc.`grade`)) AS grade
+		SELECT AVG(pc.`grade`) AS grade
 		FROM `' . _DB_PREFIX_ . 'product_comment` pc
 		WHERE pc.`id_product` = ' . (int) $id_product . '
 		AND pc.`deleted` = 0' .
@@ -241,12 +242,12 @@ class ProductComment extends ObjectModel
             return false;
         }
         $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');
-        $cache_id = 'ProductComment::getCommentNumber_' . (int) $id_product . '-' . $validate;
+        $cache_id = 'ProductComment::getCommentNumber_' . $id_product . '-' . $validate;
         if (!Cache::isStored($cache_id)) {
             $result = (int) Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue('
 			SELECT COUNT(`id_product_comment`) AS "nbr"
 			FROM `' . _DB_PREFIX_ . 'product_comment` pc
-			WHERE `id_product` = ' . (int) ($id_product) . ($validate ? ' AND `validate` = 1' : ''));
+			WHERE `id_product` = ' . $id_product . ($validate ? ' AND `validate` = 1' : ''));
             Cache::store($cache_id, (string) $result);
         }
 
@@ -268,7 +269,7 @@ class ProductComment extends ObjectModel
         $result = Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow('
 		SELECT COUNT(pc.`id_product`) AS nbr
 		FROM `' . _DB_PREFIX_ . 'product_comment` pc
-		WHERE `id_product` = ' . (int) ($id_product) . ($validate == '1' ? ' AND `validate` = 1' : '') . '
+		WHERE `id_product` = ' . $id_product . ($validate == '1' ? ' AND `validate` = 1' : '') . '
 		AND `grade` > 0');
 
         return (int) ($result['nbr']);
@@ -348,7 +349,7 @@ class ProductComment extends ObjectModel
         $success = (Db::getInstance()->execute('
 		UPDATE `' . _DB_PREFIX_ . 'product_comment` SET
 		`validate` = ' . (int) $validate . '
-		WHERE `id_product_comment` = ' . (int) $this->id));
+		WHERE `id_product_comment` = ' . $this->id));
 
         Hook::exec('actionObjectProductCommentValidateAfter', ['object' => $this]);
 
@@ -381,7 +382,7 @@ class ProductComment extends ObjectModel
 
         return Db::getInstance()->execute('
 		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_grade`
-		WHERE `id_product_comment` = ' . (int) $id_product_comment);
+		WHERE `id_product_comment` = ' . $id_product_comment);
     }
 
     /**
@@ -397,7 +398,7 @@ class ProductComment extends ObjectModel
 
         return Db::getInstance()->execute('
 		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_report`
-		WHERE `id_product_comment` = ' . (int) $id_product_comment);
+		WHERE `id_product_comment` = ' . $id_product_comment);
     }
 
     /**
@@ -413,7 +414,7 @@ class ProductComment extends ObjectModel
 
         return Db::getInstance()->execute('
 		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_usefulness`
-		WHERE `id_product_comment` = ' . (int) $id_product_comment);
+		WHERE `id_product_comment` = ' . $id_product_comment);
     }
 
     /**

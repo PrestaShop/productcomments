@@ -45,7 +45,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '5.0.2';
+        $this->version = '5.0.3';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -164,13 +164,34 @@ class ProductComments extends Module implements WidgetInterface
     protected function _postProcess()
     {
         if (Tools::isSubmit('submitModerate')) {
-            Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int) Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
-            Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
-            Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
-            Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', (int) Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE'));
-            Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', (int) Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION'));
-            Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', (int) Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME'));
-            $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Settings updated', [], 'Modules.Productcomments.Admin') . '</div>';
+            $errors = [];
+            $productCommentsMinimalTime = Tools::getValue('PRODUCT_COMMENTS_MINIMAL_TIME');
+            if (!Validate::isUnsignedInt($productCommentsMinimalTime) || 0 >= $productCommentsMinimalTime) {
+                $errors[] = $this->trans(
+                    '%s is invalid. Please enter an integer greater than %s.',
+                    [$this->trans('Minimum time between 2 reviews from the same user', [], 'Modules.Productcomments.Admin'), '0'],
+                    'Admin.Notifications.Error'
+                );
+            }
+            $productCommentsPerPage = Tools::getValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
+            if (!Validate::isUnsignedInt($productCommentsPerPage) || 0 >= $productCommentsPerPage) {
+                $errors[] = $this->trans(
+                    '%s is invalid. Please enter an integer greater than %s.',
+                    [$this->trans('Number of comments per page', [], 'Modules.Productcomments.Admin'), '0'],
+                    'Admin.Notifications.Error'
+                );
+            }
+            if (count($errors)) {
+                $this->_html .= $this->displayError(implode('<br />', $errors));
+            } else {
+                Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', (int) Tools::getValue('PRODUCT_COMMENTS_MODERATE'));
+                Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', (int) Tools::getValue('PRODUCT_COMMENTS_ALLOW_GUESTS'));
+                Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', (int) Tools::getValue('PRODUCT_COMMENTS_USEFULNESS'));
+                Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', (int) Tools::getValue('PRODUCT_COMMENTS_ANONYMISATION'));
+                Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', $productCommentsMinimalTime);
+                Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', $productCommentsPerPage);
+                $this->_html .= $this->displayConfirmation($this->trans('Settings updated', [], 'Modules.Productcomments.Admin'));
+            }
         } elseif (Tools::isSubmit('productcomments')) {
             $id_product_comment = (int) Tools::getValue('id_product_comment');
             $comment = new ProductComment($id_product_comment);
@@ -193,7 +214,7 @@ class ProductComments extends Module implements WidgetInterface
             $criterion->name = $name;
 
             if (!$criterion->validateFields(false) || !$criterion->validateFieldsLang(false)) {
-                $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin') . '</div>';
+                $this->_html .= $this->displayError($this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin'));
             } else {
                 $criterion->save();
 
@@ -220,14 +241,14 @@ class ProductComments extends Module implements WidgetInterface
                 if ($criterion->save()) {
                     Tools::redirectAdmin(Context::getContext()->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'conf' => 4]));
                 } else {
-                    $this->_html .= '<div class="conf confirm alert alert-danger">' . $this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin') . '</div>';
+                    $this->_html .= $this->displayError($this->trans('The criterion cannot be saved', [], 'Modules.Productcomments.Admin'));
                 }
             }
         } elseif (Tools::isSubmit('deleteproductcommentscriterion')) {
             $productCommentCriterion = new ProductCommentCriterion((int) Tools::getValue('id_product_comment_criterion'));
             if ($productCommentCriterion->id) {
                 if ($productCommentCriterion->delete()) {
-                    $this->_html .= '<div class="conf confirm alert alert-success">' . $this->trans('Criterion deleted', [], 'Modules.Productcomments.Admin') . '</div>';
+                    $this->_html .= $this->displayConfirmation($this->trans('Criterion deleted', [], 'Modules.Productcomments.Admin'));
                 }
             }
         } elseif (Tools::isSubmit('statusproductcommentscriterion')) {
@@ -410,7 +431,6 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderModerateLists()
     {
-        require_once dirname(__FILE__) . '/ProductComment.php';
         $return = null;
 
         if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
@@ -418,12 +438,7 @@ class ProductComments extends Module implements WidgetInterface
 
             $fields_list = $this->getStandardFieldList();
 
-            if (version_compare(_PS_VERSION_, '1.6', '<')) {
-                $return .= '<h1>' . $this->trans('Reviews waiting for approval', [], 'Modules.Productcomments.Admin') . '</h1>';
-                $actions = ['enable', 'delete'];
-            } else {
-                $actions = ['approve', 'delete'];
-            }
+            $actions = ['approve', 'delete'];
 
             $helper = new HelperList();
             $helper->list_id = 'form-productcomments-moderate-list';
@@ -511,8 +526,6 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderCriterionList()
     {
-        include_once dirname(__FILE__) . '/ProductCommentCriterion.php';
-
         $criterions = ProductCommentCriterion::getCriterions($this->context->language->id, false, false);
 
         $fields_list = [
@@ -556,8 +569,6 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderCommentsList()
     {
-        require_once dirname(__FILE__) . '/ProductComment.php';
-
         $fields_list = $this->getStandardFieldList();
 
         $helper = new HelperList();
@@ -712,45 +723,36 @@ class ProductComments extends Module implements WidgetInterface
             }
         }
 
-        if (version_compare(_PS_VERSION_, '1.6', '<')) {
-            $field_category_tree = [
-                'type' => 'categories_select',
-                'name' => 'categoryBox',
-                'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
-                'category_tree' => $this->initCategoriesAssociation(null, $id_criterion),
-            ];
-        } else {
-            $field_category_tree = [
-                'type' => 'categories',
-                'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
-                'name' => 'categoryBox',
-                'desc' => $this->trans('Mark the boxes of categories to which this criterion applies.', [], 'Modules.Productcomments.Admin'),
-                'tree' => [
-                    'use_search' => false,
-                    'id' => 'categoryBox',
-                    'use_checkbox' => true,
-                    'selected_categories' => $selected_categories,
+        $field_category_tree = [
+            'type' => 'categories',
+            'label' => $this->trans('Criterion will be restricted to the following categories', [], 'Modules.Productcomments.Admin'),
+            'name' => 'categoryBox',
+            'desc' => $this->trans('Mark the boxes of categories to which this criterion applies.', [], 'Modules.Productcomments.Admin'),
+            'tree' => [
+                'use_search' => false,
+                'id' => 'categoryBox',
+                'use_checkbox' => true,
+                'selected_categories' => $selected_categories,
+            ],
+            //retro compat 1.5 for category tree
+            'values' => [
+                'trads' => [
+                    'Root' => Category::getTopCategory(),
+                    'selected' => $this->trans('Selected', [], 'Modules.Productcomments.Admin'),
+                    'Collapse All' => $this->trans('Collapse All', [], 'Modules.Productcomments.Admin'),
+                    'Expand All' => $this->trans('Expand All', [], 'Modules.Productcomments.Admin'),
+                    'Check All' => $this->trans('Check All', [], 'Modules.Productcomments.Admin'),
+                    'Uncheck All' => $this->trans('Uncheck All', [], 'Modules.Productcomments.Admin'),
                 ],
-                //retro compat 1.5 for category tree
-                'values' => [
-                    'trads' => [
-                        'Root' => Category::getTopCategory(),
-                        'selected' => $this->trans('Selected', [], 'Modules.Productcomments.Admin'),
-                        'Collapse All' => $this->trans('Collapse All', [], 'Modules.Productcomments.Admin'),
-                        'Expand All' => $this->trans('Expand All', [], 'Modules.Productcomments.Admin'),
-                        'Check All' => $this->trans('Check All', [], 'Modules.Productcomments.Admin'),
-                        'Uncheck All' => $this->trans('Uncheck All', [], 'Modules.Productcomments.Admin'),
-                    ],
-                    'selected_cat' => $selected_categories,
-                    'input_name' => 'categoryBox[]',
-                    'use_radio' => false,
-                    'use_search' => false,
-                    'disabled_categories' => [],
-                    'top_category' => Category::getTopCategory(),
-                    'use_context' => true,
-                ],
-            ];
-        }
+                'selected_cat' => $selected_categories,
+                'input_name' => 'categoryBox[]',
+                'use_radio' => false,
+                'use_search' => false,
+                'disabled_categories' => [],
+                'top_category' => Category::getTopCategory(),
+                'use_context' => true,
+            ],
+        ];
 
         $fields_form_1 = [
             'form' => [
