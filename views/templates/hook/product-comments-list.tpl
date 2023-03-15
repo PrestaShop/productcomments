@@ -42,11 +42,15 @@
   data-list-comments-url="{$list_comments_url nofilter}"
   data-update-comment-usefulness-url="{$update_comment_usefulness_url nofilter}"
   data-report-comment-url="{$report_comment_url nofilter}"
-  data-comment-item-prototype="{$comment_prototype|escape:'html'}">
+  data-comment-item-prototype="{$comment_prototype|escape:'html'}"
+  data-current-page="1"
+  data-total-pages="{$list_total_pages}">
 </div>
 
 <div id="product-comments-list-footer">
-  <div id="product-comments-list-pagination"></div>
+  <div id="product-comments-list-pagination">
+    {$nav_comments|unescape:'html' nofilter}
+  </div>
   {if $post_allowed && $nb_comments != 0}
     <button class="btn btn-comment btn-comment-big post-product-comment">
       <i class="material-icons edit" data-icon="edit"></i>
