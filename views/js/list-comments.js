@@ -77,7 +77,7 @@ jQuery(document).ready(function () {
   $(pagesListId + ' li').on('click',
     function() {
       let oldCount = commentsList.data('current-page');
-      let newCount = $(this).data('page');
+      let newCount = $(this).index();
       
       if (newCount === prevCount) {  // click prev
         newCount = oldCount - 1;
@@ -88,26 +88,26 @@ jQuery(document).ready(function () {
         if (newCount >= nextCount) return;
       }
       
-      $(pageIdPrefix + oldCount + ' span').removeClass('current');
-      $(pageIdPrefix + oldCount).removeClass('active');
+      $(`${pageIdPrefix}${oldCount} span`).removeClass('current');
+      $(`${pageIdPrefix}${oldCount}`).removeClass('active');
       
       fetchComments(newCount); // fetch new page's comments                  
 
-      $(pageIdPrefix + newCount).addClass('active');
-      $(pageIdPrefix + newCount + ' span').addClass('current');
+      $(`${pageIdPrefix}${newCount}`).addClass('active');
+      $(`${pageIdPrefix}${newCount} span`).addClass('current');
       
-      $(pageIdPrefix + newCount + ' span').html(newCount);
+      $(`${pageIdPrefix}${newCount} span`).html(newCount);
       commentsList.data('current-page', newCount);      
 
       if (newCount === 1) // disable prev
-        $(pageIdPrefix + prevCount).addClass('disabled');
+        $(`${pageIdPrefix}${prevCount}`).addClass('disabled');
       else   
-        $(pageIdPrefix + prevCount).removeClass('disabled');
+        $(`${pageIdPrefix}${prevCount}`).removeClass('disabled');
 
       if (newCount === totalPages)  // disable next
-        $(pageIdPrefix + nextCount).addClass('disabled');
+        $(`${pageIdPrefix}${nextCount}`).addClass('disabled');
       else
-        $(pageIdPrefix + nextCount).removeClass('disabled');
+        $(`${pageIdPrefix}${nextCount}`).removeClass('disabled');
 
       // long list with over 9 pages      
       if (9 <= totalPages) {        
@@ -123,20 +123,20 @@ jQuery(document).ready(function () {
     let step = (start < stop) ? +1 : -1;
     let i = start + step;  
     if (4 < Math.abs(stop - start)) {
-      $(pageIdPrefix + i).removeClass('hidden').removeClass('disabled');
-      $(pageIdPrefix + i + ' span').html(i);
+      $(`${pageIdPrefix}${i}`).removeClass('hidden').removeClass('disabled');
+      $(`${pageIdPrefix}${i} span`).html(i);
       i = i + step;
-      $(pageIdPrefix + i).removeClass('hidden').removeClass('disabled');
-      $(pageIdPrefix + i + ' span').html(gapText);
+      $(`${pageIdPrefix}${i}`).removeClass('hidden').removeClass('disabled');
+      $(`${pageIdPrefix}${i} span`).html(gapText);
       i = i + step;
       for (; i != stop - 2*step; i = i + step) {
-        $(pageIdPrefix + i).addClass('hidden');
+        $(`${pageIdPrefix}${i}`).addClass('hidden');
       }  
     }
     else {
       for (; i != stop; i = i + step) {        
-        $(pageIdPrefix + i).removeClass('hidden').removeClass('disabled');
-        $(pageIdPrefix + i + ' span').html(i);        
+        $(`${pageIdPrefix}${i}`).removeClass('hidden').removeClass('disabled');
+        $(`${pageIdPrefix}${i} span`).html(i);        
       }          
     } 
   }
@@ -225,6 +225,6 @@ jQuery(document).ready(function () {
     
   if (totalPages > 0) {
     emptyProductComment.hide();
-    $(pageIdPrefix + '1').trigger('click');    
+    $(`${pageIdPrefix}1`).trigger('click');    
   }  
 });

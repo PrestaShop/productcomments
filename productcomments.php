@@ -969,20 +969,10 @@ class ProductComments extends Module implements WidgetInterface
         $isPostAllowed = $productCommentRepository->isPostAllowed($product->id, (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
         /* generate pagination */
-        $commentsNav = '';
         $commentsTotalPages = 0;
         $commentsPerPage = (int) Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
         if ($commentsNb > 0) {
             $commentsTotalPages = ceil($commentsNb / $commentsPerPage);
-            $commentsNav .= '<ul>';
-            $prevCount = 0;
-            $commentsNav .= '<li data-page="' . $prevCount . '" id="pcl_page_' . $prevCount . '"><span class="prev"><i class="material-icons">chevron_left</i></span></li>';
-            for ($pageCount = 1; $pageCount <= $commentsTotalPages; ++$pageCount) {
-                $commentsNav .= '<li data-page="' . $pageCount . '" id="pcl_page_' . $pageCount . '"><span>' . $pageCount . '</span></li>';
-            }
-            $nextCount = $commentsTotalPages + 1;
-            $commentsNav .= '<li data-page="' . $nextCount . '"  id="pcl_page_' . $nextCount . '"><span class="next"><i class="material-icons">chevron_right</i></span></li>';
-            $commentsNav .= '</ul>';
         }
 
         $this->context->smarty->assign([
@@ -1003,7 +993,7 @@ class ProductComments extends Module implements WidgetInterface
                 'productcomments',
                 'ReportComment'
             ),
-            'nav_comments' => $commentsNav,
+            //'nav_comments' => $commentsNav,
             'list_total_pages' => $commentsTotalPages,
         ]);
 
