@@ -968,7 +968,7 @@ class ProductComments extends Module implements WidgetInterface
         $commentsNb = $productCommentRepository->getCommentsNumber($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $isPostAllowed = $productCommentRepository->isPostAllowed($product->id, (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
-        /* generate pagination */
+        /* configure pagination */
         $commentsTotalPages = 0;
         $commentsPerPage = (int) Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
         if ($commentsNb > 0) {
@@ -992,8 +992,7 @@ class ProductComments extends Module implements WidgetInterface
             'report_comment_url' => $this->context->link->getModuleLink(
                 'productcomments',
                 'ReportComment'
-            ),
-            //'nav_comments' => $commentsNav,
+            ),            
             'list_total_pages' => $commentsTotalPages,
         ]);
 
