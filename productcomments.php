@@ -992,7 +992,7 @@ class ProductComments extends Module implements WidgetInterface
             'report_comment_url' => $this->context->link->getModuleLink(
                 'productcomments',
                 'ReportComment'
-            ),            
+            ),
             'list_total_pages' => $commentsTotalPages,
         ]);
 
