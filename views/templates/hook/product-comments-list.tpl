@@ -59,7 +59,7 @@
         {assign var = "nextCount" value = $list_total_pages + 1}
         <li id="pcl_page_{$nextCount}"><span class="next"><i class="material-icons">chevron_right</i></span></li>
       </ul>
-      {/if}    
+    {/if}
   </div>
   {if $post_allowed && $nb_comments != 0}
     <button class="btn btn-comment btn-comment-big post-product-comment">
