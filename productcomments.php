@@ -28,13 +28,16 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+include_once dirname(__FILE__) . '/ProductComment.php';
+include_once dirname(__FILE__) . '/ProductCommentCriterion.php';
+
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class ProductComments extends Module implements WidgetInterface
 {
-    const INSTALL_SQL_FILE = 'install.sql';
+    public const INSTALL_SQL_FILE = 'install.sql';
 
     private $_html = '';
 
@@ -271,9 +274,6 @@ class ProductComments extends Module implements WidgetInterface
 
     public function getContent()
     {
-        include_once dirname(__FILE__) . '/ProductComment.php';
-        include_once dirname(__FILE__) . '/ProductCommentCriterion.php';
-
         $this->_html = '';
         if (Tools::isSubmit('updateproductcommentscriterion')) {
             $this->_html .= $this->renderCriterionForm((int) Tools::getValue('id_product_comment_criterion'));
@@ -932,7 +932,6 @@ class ProductComments extends Module implements WidgetInterface
      */
     public function hookFilterProductContent(array $params)
     {
-        require_once dirname(__FILE__) . '/ProductComment.php';
         if (empty($params['object']->id)) {
             return $params;
         }
