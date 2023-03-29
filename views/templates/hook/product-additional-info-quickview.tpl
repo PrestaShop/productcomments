@@ -24,8 +24,7 @@
  *}
 
 {if $nb_comments != 0}
-  <script type="text/javascript">
-    const $ = jQuery;
+  <script type="text/javascript">    
     $('#product-quickview-{$product.id}').insertAfter($('.quickview #product-description-short'));
     $('#product-quickview-{$product.id} .grade-stars').rating({ grade: {$average_grade} });
     $('#product-quickview-{$product.id} .comments-nb').html('({$nb_comments})');

@@ -24,7 +24,7 @@
  *}
 
 <div class="product-comment-list-item row" data-product-comment-id="@COMMENT_ID@" data-product-id="@PRODUCT_ID@">
-  <div class="col-md-3 col-sm-3 comment-infos">
+  <div class="col-sm-3 comment-infos">
     <div class="grade-stars" data-grade="@COMMENT_GRADE@"></div>
     <div class="comment-date">
       @COMMENT_DATE@
@@ -34,8 +34,8 @@
     </div>
   </div>
 
-  <div class="col-md-9 col-sm-9 comment-content">
-    <h4>@COMMENT_TITLE@</h4>
+  <div class="col-sm-9 comment-content">
+    <p class="h4">@COMMENT_TITLE@</p>
     <p>@COMMENT_COMMENT@</p>
     <div class="comment-buttons btn-group">
       {if $usefulness_enabled}
@@ -49,7 +49,7 @@
         </a>
       {/if}
       <a class="report-abuse" title="{l s='Report abuse' d='Modules.Productcomments.Shop'}">
-        <i class="material-icons outlined_flag" data-icon="flag"></i>
+        <i class="material-icons flag" data-icon="flag"></i>
       </a>
     </div>
   </div>

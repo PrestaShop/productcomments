@@ -65,7 +65,7 @@ jQuery(document).ready(function () {
     $('#post-product-comment-form input[type="text"]').removeClass('valid error');
     $('#post-product-comment-form textarea').val('');
     $('#post-product-comment-form textarea').removeClass('valid error');
-    $('#post-product-comment-form .criterion-rating input').val(3).change();
+    $('#post-product-comment-form .criterion-rating input').val(3).trigger('change');
   }
 
   function initCommentModal() {
@@ -75,7 +75,7 @@ jQuery(document).ready(function () {
       showPostCommentModal();
     });
 
-    $('#post-product-comment-form').submit(submitCommentForm);
+    $('#post-product-comment-form').on('submit', submitCommentForm);
   }
 
   function submitCommentForm(event) {

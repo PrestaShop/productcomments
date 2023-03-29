@@ -153,7 +153,7 @@ class ProductCommentRepository
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
         $qb
-            ->select('SUM(pc.grade) / COUNT(pc.grade) AS averageGrade')
+            ->select('AVG(pc.grade) AS averageGrade')
             ->from($this->databasePrefix . 'product_comment', 'pc')
             ->andWhere('pc.id_product = :id_product')
             ->andWhere('pc.deleted = :deleted')
