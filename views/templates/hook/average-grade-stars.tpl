@@ -23,13 +23,6 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-{if ! isset($aggregateRatingAlreadyPrinted)}
-  <div style="display: none;" itemprop="aggregateRating" itemtype="https://schema.org/AggregateRating" itemscope>
-    <meta itemprop="reviewCount" content="{$nb_comments}" />
-    <meta itemprop="ratingValue" content="{$grade}" />
-  </div>
-  {assign var="aggregateRatingAlreadyPrinted" value="true" scope="global"}
-{/if}
 {if $nb_comments != 0}
   <div class="comments-note">
     <span>{l s='Grade' d='Modules.Productcomments.Shop'}</span>
