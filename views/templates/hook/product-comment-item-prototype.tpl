@@ -23,20 +23,27 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<div class="product-comment-list-item row" data-product-comment-id="@COMMENT_ID@" data-product-id="@PRODUCT_ID@">
+<div class="product-comment-list-item row" data-product-comment-id="@COMMENT_ID@" data-product-id="@PRODUCT_ID@"
+  itemprop="review" itemscope itemtype="https://schema.org/Review">
   <div class="col-sm-3 comment-infos">
     <div class="grade-stars" data-grade="@COMMENT_GRADE@"></div>
-    <div class="comment-date">
+    <div style="display:none" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+      <meta itemprop="worstRating" content="1" />
+      <meta itemprop="ratingValue" content="@COMMENT_GRADE@" />
+      <meta itemprop="bestRating" content="5" />
+    </div>
+    <div class="comment-date" itemprop="datePublished" content="@COMMENT_DATE_ISO_8601@">
       @COMMENT_DATE@
     </div>
-    <div class="comment-author">
+    <div class="comment-author" itemprop="author" itemscope itemtype="https://schema.org/Person">
+      <meta itemprop="name" content="@CUSTOMER_NAME@" />
       {l s='By %1$s' sprintf=['@CUSTOMER_NAME@'] d='Modules.Productcomments.Shop'}
     </div>
   </div>
 
   <div class="col-sm-9 comment-content">
-    <p class="h4">@COMMENT_TITLE@</p>
-    <p>@COMMENT_COMMENT@</p>
+    <p class="h4" itemprop="name">@COMMENT_TITLE@</p>
+    <p itemprop="reviewBody">@COMMENT_COMMENT@</p>
     <div class="comment-buttons btn-group">
       {if $usefulness_enabled}
         <a class="useful-review">
