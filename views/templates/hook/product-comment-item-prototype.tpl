@@ -23,8 +23,7 @@
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  *}
 
-<div class="product-comment-list-item row" data-product-comment-id="@COMMENT_ID@" data-product-id="@PRODUCT_ID@"
-  itemprop="review" itemscope itemtype="https://schema.org/Review">
+<div class="product-comment-list-item row" data-product-comment-id="@COMMENT_ID@" data-product-id="@PRODUCT_ID@" itemprop="review" itemscope itemtype="https://schema.org/Review">
   <div class="col-sm-3 comment-infos">
     <div class="grade-stars" data-grade="@COMMENT_GRADE@"></div>
     <div style="display:none" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
