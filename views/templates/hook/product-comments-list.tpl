@@ -42,11 +42,25 @@
   data-list-comments-url="{$list_comments_url nofilter}"
   data-update-comment-usefulness-url="{$update_comment_usefulness_url nofilter}"
   data-report-comment-url="{$report_comment_url nofilter}"
-  data-comment-item-prototype="{$comment_prototype|escape:'html'}">
+  data-comment-item-prototype="{$comment_prototype|escape:'html'}"
+  data-current-page="1"
+  data-total-pages="{$list_total_pages}">
 </div>
 
 <div id="product-comments-list-footer">
-  <div id="product-comments-list-pagination"></div>
+  <div id="product-comments-list-pagination">
+    {if $list_total_pages > 0}
+      <ul>
+        {assign var = "prevCount" value = 0}
+        <li id="pcl_page_{$prevCount}"><span class="prev"><i class="material-icons">chevron_left</i></span></li>
+        {for $pageCount = 1 to $list_total_pages}
+          <li id="pcl_page_{$pageCount}"><span>{$pageCount}</span></li>
+        {/for}
+        {assign var = "nextCount" value = $list_total_pages + 1}
+        <li id="pcl_page_{$nextCount}"><span class="next"><i class="material-icons">chevron_right</i></span></li>
+      </ul>
+    {/if}
+  </div>
   {if $post_allowed && $nb_comments != 0}
     <button class="btn btn-comment btn-comment-big post-product-comment">
       <i class="material-icons edit" data-icon="edit"></i>

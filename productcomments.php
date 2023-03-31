@@ -898,7 +898,6 @@ class ProductComments extends Module implements WidgetInterface
         if ($this->context->controller instanceof ProductControllerCore) {
             $jsList[] = '/modules/productcomments/views/js/post-comment.js';
             $jsList[] = '/modules/productcomments/views/js/list-comments.js';
-            $jsList[] = '/modules/productcomments/views/js/jquery.simplePagination.js';
         }
         foreach ($cssList as $cssUrl) {
             $this->context->controller->registerStylesheet(sha1($cssUrl), $cssUrl, ['media' => 'all', 'priority' => 80]);
@@ -969,6 +968,13 @@ class ProductComments extends Module implements WidgetInterface
         $commentsNb = $productCommentRepository->getCommentsNumber($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $isPostAllowed = $productCommentRepository->isPostAllowed($product->id, (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
 
+        /* configure pagination */
+        $commentsTotalPages = 0;
+        $commentsPerPage = (int) Configuration::get('PRODUCT_COMMENTS_COMMENTS_PER_PAGE');
+        if ($commentsNb > 0) {
+            $commentsTotalPages = ceil($commentsNb / $commentsPerPage);
+        }
+
         $this->context->smarty->assign([
             'post_allowed' => $isPostAllowed,
             'usefulness_enabled' => Configuration::get('PRODUCT_COMMENTS_USEFULNESS'),
@@ -987,6 +993,7 @@ class ProductComments extends Module implements WidgetInterface
                 'productcomments',
                 'ReportComment'
             ),
+            'list_total_pages' => $commentsTotalPages,
         ]);
 
         return $this->context->smarty->fetch('module:productcomments/views/templates/hook/product-comments-list.tpl');
