@@ -17,9 +17,7 @@ You can install PHP dependency by launching the command
 # composer install
 ```
 
-(We use yarn because this library is not served as a package for npm).
-
-This will install the library js in vendor folder.
+This will install the PHP libraries in vendor folder.
 
 ## Reporting issues
 
