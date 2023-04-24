@@ -10,16 +10,14 @@ This module is partially compatible with the multistore feature. Some of its opt
 
 ### Update dependency
 
-The only dependency for this module (for now) is https://github.com/flaviusmatis/simplePagination.js.git
-You can install/update it by launching the command
+There is no JS dependency for this module (for now).
+You can install PHP dependency by launching the command
 
 ```
-# yarn install
+# composer install
 ```
 
-(We use yarn because this library is not served as a package for npm).
-
-This will install the library js in views/js folder.
+This will install the PHP libraries in vendor folder.
 
 ## Reporting issues
 

@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "cp node_modules/simplePagination.js/jquery.simplePagination.js views/js/jquery.simplePagination.js"
+    "install": "echo \"Error: no install specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,5 @@
   },
   "homepage": "https://github.com/PrestaShop/productcomments#readme",
   "dependencies": {
-    "simplePagination.js": "https://github.com/flaviusmatis/simplePagination.js.git"
   }
 }
