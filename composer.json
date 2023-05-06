@@ -10,10 +10,10 @@
     }
   ],
   "require": {
-    "php": ">=5.6.0"
+    "php": ">=7.2.5"
   },
   "require-dev": {
-    "prestashop/php-dev-tools": "^3.4"
+    "prestashop/php-dev-tools": "^4.3"
   },
   "config": {
     "preferred-install": "dist",
@@ -21,7 +21,7 @@
     "optimize-autoloader": true,
     "prepend-autoloader": false,
     "platform": {
-      "php": "5.6"
+      "php": "7.2.5"
     }
   },
   "autoload": {
