@@ -211,17 +211,17 @@ class ProductCommentRepository
     }
 
     /**
-     * @param string $langId
-     * @param string $shopId
-     * @param string $validate
+     * @param int $langId
+     * @param int $shopId
+     * @param int $validate
      * @param bool $deleted
      * @param int $p
      * @param int $limit
-     * @param bool|null skip_validate
+     * @param ?bool skip_validate
      *
      * @return array
      */
-    public function getByValidate($langId, $shopId, $validate = '0', $deleted = false, $p = null, $limit = null, $skip_validate = false)
+    public function getByValidate($langId, $shopId, $validate = 0, $deleted = false, $p = null, $limit = null, $skip_validate = false)
     {
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
@@ -235,16 +235,16 @@ class ProductCommentRepository
             ->andWhere('pc.deleted = :deleted')
             ->setParameter('deleted', $deleted)
             ->andWhere('pl.id_lang = :id_lang')
-            ->setParameter('id_lang', (int) $langId)
+            ->setParameter('id_lang', $langId)
             ->andWhere('pl.id_shop = :id_shop')
-            ->setParameter('id_shop', (int) $shopId)
+            ->setParameter('id_shop', $shopId)
             ->addOrderBy('pc.date_add', 'DESC')
         ;
 
         if (!$skip_validate) {
             $qb
                 ->andWhere('pc.validate = :validate')
-                ->setParameter('validate', (int) $validate)
+                ->setParameter('validate', $validate)
             ;
         }
         if ($p && $limit) {
@@ -503,7 +503,7 @@ class ProductCommentRepository
         $qb
             ->select('pc.`id_product_comment`, pc.`id_product`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`, pc.`title`
             , IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name')
-            ->distinct('pcr.`id_product_comment`')
+            ->distinct()
             ->from($this->databasePrefix . 'product_comment_report', 'pcr')
             ->leftJoin('pcr', $this->databasePrefix . 'product_comment', 'pc', 'pcr.id_product_comment = pc.id_product_comment')
             ->leftJoin('pc', $this->databasePrefix . 'customer', 'c', 'c.`id_customer` = pc.`id_customer`')
