@@ -217,11 +217,11 @@ class ProductCommentRepository
      * @param bool $deleted
      * @param int $p
      * @param int $limit
-     * @param ?bool skip_validate
+     * @param bool|null skipValidate
      *
      * @return array
      */
-    public function getByValidate($langId, $shopId, $validate = 0, $deleted = false, $p = null, $limit = null, $skip_validate = false)
+    public function getByValidate($langId, $shopId, $validate = 0, $deleted = false, $p = null, $limit = null, $skipValidate = false)
     {
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
@@ -241,7 +241,7 @@ class ProductCommentRepository
             ->addOrderBy('pc.date_add', 'DESC')
         ;
 
-        if (!$skip_validate) {
+        if (!$skipValidate) {
             $qb
                 ->andWhere('pc.validate = :validate')
                 ->setParameter('validate', $validate)
