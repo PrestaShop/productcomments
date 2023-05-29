@@ -211,6 +211,79 @@ class ProductCommentRepository
     }
 
     /**
+     * @param int $langId
+     * @param int $shopId
+     * @param int $validate
+     * @param bool $deleted
+     * @param int $p
+     * @param int $limit
+     * @param bool skip_validate
+     *
+     * @return array
+     */
+    public function getByValidate($langId, $shopId, $validate = '0', $deleted = false, $p = null, $limit = null, $skip_validate = false)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('pc.`id_product_comment`, pc.`id_product`, c.id_customer AS customer_id, 
+                IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, 
+                pc.`title`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`')
+            ->from($this->databasePrefix . 'product_comment', 'pc')
+            ->leftJoin('pc', $this->databasePrefix . 'customer', 'c', 'pc.id_customer = c.id_customer')
+            ->leftJoin('pc', $this->databasePrefix . 'product_lang', 'pl', 'pc.id_product = pl.id_product')
+            ->andWhere('pc.deleted = :deleted')
+            ->setParameter('deleted', $deleted)
+            ->andWhere('pl.id_lang = :id_lang')
+            ->setParameter('id_lang', (int) $langId)
+            ->andWhere('pl.id_shop = :id_shop')
+            ->setParameter('id_shop', (int) $shopId)
+            ->addOrderBy('pc.date_add', 'DESC')
+        ;
+
+        if (!$skip_validate) {
+            $qb
+                ->andWhere('pc.validate = :validate')
+                ->setParameter('validate', (int) $validate)
+            ;
+        }
+        if ($p && $limit) {
+            $limit = (int) $limit;
+            $offset = ($p - 1) * $limit;
+            $qb
+                ->setFirstResult($offset)
+                ->setMaxResults($limit);
+        }
+
+        return $qb->execute()->fetchAll();
+    }
+
+    /**
+     * @param string $validate
+     * @param bool $skip_validate
+     *
+     * @return int
+     */
+    public function getCountByValidate($validate = '0', $skip_validate = false)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('COUNT(*)')
+            ->from($this->databasePrefix . 'product_comment', 'pc')
+        ;
+
+        if (!$skip_validate) {
+            $qb
+                ->andWhere('pc.validate = :validate')
+                ->setParameter('validate', (int) $validate)
+            ;
+        }
+
+        return (int) $qb->execute()->fetchColumn();
+    }
+
+    /**
      * @param int $productId
      * @param bool $validatedOnly
      *
@@ -415,5 +488,33 @@ class ProductCommentRepository
         $comments = $qb->execute()->fetchAll();
 
         return empty($comments) ? [] : $comments[0];
+    }
+
+    /**
+     * @param int $langId
+     * @param int $shopId
+     *
+     * @return array
+     */
+    public function getReportedComments($langId, $shopId)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('pc.`id_product_comment`, pc.`id_product`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`, pc.`title`
+            , IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name')
+            ->distinct('pcr.`id_product_comment`')
+            ->from($this->databasePrefix . 'product_comment_report', 'pcr')
+            ->leftJoin('pcr', $this->databasePrefix . 'product_comment', 'pc', 'pcr.id_product_comment = pc.id_product_comment')
+            ->leftJoin('pc', $this->databasePrefix . 'customer', 'c', 'c.`id_customer` = pc.`id_customer`')
+            ->leftJoin('pc', $this->databasePrefix . 'product_lang', 'pl', 'pl.`id_product` = pc.`id_product`')
+            ->andWhere('pl.id_lang = :id_lang')
+            ->setParameter('id_lang', (int) $langId)
+            ->andWhere('pl.id_shop = :id_shop')
+            ->setParameter('id_shop', (int) $shopId)
+            ->addOrderBy('pc.date_add', 'DESC')
+        ;
+
+        return $qb->execute()->fetchAll();
     }
 }

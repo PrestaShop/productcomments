@@ -41,6 +41,9 @@ class ProductComments extends Module implements WidgetInterface
     private $_productCommentsCriterionTypes = [];
     private $_baseUrl;
 
+    private $langId;
+    private $shopId;
+
     public function __construct()
     {
         $this->name = 'productcomments';
@@ -54,6 +57,9 @@ class ProductComments extends Module implements WidgetInterface
 
         $this->displayName = $this->trans('Product Comments', [], 'Modules.Productcomments.Admin');
         $this->description = $this->trans('Allow users to post reviews on your products and/or rate them based on specific criteria.', [], 'Modules.Productcomments.Admin');
+
+        $this->langId = Context::getContext()->language->id;
+        $this->shopId = Context::getContext()->shop->id ? Context::getContext()->shop->id : Configuration::get('PS_SHOP_DEFAULT');
 
         $this->ps_versions_compliancy = ['min' => '1.7.6', 'max' => _PS_VERSION_];
     }
@@ -433,8 +439,11 @@ class ProductComments extends Module implements WidgetInterface
     {
         $return = null;
 
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
+
         if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
-            $comments = ProductComment::getByValidate(0, false);
+            $comments = $productCommentRepository->getByValidate($this->langId, $this->shopId, 0, false);
 
             $fields_list = $this->getStandardFieldList();
 
@@ -459,7 +468,7 @@ class ProductComments extends Module implements WidgetInterface
             $return .= $helper->generateList($comments, $fields_list);
         }
 
-        $comments = ProductComment::getReportedComments();
+        $comments = $productCommentRepository->getReportedComments($this->langId, $this->shopId);
 
         $fields_list = $this->getStandardFieldList();
 
@@ -571,6 +580,9 @@ class ProductComments extends Module implements WidgetInterface
     {
         $fields_list = $this->getStandardFieldList();
 
+        /** @var ProductCommentRepository $productCommentRepository */
+        $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
+
         $helper = new HelperList();
         $helper->list_id = 'form-productcomments-list';
         $helper->shopLinkType = '';
@@ -591,11 +603,11 @@ class ProductComments extends Module implements WidgetInterface
 
         $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
         if (empty($moderate)) {
-            $comments = ProductComment::getByValidate(0, false, (int) $page, (int) $pagination, true);
-            $count = (int) ProductComment::getCountByValidate(0, true);
+            $comments = $productCommentRepository->getByValidate($this->langId, $this->shopId, 0, false, (int) $page, (int) $pagination, true);
+            $count = $productCommentRepository->getCountByValidate(0, true);
         } else {
-            $comments = ProductComment::getByValidate(1, false, (int) $page, (int) $pagination);
-            $count = (int) ProductComment::getCountByValidate(1);
+            $comments = $productCommentRepository->getByValidate($this->langId, $this->shopId, 1, false, (int) $page, (int) $pagination);
+            $count = $productCommentRepository->getCountByValidate(1);
         }
 
         $helper->listTotal = $count;
