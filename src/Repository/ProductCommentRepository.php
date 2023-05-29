@@ -211,13 +211,13 @@ class ProductCommentRepository
     }
 
     /**
-     * @param int $langId
-     * @param int $shopId
-     * @param int $validate
+     * @param string $langId
+     * @param string $shopId
+     * @param string $validate
      * @param bool $deleted
      * @param int $p
      * @param int $limit
-     * @param bool skip_validate
+     * @param bool|null skip_validate
      *
      * @return array
      */
@@ -259,12 +259,12 @@ class ProductCommentRepository
     }
 
     /**
-     * @param string $validate
+     * @param int $validate
      * @param bool $skip_validate
      *
      * @return int
      */
-    public function getCountByValidate($validate = '0', $skip_validate = false)
+    public function getCountByValidate($validate = 0, $skip_validate = false)
     {
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
@@ -276,7 +276,7 @@ class ProductCommentRepository
         if (!$skip_validate) {
             $qb
                 ->andWhere('pc.validate = :validate')
-                ->setParameter('validate', (int) $validate)
+                ->setParameter('validate', $validate)
             ;
         }
 
