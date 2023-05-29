@@ -46,7 +46,7 @@ class ProductCommentCriterionRepository
      * @param Connection $connection
      * @param string $databasePrefix
      */
-    public function __construct(Connection $connection, $databasePrefix)
+    public function __construct($connection, $databasePrefix)
     {
         $this->connection = $connection;
         $this->databasePrefix = $databasePrefix;
