@@ -217,7 +217,7 @@ class ProductCommentRepository
      * @param bool $deleted
      * @param int $p
      * @param int $limit
-     * @param bool skip_validate
+     * @param bool $skip_validate
      *
      * @return array
      */
