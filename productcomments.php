@@ -61,7 +61,7 @@ class ProductComments extends Module implements WidgetInterface
         $this->langId = Context::getContext()->language->id;
         $this->shopId = Context::getContext()->shop->id ? Context::getContext()->shop->id : Configuration::get('PS_SHOP_DEFAULT');
 
-        $this->ps_versions_compliancy = ['min' => '8.0', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '8.0.0', 'max' => _PS_VERSION_];
     }
 
     public function install($keep = true)
