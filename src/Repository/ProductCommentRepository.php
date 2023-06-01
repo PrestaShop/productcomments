@@ -503,7 +503,7 @@ class ProductCommentRepository
         $qb
             ->select('pc.`id_product_comment`, pc.`id_product`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`, pc.`title`
             , IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name')
-            ->distinct()
+            ->distinct('pc.`id_product_comment`')
             ->from($this->databasePrefix . 'product_comment_report', 'pcr')
             ->leftJoin('pcr', $this->databasePrefix . 'product_comment', 'pc', 'pcr.id_product_comment = pc.id_product_comment')
             ->leftJoin('pc', $this->databasePrefix . 'customer', 'c', 'c.`id_customer` = pc.`id_customer`')
