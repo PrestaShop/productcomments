@@ -41,6 +41,9 @@ class ProductComments extends Module implements WidgetInterface
     private $_productCommentsCriterionTypes = [];
     private $_baseUrl;
 
+    private $langId;
+    private $shopId;
+
     public function __construct()
     {
         $this->name = 'productcomments';
