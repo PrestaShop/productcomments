@@ -238,7 +238,7 @@ class ProductComment extends ObjectModel
      * Return number of comments and average grade by products
      *
      * @return int|false
-     * 
+     *
      * @deprecated 4.0.0
      */
     public static function getCommentNumber($id_product)
@@ -284,7 +284,7 @@ class ProductComment extends ObjectModel
      * Get comments by Validation
      *
      * @return array Comments
-     * 
+     *
      * @deprecated 5.0.4
      */
     public static function getByValidate($validate = '0', $deleted = false, $p = null, $limit = null, $skip_validate = false)
@@ -313,7 +313,7 @@ class ProductComment extends ObjectModel
      * Get numbers of comments by Validation
      *
      * @return int Count of comments
-     * 
+     *
      * @deprecated 5.0.4
      */
     public static function getCountByValidate($validate = '0', $skip_validate = false)
@@ -482,7 +482,7 @@ class ProductComment extends ObjectModel
      * Get reported comments
      *
      * @return array Comments
-     * 
+     *
      * @deprecated 5.0.4
      */
     public static function getReportedComments()

@@ -28,6 +28,7 @@ namespace PrestaShop\Module\ProductComment\Repository;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+
 /*
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
@@ -78,7 +79,7 @@ class ProductCommentRepository
         $cachePool = new FilesystemAdapter();
         $cache = DoctrineProvider::wrap($cachePool);
         $config = $this->connection->getConfiguration();
-        $config->setResultCacheImpl($cache);         
+        $config->setResultCacheImpl($cache);
         */
     }
 
@@ -229,7 +230,7 @@ class ProductCommentRepository
 
         return $this->connection->executeQuery(
             $qb->getSQL()
-            //, $qb->getParameters(), $qb->getParameterTypes(), new QueryCacheProfile(300, "product-comments-getByValidate")                
+            //, $qb->getParameters(), $qb->getParameterTypes(), new QueryCacheProfile(300, "product-comments-getByValidate")
         )->fetchAll();
     }
 
@@ -257,7 +258,7 @@ class ProductCommentRepository
 
         return (int) $this->connection->executeQuery(
             $qb->getSQL()
-            //, $qb->getParameters(), $qb->getParameterTypes(), new QueryCacheProfile(300, "product-comments-getCountByValidate")                
+            //, $qb->getParameters(), $qb->getParameterTypes(), new QueryCacheProfile(300, "product-comments-getCountByValidate")
         )->fetchColumn();
     }
 
@@ -521,10 +522,10 @@ class ProductCommentRepository
 		LEFT JOIN `' . $this->databasePrefix . 'product_comment` pc
 			ON pcr.id_product_comment = pc.id_product_comment
 		LEFT JOIN `' . $this->databasePrefix . 'customer` c ON (c.`id_customer` = pc.`id_customer`)
-		LEFT JOIN `' . $this->databasePrefix . 'product_lang` pl ON ' . 
-        '(pl.`id_product` = pc.`id_product` ' . 
-        ' AND pl.`id_lang` = ' . $langId . 
-        ' AND pl.`id_shop` = ' . $shopId . 
+		LEFT JOIN `' . $this->databasePrefix . 'product_lang` pl ON ' .
+        '(pl.`id_product` = pc.`id_product` ' .
+        ' AND pl.`id_lang` = ' . $langId .
+        ' AND pl.`id_shop` = ' . $shopId .
         ') 
         ORDER BY pc.`date_add` DESC';
 
