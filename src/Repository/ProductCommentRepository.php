@@ -28,9 +28,11 @@ namespace PrestaShop\Module\ProductComment\Repository;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+/*
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\Common\Cache\Psr6\DoctrineProvider;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+*/
 
 class ProductCommentRepository
 {
@@ -72,11 +74,12 @@ class ProductCommentRepository
         $this->databasePrefix = $databasePrefix;
         $this->guestCommentsAllowed = (bool) $guestCommentsAllowed;
         $this->commentsMinimalTime = (int) $commentsMinimalTime;
-
+        /* Only works since PS 8.0.0 - Doctrine\Cache 1.11.x
         $cachePool = new FilesystemAdapter();
         $cache = DoctrineProvider::wrap($cachePool);
         $config = $this->connection->getConfiguration();
         $config->setResultCacheImpl($cache);         
+        */
     }
 
     /**
@@ -225,8 +228,8 @@ class ProductCommentRepository
         }
 
         return $this->connection->executeQuery(
-            $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes(),
-            new QueryCacheProfile(300, "product-comments-getByValidate")                
+            $qb->getSQL()
+            //, $qb->getParameters(), $qb->getParameterTypes(), new QueryCacheProfile(300, "product-comments-getByValidate")                
         )->fetchAll();
     }
 
@@ -253,8 +256,8 @@ class ProductCommentRepository
         }
 
         return (int) $this->connection->executeQuery(
-            $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes(),
-            new QueryCacheProfile(300, "product-comments-getCountByValidate")                
+            $qb->getSQL()
+            //, $qb->getParameters(), $qb->getParameterTypes(), new QueryCacheProfile(300, "product-comments-getCountByValidate")                
         )->fetchColumn();
     }
 
@@ -525,9 +528,6 @@ class ProductCommentRepository
         ') 
         ORDER BY pc.`date_add` DESC';
 
-        return $this->connection->executeQuery(
-            $sql, [], [],
-            new QueryCacheProfile(300, "product-comments-getReportedComments")                
-        )->fetchAll();
+        return $this->connection->executeQuery($sql)->fetchAll();
     }
 }
