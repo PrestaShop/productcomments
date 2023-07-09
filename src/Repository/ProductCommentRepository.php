@@ -229,8 +229,8 @@ class ProductCommentRepository
         }
 
         return $this->connection->executeQuery(
-            $qb->getSQL()
-            //, $qb->getParameters(), $qb->getParameterTypes(), new QueryCacheProfile(300, "product-comments-getByValidate")
+            $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes()
+            //, new QueryCacheProfile(300, "product-comments-getByValidate")
         )->fetchAll();
     }
 
@@ -257,8 +257,8 @@ class ProductCommentRepository
         }
 
         return (int) $this->connection->executeQuery(
-            $qb->getSQL()
-            //, $qb->getParameters(), $qb->getParameterTypes(), new QueryCacheProfile(300, "product-comments-getCountByValidate")
+            $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes()
+            //, new QueryCacheProfile(300, "product-comments-getCountByValidate")
         )->fetchColumn();
     }
 
