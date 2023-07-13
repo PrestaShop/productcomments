@@ -154,6 +154,8 @@ class ProductCommentCriterion extends ObjectModel
      * Get criterion by Product
      *
      * @return array Criterion
+     * 
+     * @deprecated 4.0.0
      */
     public static function getByProduct($id_product, $id_lang)
     {
@@ -240,6 +242,9 @@ class ProductCommentCriterion extends ObjectModel
         return $products;
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public function getCategories()
     {
         $res = Db::getInstance()->executeS('

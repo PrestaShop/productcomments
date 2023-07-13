@@ -190,6 +190,9 @@ class ProductComment extends ObjectModel
         return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow($sql);
     }
 
+    /**
+     * @deprecated 4.0.0
+     */
     public static function getAverageGrade($id_product)
     {
         $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
@@ -235,6 +238,8 @@ class ProductComment extends ObjectModel
      * Return number of comments and average grade by products
      *
      * @return int|false
+     *
+     * @deprecated 4.0.0
      */
     public static function getCommentNumber($id_product)
     {
@@ -279,6 +284,8 @@ class ProductComment extends ObjectModel
      * Get comments by Validation
      *
      * @return array Comments
+     *
+     * @deprecated 6.0.0
      */
     public static function getByValidate($validate = '0', $deleted = false, $p = null, $limit = null, $skip_validate = false)
     {
@@ -306,6 +313,8 @@ class ProductComment extends ObjectModel
      * Get numbers of comments by Validation
      *
      * @return int Count of comments
+     *
+     * @deprecated 6.0.0
      */
     public static function getCountByValidate($validate = '0', $skip_validate = false)
     {
@@ -360,6 +369,8 @@ class ProductComment extends ObjectModel
      * Delete a comment, grade and report data
      *
      * @return bool succeed
+     *
+     * @deprecated 6.0.0
      */
     public function delete()
     {
@@ -373,6 +384,8 @@ class ProductComment extends ObjectModel
      * Delete Grades
      *
      * @return bool succeed
+     *
+     * @deprecated 6.0.0
      */
     public static function deleteGrades($id_product_comment)
     {
@@ -389,6 +402,8 @@ class ProductComment extends ObjectModel
      * Delete Reports
      *
      * @return bool succeed
+     *
+     * @deprecated 6.0.0
      */
     public static function deleteReports($id_product_comment)
     {
@@ -405,6 +420,8 @@ class ProductComment extends ObjectModel
      * Delete usefulness
      *
      * @return bool succeed
+     *
+     * @deprecated 6.0.0
      */
     public static function deleteUsefulness($id_product_comment)
     {
@@ -473,6 +490,8 @@ class ProductComment extends ObjectModel
      * Get reported comments
      *
      * @return array Comments
+     *
+     * @deprecated 6.0.0
      */
     public static function getReportedComments()
     {
