@@ -107,9 +107,8 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
 
     /**
      * @param ProductCommentCriterion $entity
-     * 
+     *
      * @return array
-     * 
      */
     public function getProducts($entity)
     {
@@ -132,9 +131,8 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
 
     /**
      * @param ProductCommentCriterion $entity
-     * 
+     *
      * @return array
-     * 
      */
     public function getCategories(ProductCommentCriterion $entity)
     {

@@ -28,8 +28,6 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
-use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class ProductComments extends Module implements WidgetInterface
@@ -717,7 +715,7 @@ class ProductComments extends Module implements WidgetInterface
             ];
         }
 
-        $criterionRepository = $this->get('product_comment_criterion_repository');        
+        $criterionRepository = $this->get('product_comment_criterion_repository');
         $criterion = $criterionRepository->find((int) $id_criterion);
         $selected_categories = $criterionRepository->getCategories($criterion);
 
@@ -856,7 +854,6 @@ class ProductComments extends Module implements WidgetInterface
             $pdc_object = new ProductCommentCriterion($id_criterion);
             $selected_cat = $pdc_object->getCategories();
             */
-
         }
 
         if (Shop::getContext() == Shop::CONTEXT_SHOP && Tools::isSubmit('id_shop')) {
@@ -873,7 +870,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function hookActionDeleteGDPRCustomer($customer)
     {
-        if (isset($customer['id'])) {            
+        if (isset($customer['id'])) {
             $productCommentRepository = $this->get('product_comment_repository');
             $productCommentRepository->cleanCustomerData($customer['id']);
         }
@@ -883,7 +880,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function hookActionExportGDPRData($customer)
     {
-        if (isset($customer['id'])) {            
+        if (isset($customer['id'])) {
             $productCommentRepository = $this->get('product_comment_repository');
             $langId = isset($customer['id_lang']) ? $customer['id_lang'] : $this->langId;
 
@@ -1013,7 +1010,7 @@ class ProductComments extends Module implements WidgetInterface
      * @throws SmartyException
      */
     private function renderProductCommentModal($product)
-    {        
+    {
         $criterionRepository = $this->get('product_comment_criterion_repository');
         $criterions = $criterionRepository->getByProduct($product->id, $this->langId);
 
