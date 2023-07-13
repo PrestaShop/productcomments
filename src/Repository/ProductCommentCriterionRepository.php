@@ -26,12 +26,26 @@
 
 namespace PrestaShop\Module\ProductComment\Repository;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
 
-class ProductCommentCriterionRepository
+/**
+ * @extends ServiceEntityRepository<ProductCommentCriterion>
+ *
+ * @method ProductCommentCriterion|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProductCommentCriterion|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProductCommentCriterion[]    findAll()
+ * @method ProductCommentCriterion[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class ProductCommentCriterionRepository extends ServiceEntityRepository
 {
+    /**
+     * @var ManagerRegistry the EntityManager
+     */
+    private $registry;
+
     /**
      * @var Connection the Database connection
      */
@@ -43,11 +57,13 @@ class ProductCommentCriterionRepository
     private $databasePrefix;
 
     /**
+     * @param ManagerRegistry $registry
      * @param Connection $connection
      * @param string $databasePrefix
      */
-    public function __construct(Connection $connection, $databasePrefix)
+    public function __construct($registry, $connection, $databasePrefix)
     {
+        parent::__construct($registry, ProductCommentCriterion::class);
         $this->connection = $connection;
         $this->databasePrefix = $databasePrefix;
     }
@@ -87,5 +103,55 @@ class ProductCommentCriterionRepository
         ;
 
         return $qb->execute()->fetchAll();
+    }
+
+    /**
+     * @param ProductCommentCriterion $entity
+     * 
+     * @return array
+     * 
+     */
+    public function getProducts($entity)
+    {
+        $sql = '
+			SELECT pccp.id_product, pccp.id_product_comment_criterion
+			FROM `' . _DB_PREFIX_ . 'product_comment_criterion_product` pccp
+			WHERE pccp.id_product_comment_criterion = ' . $entity->getId();
+
+        $res = $this->connection->executeQuery($sql)->fetchAll();
+
+        $products = [];
+        if ($res) {
+            foreach ($res as $row) {
+                $products[] = (int) $row['id_product'];
+            }
+        }
+
+        return $products;
+    }
+
+    /**
+     * @param ProductCommentCriterion $entity
+     * 
+     * @return array
+     * 
+     */
+    public function getCategories(ProductCommentCriterion $entity)
+    {
+        $sql = '
+			SELECT pccc.id_category, pccc.id_product_comment_criterion
+			FROM `' . _DB_PREFIX_ . 'product_comment_criterion_category` pccc
+			WHERE pccc.id_product_comment_criterion = ' . $entity->getId();
+
+        $res = $this->connection->executeQuery($sql)->fetchAll();
+
+        $criterions = [];
+        if ($res) {
+            foreach ($res as $row) {
+                $criterions[] = (int) $row['id_category'];
+            }
+        }
+
+        return $criterions;
     }
 }

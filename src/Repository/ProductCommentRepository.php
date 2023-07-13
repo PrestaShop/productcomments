@@ -26,11 +26,34 @@
 
 namespace PrestaShop\Module\ProductComment\Repository;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
+use Hook;
+use PrestaShop\Module\ProductComment\Entity\ProductComment;
 
-class ProductCommentRepository
+/*
+use Doctrine\DBAL\Cache\QueryCacheProfile;
+use Doctrine\Common\Cache\Psr6\DoctrineProvider;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+*/
+
+/**
+ * @extends ServiceEntityRepository<ProductComment>
+ *
+ * @method ProductComment|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProductComment|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProductComment[]    findAll()
+ * @method ProductComment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class ProductCommentRepository extends ServiceEntityRepository
 {
+    /**
+     * @var ManagerRegistry the EntityManager
+     */
+    private $registry;
+
     /**
      * @var Connection the Database connection
      */
@@ -54,21 +77,53 @@ class ProductCommentRepository
     const DEFAULT_COMMENTS_PER_PAGE = 5;
 
     /**
+     * @param ManagerRegistry $registry
      * @param Connection $connection
      * @param string $databasePrefix
      * @param bool $guestCommentsAllowed
      * @param int $commentsMinimalTime
      */
     public function __construct(
-        Connection $connection,
+        $registry,
+        $connection,
         $databasePrefix,
         $guestCommentsAllowed,
         $commentsMinimalTime
     ) {
+        parent::__construct($registry, ProductComment::class);
         $this->connection = $connection;
         $this->databasePrefix = $databasePrefix;
         $this->guestCommentsAllowed = (bool) $guestCommentsAllowed;
         $this->commentsMinimalTime = (int) $commentsMinimalTime;
+        /* Only works since PS 8.0.0 - Doctrine\Cache 1.11.x
+        $cachePool = new FilesystemAdapter();
+        $cache = DoctrineProvider::wrap($cachePool);
+        $config = $this->connection->getConfiguration();
+        $config->setResultCacheImpl($cache);
+        */
+    }
+
+    public function add(ProductComment $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(ProductComment $entity, bool $flush = false): void
+    {
+        $entityId = $entity->getId();
+
+        $this->getEntityManager()->remove($entity);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+
+        $this->deleteGrades($entityId);
+        $this->deleteReports($entityId);
+        $this->deleteUsefulness($entityId);
     }
 
     /**
@@ -169,6 +224,85 @@ class ProductCommentRepository
         }
 
         return (float) $qb->execute()->fetchColumn();
+    }
+
+    /**
+     * @param int $langId
+     * @param int $shopId
+     * @param int $validate
+     * @param bool $deleted
+     * @param int $p
+     * @param int $limit
+     * @param bool $skip_validate
+     *
+     * @return array
+     */
+    public function getByValidate($langId, $shopId, $validate = 0, $deleted = false, $p = null, $limit = null, $skip_validate = false)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('pc.`id_product_comment`, pc.`id_product`, c.id_customer AS customer_id, 
+                IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, 
+                pc.`title`, pc.`content`, pc.`grade`, pc.`date_add`, pl.`name`')
+            ->from($this->databasePrefix . 'product_comment', 'pc')
+            ->leftJoin('pc', $this->databasePrefix . 'customer', 'c', 'pc.id_customer = c.id_customer')
+            ->leftJoin('pc', $this->databasePrefix . 'product_lang', 'pl', 'pc.id_product = pl.id_product')
+            ->andWhere('pc.deleted = :deleted')
+            ->setParameter('deleted', $deleted)
+            ->andWhere('pl.id_lang = :id_lang')
+            ->setParameter('id_lang', $langId)
+            ->andWhere('pl.id_shop = :id_shop')
+            ->setParameter('id_shop', $shopId)
+            ->addOrderBy('pc.date_add', 'DESC')
+        ;
+
+        if (!$skip_validate) {
+            $qb
+                ->andWhere('pc.validate = :validate')
+                ->setParameter('validate', $validate)
+            ;
+        }
+        if ($p && $limit) {
+            $limit = (int) $limit;
+            $offset = ($p - 1) * $limit;
+            $qb
+                ->setFirstResult($offset)
+                ->setMaxResults($limit);
+        }
+
+        return $this->connection->executeQuery(
+            $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes()
+            //, new QueryCacheProfile(300, "product-comments-getByValidate")
+        )->fetchAll();
+    }
+
+    /**
+     * @param int $validate
+     * @param bool $skip_validate
+     *
+     * @return int
+     */
+    public function getCountByValidate($validate = 0, $skip_validate = false)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('COUNT(*)')
+            ->from($this->databasePrefix . 'product_comment', 'pc')
+        ;
+
+        if (!$skip_validate) {
+            $qb
+                ->andWhere('pc.validate = :validate')
+                ->setParameter('validate', $validate)
+            ;
+        }
+
+        return (int) $this->connection->executeQuery(
+            $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes()
+            //, new QueryCacheProfile(300, "product-comments-getCountByValidate")
+        )->fetchColumn();
     }
 
     /**
@@ -415,5 +549,83 @@ class ProductCommentRepository
         $comments = $qb->execute()->fetchAll();
 
         return empty($comments) ? [] : $comments[0];
+    }
+
+    /**
+     * @param string $validate
+     * @param ProductComment $productComment
+     *
+     * @return bool
+     */
+    public function validate($validate = '1', $productComment)
+    {
+        $success = ($this->connection->executeQuery('
+		UPDATE `' . _DB_PREFIX_ . 'product_comment` SET
+		`validate` = ' . (int) $validate . '
+		WHERE `id_product_comment` = ' . $productComment->getId()));
+
+        Hook::exec('actionObjectProductCommentValidateAfter', ['object' => $productComment]);
+
+        return $success;
+    }
+
+    /**
+     * @param int $id_product_comment
+     *
+     * @return bool
+     */
+    public function deleteGrades($id_product_comment)
+    {
+        return $this->connection->executeQuery('
+		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_grade`
+		WHERE `id_product_comment` = ' . $id_product_comment);
+    }
+
+    /**
+     * @param int $id_product_comment
+     *
+     * @return bool
+     */
+    public function deleteReports($id_product_comment)
+    {
+        return $this->connection->executeQuery('
+		DELETE FROM `' . $this->databasePrefix . 'product_comment_report`
+		WHERE `id_product_comment` = ' . $id_product_comment);
+    }
+
+    /**
+     * @param int $id_product_comment
+     *
+     * @return bool
+     */
+    public function deleteUsefulness($id_product_comment)
+    {
+        return $this->connection->executeQuery('
+		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_usefulness`
+		WHERE `id_product_comment` = ' . $id_product_comment);
+    }
+
+    /**
+     * @param int $langId
+     * @param int $shopId
+     *
+     * @return array
+     */
+    public function getReportedComments($langId, $shopId)
+    {
+        $sql = 'SELECT DISTINCT(pc.`id_product_comment`), pc.`id_product`, pc.`content`, pc.`grade`, pc.`date_add`, pc.`title`
+        , IF(c.id_customer, CONCAT(c.`firstname`, \' \',  c.`lastname`), pc.customer_name) customer_name, pl.`name`
+		FROM `' . $this->databasePrefix . 'product_comment_report` pcr
+		LEFT JOIN `' . $this->databasePrefix . 'product_comment` pc
+			ON pcr.id_product_comment = pc.id_product_comment
+		LEFT JOIN `' . $this->databasePrefix . 'customer` c ON (c.`id_customer` = pc.`id_customer`)
+		LEFT JOIN `' . $this->databasePrefix . 'product_lang` pl ON ' .
+        '(pl.`id_product` = pc.`id_product` ' .
+        ' AND pl.`id_lang` = ' . $langId .
+        ' AND pl.`id_shop` = ' . $shopId .
+        ') 
+        ORDER BY pc.`date_add` DESC';
+
+        return $this->connection->executeQuery($sql)->fetchAll();
     }
 }
