@@ -203,6 +203,8 @@ class ProductCommentCriterion extends ObjectModel
      * Get Criterions
      *
      * @return array Criterions
+     *
+     * @deprecated 6.0.0
      */
     public static function getCriterions($id_lang, $type = false, $active = false)
     {
@@ -226,6 +228,9 @@ class ProductCommentCriterion extends ObjectModel
         return $criterions;
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public function getProducts()
     {
         $res = Db::getInstance()->executeS('
@@ -275,6 +280,9 @@ class ProductCommentCriterion extends ObjectModel
 			WHERE `id_product_comment_criterion` = ' . (int) $this->id);
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public static function getTypes()
     {
         // Instance of module class for translations
