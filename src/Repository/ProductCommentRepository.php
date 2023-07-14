@@ -559,7 +559,7 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     public function validate($validate = '1', $productComment)
     {
-        $success = $this->connection->executeStatement('
+        $success = $this->connection->executeUpdate('
 		UPDATE `' . _DB_PREFIX_ . 'product_comment` SET
 		`validate` = ' . (int) $validate . '
 		WHERE `id_product_comment` = ' . $productComment->getId());
@@ -576,7 +576,7 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     public function deleteGrades($id_product_comment)
     {
-        $success = $this->connection->executeStatement('
+        $success = $this->connection->executeUpdate('
 		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_grade`
 		WHERE `id_product_comment` = ' . $id_product_comment);
 
@@ -590,7 +590,7 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     public function deleteReports($id_product_comment)
     {
-        $success = $this->connection->executeStatement('
+        $success = $this->connection->executeUpdate('
 		DELETE FROM `' . $this->databasePrefix . 'product_comment_report`
 		WHERE `id_product_comment` = ' . $id_product_comment);
 
@@ -604,7 +604,7 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     public function deleteUsefulness($id_product_comment)
     {
-        $success = $this->connection->executeStatement('
+        $success = $this->connection->executeUpdate('
 		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_usefulness`
 		WHERE `id_product_comment` = ' . $id_product_comment);
 
