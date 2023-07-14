@@ -198,7 +198,7 @@ class ProductComments extends Module implements WidgetInterface
             }
         } elseif (Tools::isSubmit('productcomments')) {
             $id_product_comment = (int) Tools::getValue('id_product_comment');
-            $comment = $this->get('product_comment_repository') . find($id_product_comment);
+            $comment = $this->get('product_comment_repository')->find($id_product_comment);
             $this->get('product_comment_repository')->validate('1', $comment);
             $this->get('product_comment_repository')->deleteReports($id_product_comment);
         } elseif (Tools::isSubmit('deleteproductcomments')) {
@@ -289,7 +289,7 @@ class ProductComments extends Module implements WidgetInterface
         }
 
         $this->_setBaseUrl();
-        $this->_productCommentsCriterionTypes = ProductCommentCriterion::getTypes();
+        $this->_productCommentsCriterionTypes = $this->get('product_comment_criterion_repository')->getTypes();
 
         $this->context->controller->addJs($this->_path . 'js/moderate.js');
 
@@ -529,7 +529,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderCriterionList()
     {
-        $criterions = ProductCommentCriterion::getCriterions($this->langId, false, false);
+        $criterions = $this->get('product_comment_criterion_repository')->getCriterions($this->langId, false, false);
 
         $fields_list = [
             'id_product_comment_criterion' => [
@@ -706,7 +706,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderCriterionForm($id_criterion = 0)
     {
-        $types = ProductCommentCriterion::getTypes();
+        $types = $this->get('product_comment_criterion_repository')->getTypes();
         $query = [];
         foreach ($types as $key => $value) {
             $query[] = [
@@ -850,10 +850,9 @@ class ProductComments extends Module implements WidgetInterface
         if ($id_criterion == 0) {
             $selected_cat = [];
         } else {
-            /*
-            $pdc_object = new ProductCommentCriterion($id_criterion);
-            $selected_cat = $pdc_object->getCategories();
-            */
+            $criterionRepository = $this->get('product_comment_criterion_repository');
+            $criterion = $criterionRepository->find((int) $id_criterion);
+            $selected_cat = $criterionRepository->getCategories($criterion);
         }
 
         if (Shop::getContext() == Shop::CONTEXT_SHOP && Tools::isSubmit('id_shop')) {
