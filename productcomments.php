@@ -28,6 +28,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
+use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class ProductComments extends Module implements WidgetInterface
