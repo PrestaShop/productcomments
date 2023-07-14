@@ -29,6 +29,7 @@ namespace PrestaShop\Module\ProductComment\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
 
 /**
@@ -36,8 +37,8 @@ use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
  *
  * @method ProductCommentCriterion|null find($id, $lockMode = null, $lockVersion = null)
  * @method ProductCommentCriterion|null findOneBy(array $criteria, array $orderBy = null)
- * @method ProductCommentCriterion[]    findAll()
- * @method ProductCommentCriterion[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProductCommentCriterion[] findAll()
+ * @method ProductCommentCriterion[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ProductCommentCriterionRepository extends ServiceEntityRepository
 {
