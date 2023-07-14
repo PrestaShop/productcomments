@@ -31,6 +31,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
+use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
 
 /**
  * @extends ServiceEntityRepository<ProductCommentCriterion>
@@ -107,6 +108,29 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get Criterions
+     *
+     * @return array Criterions
+     */
+    public function getCriterions($id_lang, $type = false, $active = false)
+    {
+        $sql = '
+			SELECT pcc.`id_product_comment_criterion`, pcc.id_product_comment_criterion_type, pccl.`name`, pcc.active
+			FROM `' . _DB_PREFIX_ . 'product_comment_criterion` pcc
+			JOIN `' . _DB_PREFIX_ . 'product_comment_criterion_lang` pccl ON (pcc.id_product_comment_criterion = pccl.id_product_comment_criterion)
+			WHERE pccl.`id_lang` = ' . $id_lang . ($active ? ' AND active = 1' : '') . ($type ? ' AND id_product_comment_criterion_type = ' . (int) $type : '') . '
+			ORDER BY pccl.`name` ASC';
+        $criterions = $this->connection->executeQuery($sql)->fetchAll();
+
+        $types = self::getTypes();
+        foreach ($criterions as $key => $data) {
+            $criterions[$key]['type_name'] = $types[$data['id_product_comment_criterion_type']];
+        }
+
+        return $criterions;
+    }
+
+    /**
      * @param ProductCommentCriterion $entity
      *
      * @return array
@@ -152,5 +176,19 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
         }
 
         return $criterions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTypes()
+    {
+        $sfTranslator = SymfonyContainer::getInstance()->get('translator');
+
+        return [
+            1 => $sfTranslator->trans('Valid for the entire catalog', [], 'Modules.Productcomments.Admin'),
+            2 => $sfTranslator->trans('Restricted to some categories', [], 'Modules.Productcomments.Admin'),
+            3 => $sfTranslator->trans('Restricted to some products', [], 'Modules.Productcomments.Admin'),
+        ];
     }
 }
