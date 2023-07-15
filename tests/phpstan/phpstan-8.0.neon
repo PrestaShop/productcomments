@@ -3,6 +3,3 @@ includes:
 
 parameters:
   ignoreErrors:
-    - 
-      message: '#Cannot call method [a-zA-Z0-9\\_]+\(\) on object\|false.#'
-      path: ../../productcomments.php
