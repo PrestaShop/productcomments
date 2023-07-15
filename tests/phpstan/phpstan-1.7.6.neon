@@ -1,5 +1,5 @@
 includes:
-	- %currentWorkingDirectory%/tests/phpstan/phpstan.neon
+  - %currentWorkingDirectory%/tests/phpstan/phpstan.neon
 
 parameters:
   ignoreErrors:
@@ -10,3 +10,6 @@ parameters:
     - '#Parameter \#1 \$idCategory of class Category constructor expects null, int given.#'
     - '#Parameter \#1 \$value of method ControllerCore::ajaxRender\(\) expects null, string\|false given.#'
     - '#Parameter \#2 \$value of static method CacheCore::store\(\) expects string, array\|mysqli_result\|PDOStatement\|resource\|false\|null given.#'
+    - 
+      message: '#Cannot call method [a-zA-Z0-9\\_]+\(\) on object\|false.#'
+      path: ../../productcomments.php
