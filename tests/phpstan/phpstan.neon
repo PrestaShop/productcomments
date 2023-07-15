@@ -14,6 +14,6 @@ parameters:
       message: '#Cannot call method [a-zA-Z0-9\\_]+\(\) on object\|false.#'
       path: ../../productcomments.php
     - 
-      message: '#PHPDoc tag @extends contains generic type Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository[a-zA-Z\\_]+ not generic.#'
+      message: '#PHPDoc tag @extends contains generic type Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<[a-zA-Z\\_]+> [a-zA-Z\\_]+ is not generic.#'
       path: ../../src/Repository
   level: 5
