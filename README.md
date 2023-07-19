@@ -4,6 +4,10 @@
 
 Allow users to post reviews on your products and/or rate them based on specific criteria.
 
+## Compatibility
+
+PrestaShop: `1.7.7` or newer
+
 ## Multistore compatibility
 
 This module is partially compatible with the multistore feature. Some of its options might not be available.
