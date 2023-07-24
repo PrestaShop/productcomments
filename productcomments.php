@@ -57,9 +57,6 @@ class ProductComments extends Module implements WidgetInterface
         $this->displayName = $this->trans('Product Comments', [], 'Modules.Productcomments.Admin');
         $this->description = $this->trans('Allow users to post reviews on your products and/or rate them based on specific criteria.', [], 'Modules.Productcomments.Admin');
 
-        $this->langId = $this->context->language->id;
-        $this->shopId = $this->context->shop->id ? $this->context->shop->id : Configuration::get('PS_SHOP_DEFAULT');
-
         $this->ps_versions_compliancy = ['min' => '1.7.7', 'max' => _PS_VERSION_];
     }
 
