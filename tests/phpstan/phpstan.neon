@@ -11,6 +11,15 @@ parameters:
     - ../../upgrade/
   ignoreErrors:
     - 
-      message: '#Cannot call method [a-zA-Z0-9\\_]+\(\) on object\|false.#'
-      path: ../../productcomments.php
+     message: '#Cannot call method [a-zA-Z0-9\\_]+\(\) on object\|false.#'
+     path: ../../productcomments.php
+    - 
+      message: '#Property .+::\$id is never written, only read.#'
+      path: ../../src/Entity/
+    - 
+      message: '#Property .+::\$grade is never read, only written.#'
+      path: ../../src/Entity/
+    - 
+      message: '#Property .+::\$registry is unused.#'
+      path: ../../src/Repository/
   level: 5

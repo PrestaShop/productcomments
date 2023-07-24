@@ -70,6 +70,154 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
         $this->databasePrefix = $databasePrefix;
     }
 
+    public function add(ProductCommentCriterion $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(ProductCommentCriterion $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    private function deleteLangs($criterion): int
+    {
+        return $this->connection->executeUpdate('
+			DELETE FROM `' . _DB_PREFIX_ . 'product_comment_criterion_lang`
+			WHERE `id_product_comment_criterion` = ' . $criterion->getId());
+    }
+
+    private function deleteCategories($criterion): int
+    {
+        return $this->connection->executeUpdate('
+			DELETE FROM `' . _DB_PREFIX_ . 'product_comment_criterion_category`
+			WHERE `id_product_comment_criterion` = ' . $criterion->getId());
+    }
+
+    private function deleteProducts($criterion): int
+    {
+        return $this->connection->executeUpdate('
+			DELETE FROM `' . _DB_PREFIX_ . 'product_comment_criterion_product`
+			WHERE `id_product_comment_criterion` = ' . $criterion->getId());
+    }
+
+    private function deleteGrades($criterion): int
+    {
+        return $this->connection->executeUpdate('
+			DELETE FROM `' . _DB_PREFIX_ . 'product_comment_criterion_grade`
+			WHERE `id_product_comment_criterion` = ' . $criterion->getId());
+    }
+
+    /* Remove a criterion and Delete its manual relation _lang, _category, _product, _grade */
+    public function delete(ProductCommentCriterion $criterion): int
+    {
+        $res = 0;
+
+        $criterionType = $criterion->getType();
+
+        $this->remove($criterion, true);
+        $this->getEntityManager()->flush();
+
+        $res += $this->deleteLangs($criterion);
+
+        if ($criterionType == 2) {
+            $res += $this->deleteCategories($criterion);
+        } elseif ($criterionType == 3) {
+            $res += $this->deleteProducts($criterion);
+        }
+
+        $res += $this->deleteGrades($criterion);
+
+        return $res;
+    }
+
+    /* Update a criterion and Delete its manual relation _lang, _category, _product, _grade */
+    public function update(ProductCommentCriterion $criterion): int
+    {
+        $res = 0;
+
+        $criterionType = $criterion->getType();
+
+        $this->getEntityManager()->persist($criterion);
+        $this->getEntityManager()->flush();
+
+        $res += $this->deleteLangs($criterion);
+        $res += $this->updateLangs($criterion);
+
+        if ($criterionType == 2) {
+            $res += $this->deleteCategories($criterion);
+            $res += $this->updateCategories($criterion);
+        } elseif ($criterionType == 3) {
+            $res += $this->deleteProducts($criterion);
+            $res += $this->updateProducts($criterion);
+        }
+
+        return $res;
+    }
+
+    private function updateLangs($criterion): int
+    {
+        $res = 0;
+        $criterionId = $criterion->getId();
+        foreach ($criterion->getNames() as $key => $value) {
+            $qb = $this->connection->createQueryBuilder();
+            $qb
+            ->insert(_DB_PREFIX_ . 'product_comment_criterion_lang')
+            ->values(
+                [
+                    'id_product_comment_criterion' => '?',
+                    'id_lang' => '?',
+                    'name' => '?',
+                ]
+            )
+            ->setParameter(0, $criterionId)
+            ->setParameter(1, $key)
+            ->setParameter(2, $value)
+            ;
+            $res += $this->connection->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
+        }
+
+        return $res;
+    }
+
+    private function updateCategories($criterion): int
+    {
+        $res = 0;
+        $criterionId = $criterion->getId();
+        foreach ($criterion->getCategories() as $id_category) {
+            $res += $this->connection->executeUpdate(
+                'INSERT INTO `' .
+                _DB_PREFIX_ . 'product_comment_criterion_category` (`id_product_comment_criterion`, `id_category`)
+                VALUES(' . $criterionId . ',' . $id_category . ')'
+            );
+        }
+
+        return $res;
+    }
+
+    private function updateProducts($criterion): int
+    {
+        $res = 0;
+        $criterionId = $criterion->getId();
+        foreach ($criterion->getProducts() as $id_product) {
+            $res += $this->connection->executeUpdate(
+                'INSERT INTO `' .
+                _DB_PREFIX_ . 'product_comment_criterion_product` (`id_product_comment_criterion`, `id_product`)
+                VALUES(' . $criterionId . ',' . $id_product . ')'
+            );
+        }
+
+        return $res;
+    }
+
     /**
      * @param int $idProduct
      * @param int $idLang
@@ -131,16 +279,16 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param ProductCommentCriterion $entity
+     * @param int $id_criterion
      *
      * @return array
      */
-    public function getProducts($entity)
+    public function getProducts(int $id_criterion)
     {
         $sql = '
 			SELECT pccp.id_product, pccp.id_product_comment_criterion
 			FROM `' . _DB_PREFIX_ . 'product_comment_criterion_product` pccp
-			WHERE pccp.id_product_comment_criterion = ' . $entity->getId();
+			WHERE pccp.id_product_comment_criterion = ' . $id_criterion;
 
         $res = $this->connection->executeQuery($sql)->fetchAll();
 
@@ -155,16 +303,16 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param ProductCommentCriterion $entity
+     * @param int $id_criterion
      *
      * @return array
      */
-    public function getCategories(ProductCommentCriterion $entity)
+    public function getCategories(int $id_criterion)
     {
         $sql = '
 			SELECT pccc.id_category, pccc.id_product_comment_criterion
 			FROM `' . _DB_PREFIX_ . 'product_comment_criterion_category` pccc
-			WHERE pccc.id_product_comment_criterion = ' . $entity->getId();
+			WHERE pccc.id_product_comment_criterion = ' . $id_criterion;
 
         $res = $this->connection->executeQuery($sql)->fetchAll();
 
@@ -190,5 +338,32 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
             2 => $sfTranslator->trans('Restricted to some categories', [], 'Modules.Productcomments.Admin'),
             3 => $sfTranslator->trans('Restricted to some products', [], 'Modules.Productcomments.Admin'),
         ];
+    }
+
+    /**
+     * Get Criterion with names in ative languages
+     *
+     * @return ProductCommentCriterion
+     */
+    public function findRelation($id_criterion)
+    {
+        if ($id_criterion > 0) {
+            $criterion = $this->find($id_criterion);
+            $sql = '
+			SELECT `id_lang`, `name`
+			FROM `' . _DB_PREFIX_ . 'product_comment_criterion_lang` pccl			
+			WHERE pccl.id_product_comment_criterion = ' . $id_criterion . '
+			ORDER BY pccl.`id_lang` ASC';
+            $langNames = $this->connection->executeQuery($sql)->fetchAll();
+            $langArray = [];
+            foreach ($langNames as $langName) {
+                $langArray[$langName['id_lang']] = $langName['name'];
+            }
+            $criterion->setNames($langArray);
+        } else {
+            $criterion = new ProductCommentCriterion();
+        }
+
+        return $criterion;
     }
 }

@@ -8,6 +8,3 @@ parameters:
     - '#Access to an undefined property HelperList::\$list_id.#'
     - '#Access to an undefined property HelperList::\$shopLinkType.#'
     - '#Parameter \#1 \$value of method ControllerCore::ajaxRender\(\) expects null, string\|false given.#'
-    - 
-      message: '#PHPDoc tag @extends contains generic type Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<[a-zA-Z\\_]+> [a-zA-Z\\_]+ is not generic.#'
-      path: ../../src/Repository    

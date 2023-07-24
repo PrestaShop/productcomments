@@ -401,8 +401,6 @@ class ProductCommentRepository extends ServiceEntityRepository
 
         $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
 
-        // return $sql;
-
         $query = $this->connection->prepare($sql);
         $query->execute();
 

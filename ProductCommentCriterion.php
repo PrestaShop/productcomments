@@ -130,6 +130,8 @@ class ProductCommentCriterion extends ObjectModel
      * Add grade to a criterion
      *
      * @return bool succeed
+     *
+     * @deprecated 4.0.0
      */
     public function addGrade($id_product_comment, $grade)
     {
@@ -266,6 +268,9 @@ class ProductCommentCriterion extends ObjectModel
         return $criterions;
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public function deleteCategories()
     {
         return Db::getInstance()->execute('
@@ -273,6 +278,9 @@ class ProductCommentCriterion extends ObjectModel
 			WHERE `id_product_comment_criterion` = ' . (int) $this->id);
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public function deleteProducts()
     {
         return Db::getInstance()->execute('
