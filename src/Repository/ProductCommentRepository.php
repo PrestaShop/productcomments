@@ -108,7 +108,7 @@ class ProductCommentRepository
             ;
         }
 
-        return $qb->executeQuery()->fetchAllAssociative();
+        return $qb->execute()->fetchAll();
     }
 
     /**
@@ -131,7 +131,7 @@ class ProductCommentRepository
             'usefulness' => 0,
             'total_usefulness' => 0,
         ];
-        $customerAppreciations = $qb->executeQuery()->fetchAllAssociative();
+        $customerAppreciations = $qb->execute()->fetchAll();
         foreach ($customerAppreciations as $customerAppreciation) {
             if ((int) $customerAppreciation['usefulness']) {
                 ++$usefulnessInfos['usefulness'];
@@ -168,7 +168,7 @@ class ProductCommentRepository
             ;
         }
 
-        return (float) $qb->execute()->fetchOne();
+        return (float) $qb->execute()->fetch(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -204,10 +204,7 @@ class ProductCommentRepository
 
         $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
 
-        $query = $this->connection->prepare($sql);
-        $result = $query->executeQuery();
-
-        return (array) $result->fetchAssociative();
+        return $this->connection->executeQuery($sql)->fetch();
     }
 
     /**
@@ -236,7 +233,7 @@ class ProductCommentRepository
             ;
         }
 
-        return (int) $qb->executeQuery()->fetchOne();
+        return (int) $qb->execute()->fetch(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -267,10 +264,7 @@ class ProductCommentRepository
 
         $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
 
-        $query = $this->connection->prepare($sql);
-        $result = $query->executeQuery();
-
-        return (array) $result->fetchAssociative();
+        return (array) $this->connection->executeQuery($sql)->fetch();
     }
 
     /**
@@ -338,7 +332,7 @@ class ProductCommentRepository
             ->andWhere('pc.id_customer = :id_customer')
             ->setParameter('id_customer', $customerId)
         ;
-        $qb->executeStatement();
+        $qb->execute();
 
         //But we remove every report and votes for comments
         $qb = $this->connection->createQueryBuilder();
@@ -347,7 +341,7 @@ class ProductCommentRepository
             ->andWhere('id_customer = :id_customer')
             ->setParameter('id_customer', $customerId)
         ;
-        $qb->executeStatement();
+        $qb->execute();
 
         $qb = $this->connection->createQueryBuilder();
         $qb
@@ -355,7 +349,7 @@ class ProductCommentRepository
             ->andWhere('id_customer = :id_customer')
             ->setParameter('id_customer', $customerId)
         ;
-        $qb->executeStatement();
+        $qb->execute();
     }
 
     /**
@@ -382,7 +376,7 @@ class ProductCommentRepository
             ->addOrderBy('pc.date_add', 'ASC')
         ;
 
-        return $qb->executeQuery()->fetchAllAssociative();
+        return $qb->execute()->fetchAll();
     }
 
     /**
@@ -410,7 +404,7 @@ class ProductCommentRepository
             ;
         }
 
-        $comments = $qb->executeQuery()->fetchAllAssociative();
+        $comments = $qb->execute()->fetchAll();
 
         return empty($comments) ? [] : $comments[0];
     }
