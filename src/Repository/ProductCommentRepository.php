@@ -168,7 +168,7 @@ class ProductCommentRepository
             ;
         }
 
-        return (float) $qb->execute()->fetchColumn();
+        return (float) $qb->execute()->fetch(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -204,10 +204,7 @@ class ProductCommentRepository
 
         $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
 
-        $query = $this->connection->prepare($sql);
-        $query->execute();
-
-        return (array) $query->fetch();
+        return $this->connection->executeQuery($sql)->fetch();
     }
 
     /**
@@ -236,7 +233,7 @@ class ProductCommentRepository
             ;
         }
 
-        return (int) $qb->execute()->fetchColumn();
+        return (int) $qb->execute()->fetch(\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -267,12 +264,7 @@ class ProductCommentRepository
 
         $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
 
-        // return $sql;
-
-        $query = $this->connection->prepare($sql);
-        $query->execute();
-
-        return (array) $query->fetch();
+        return (array) $this->connection->executeQuery($sql)->fetch();
     }
 
     /**
