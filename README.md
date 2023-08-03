@@ -12,6 +12,18 @@ PrestaShop: `1.7.7` or newer
 
 This module is partially compatible with the multistore feature. Some of its options might not be available.
 
+## How to test
+
+Link to specs : https://docs.prestashop-project.org/functional-documentation/functional-documentation/ux-ui/back-office/improve/modules/product-comments-productcomments
+
+In BO, check that Configuration options work well
+Check if reviews are displayed
+Approve/delete reviews
+Add a review criteria
+In FO, add comments to products
+Report/thumb up or down a comment
+Check product comment in Quickview 
+
 ### Update dependency
 
 There is no JS dependency for this module (for now).
