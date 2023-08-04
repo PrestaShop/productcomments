@@ -268,7 +268,7 @@ class ProductCommentRepository extends ServiceEntityRepository
                 ->setParameter('validate', $validate)
             ;
         }
-        if ($p && $limit) {
+        if ($page && $limit) {
             $limit = (int) $limit;
             $offset = ($page - 1) * $limit;
             $qb
