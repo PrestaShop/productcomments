@@ -307,7 +307,7 @@ class ProductCommentRepository extends ServiceEntityRepository
         return (int) $this->connection->executeQuery(
             $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes()
             //, new QueryCacheProfile(300, "product-comments-getCountByValidate")
-        )->fetchColumn();
+        )->fetch(\PDO::FETCH_COLUMN);
     }
 
     /**
