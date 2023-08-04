@@ -203,7 +203,7 @@ class ProductComments extends Module implements WidgetInterface
             }
         } elseif (Tools::isSubmit('productcomments')) {
             $comment = $commentRepository->find($id_product_comment);
-            $commentRepository->validate($comment, '1');
+            $commentRepository->validate($comment, 1);
             $commentRepository->deleteReports($id_product_comment);
         } elseif (Tools::isSubmit('deleteproductcomments')) {
             $comment = $commentRepository->find($id_product_comment);
@@ -242,7 +242,7 @@ class ProductComments extends Module implements WidgetInterface
             Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'conf' => 4, 'module_name' => $this->name]));
         } elseif ($id_product_comment = (int) Tools::getValue('approveComment')) {
             $comment = $commentRepository->find($id_product_comment);
-            $commentRepository->validate($comment, '1');
+            $commentRepository->validate($comment, 1);
         } elseif ($id_product_comment = (int) Tools::getValue('noabuseComment')) {
             $commentRepository->deleteReports($id_product_comment);
             Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name]));
