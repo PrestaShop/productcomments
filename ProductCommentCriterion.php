@@ -130,7 +130,7 @@ class ProductCommentCriterion extends ObjectModel
      * Add grade to a criterion
      *
      * @return bool succeed
-     * 
+     *
      * @deprecated 4.0.0
      */
     public function addGrade($id_product_comment, $grade)
@@ -156,7 +156,7 @@ class ProductCommentCriterion extends ObjectModel
      * Get criterion by Product
      *
      * @return array Criterion
-     * 
+     *
      * @deprecated 4.0.0
      */
     public static function getByProduct($id_product, $id_lang)
@@ -205,7 +205,7 @@ class ProductCommentCriterion extends ObjectModel
      * Get Criterions
      *
      * @return array Criterions
-     * 
+     *
      * @deprecated 6.0.0
      */
     public static function getCriterions($id_lang, $type = false, $active = false)

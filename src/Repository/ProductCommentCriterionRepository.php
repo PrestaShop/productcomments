@@ -47,7 +47,7 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
      * @var ManagerRegistry the Doctrine Registry
      */
     private $registry;
-    
+
     /**
      * @var Connection the Database connection
      */

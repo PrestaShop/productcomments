@@ -548,7 +548,6 @@ class ProductCommentRepository extends ServiceEntityRepository
         return empty($comments) ? [] : $comments[0];
     }
 
-
     /**
      * @param ProductComment $productComment
      * @param string $validate
