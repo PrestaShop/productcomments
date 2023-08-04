@@ -236,13 +236,13 @@ class ProductCommentRepository extends ServiceEntityRepository
      * @param int $shopId
      * @param int $validate
      * @param bool $deleted
-     * @param int $p
+     * @param int $page
      * @param int $limit
      * @param bool $skip_validate
      *
      * @return array
      */
-    public function getByValidate($langId, $shopId, $validate = 0, $deleted = false, $p = null, $limit = null, $skip_validate = false)
+    public function getByValidate($langId, $shopId, $validate = 0, $deleted = false, $page = null, $limit = null, $skip_validate = false)
     {
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
@@ -270,7 +270,7 @@ class ProductCommentRepository extends ServiceEntityRepository
         }
         if ($p && $limit) {
             $limit = (int) $limit;
-            $offset = ($p - 1) * $limit;
+            $offset = ($page - 1) * $limit;
             $qb
                 ->setFirstResult($offset)
                 ->setMaxResults($limit);

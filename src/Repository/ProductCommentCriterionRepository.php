@@ -127,9 +127,9 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
 
         $res += $this->deleteLangs($criterion);
 
-        if ($criterionType == 2) {
+        if ($criterionType == ProductCommentCriterion::CATEGORIES_TYPE) {
             $res += $this->deleteCategories($criterion);
-        } elseif ($criterionType == 3) {
+        } elseif ($criterionType == ProductCommentCriterion::PRODUCTS_TYPE) {
             $res += $this->deleteProducts($criterion);
         }
 
@@ -151,10 +151,10 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
         $res += $this->deleteLangs($criterion);
         $res += $this->updateLangs($criterion);
 
-        if ($criterionType == 2) {
+        if ($criterionType == ProductCommentCriterion::CATEGORIES_TYPE) {
             $res += $this->deleteCategories($criterion);
             $res += $this->updateCategories($criterion);
-        } elseif ($criterionType == 3) {
+        } elseif ($criterionType == ProductCommentCriterion::PRODUCTS_TYPE) {
             $res += $this->deleteProducts($criterion);
             $res += $this->updateProducts($criterion);
         }
