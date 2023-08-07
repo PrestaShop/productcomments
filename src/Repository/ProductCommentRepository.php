@@ -557,9 +557,9 @@ class ProductCommentRepository extends ServiceEntityRepository
     public function validate($productComment, $validate = 1)
     {
         $success = $this->connection->executeUpdate('
-		UPDATE `' . _DB_PREFIX_ . 'product_comment` SET
-		`validate` = ' . $validate . '
-		WHERE `id_product_comment` = ' . $productComment->getId());
+            UPDATE `' . _DB_PREFIX_ . 'product_comment` SET
+            `validate` = ' . $validate . '
+            WHERE `id_product_comment` = ' . $productComment->getId());
 
         Hook::exec('actionObjectProductCommentValidateAfter', ['object' => $productComment]);
 
