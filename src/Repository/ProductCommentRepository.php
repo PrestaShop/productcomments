@@ -33,12 +33,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use Hook;
 use PrestaShop\Module\ProductComment\Entity\ProductComment;
 
-/*
-use Doctrine\DBAL\Cache\QueryCacheProfile;
-use Doctrine\Common\Cache\Psr6\DoctrineProvider;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-*/
-
 /**
  * @extends ServiceEntityRepository<ProductComment>
  *
@@ -95,12 +89,6 @@ class ProductCommentRepository extends ServiceEntityRepository
         $this->databasePrefix = $databasePrefix;
         $this->guestCommentsAllowed = (bool) $guestCommentsAllowed;
         $this->commentsMinimalTime = (int) $commentsMinimalTime;
-        /* Only works since PS 8.0.0 - Doctrine\Cache 1.11.x
-        $cachePool = new FilesystemAdapter();
-        $cache = DoctrineProvider::wrap($cachePool);
-        $config = $this->connection->getConfiguration();
-        $config->setResultCacheImpl($cache);
-        */
     }
 
     public function add(ProductComment $entity, bool $flush = false): void
@@ -278,7 +266,6 @@ class ProductCommentRepository extends ServiceEntityRepository
 
         return $this->connection->executeQuery(
             $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes()
-            //, new QueryCacheProfile(300, "product-comments-getByValidate")
         )->fetchAll();
     }
 
@@ -306,7 +293,6 @@ class ProductCommentRepository extends ServiceEntityRepository
 
         return (int) $this->connection->executeQuery(
             $qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes()
-            //, new QueryCacheProfile(300, "product-comments-getCountByValidate")
         )->fetch(\PDO::FETCH_COLUMN);
     }
 
