@@ -88,7 +88,6 @@ class ProductCommentCriterion
     public function __construct()
     {
         $langIsoIds = Language::getIsoIds();
-        $langString = '';
         foreach ($langIsoIds as $langIsoId) {
             $this->names[$langIsoId['id_lang']] = $langIsoId['iso_code'];
         }
@@ -208,7 +207,7 @@ class ProductCommentCriterion
     public function isValid()
     {
         $res = true;
-        foreach ($this->names as $key => $value) {
+        foreach ($this->names as $value) {
             $res &= Validate::isGenericName($value);
         }
 
