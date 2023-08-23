@@ -206,11 +206,11 @@ class ProductCommentCriterion
      */
     public function isValid()
     {
-        $res = true;
         foreach ($this->names as $value) {
-            $res &= Validate::isGenericName($value);
+            if (!Validate::isGenericName($value))
+                return false;
         }
 
-        return $res;
+        return true;
     }
 }
