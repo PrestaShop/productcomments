@@ -27,6 +27,8 @@
 namespace PrestaShop\Module\ProductComment\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Language;
+use Validate;
 
 /**
  * @ORM\Table()
@@ -34,6 +36,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProductCommentCriterion
 {
+    const NAME_MAX_LENGTH = 64;
     const ENTIRE_CATALOG_TYPE = 1;
     const CATEGORIES_TYPE = 2;
     const PRODUCTS_TYPE = 3;
@@ -60,6 +63,95 @@ class ProductCommentCriterion
      * @ORM\Column(name="active", type="boolean")
      */
     private $active = false;
+
+    /**
+     * @var array
+     *
+     * Need to be implemented as ORM\OneToMany in the future
+     */
+    private $names;
+
+    /**
+     * @var array
+     *
+     * Need to be implemented as ORM\OneToMany in the future
+     */
+    private $categories;
+
+    /**
+     * @var array
+     *
+     * Need to be implemented as ORM\OneToMany in the future
+     */
+    private $products;
+
+    public function __construct()
+    {
+        $langIsoIds = Language::getIsoIds();
+        foreach ($langIsoIds as $langIsoId) {
+            $this->names[$langIsoId['id_lang']] = $langIsoId['iso_code'];
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getNames()
+    {
+        return $this->names;
+    }
+
+    /**
+     * @param array $langNames
+     *
+     * @return ProductCommentCriterion
+     */
+    public function setNames($langNames)
+    {
+        $this->names = $langNames;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param array $selectedCategories
+     *
+     * @return ProductCommentCriterion
+     */
+    public function setCategories($selectedCategories)
+    {
+        $this->categories = $selectedCategories;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProducts()
+    {
+        return $this->products;
+    }
+
+    /**
+     * @param array $selectedProducts
+     *
+     * @return ProductCommentCriterion
+     */
+    public function setProducts($selectedProducts)
+    {
+        $this->products = $selectedProducts;
+
+        return $this;
+    }
 
     /**
      * @return int
@@ -107,5 +199,19 @@ class ProductCommentCriterion
         $this->active = $active;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        foreach ($this->names as $value) {
+            if (!Validate::isGenericName($value)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
