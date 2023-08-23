@@ -589,7 +589,7 @@
   font-size: 13px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 960px) {
   #product-comments-list-footer {
     position: relative;
     min-height: 45px;
@@ -607,7 +607,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) {
   #product-comments-list-footer {
     display: flex;
     flex-direction: row-reverse;
@@ -616,7 +616,7 @@
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   #product-comments-list-footer {
     display: flex;
     flex-direction: column;
@@ -664,4 +664,8 @@
 
 #product-comments-list-pagination ul li.active span {
   cursor: not-allowed;
+}
+
+#product-comments-list-pagination ul li.hidden {
+  display: none;
 }

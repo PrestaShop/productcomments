@@ -130,6 +130,8 @@ class ProductCommentCriterion extends ObjectModel
      * Add grade to a criterion
      *
      * @return bool succeed
+     *
+     * @deprecated 4.0.0
      */
     public function addGrade($id_product_comment, $grade)
     {
@@ -154,6 +156,8 @@ class ProductCommentCriterion extends ObjectModel
      * Get criterion by Product
      *
      * @return array Criterion
+     *
+     * @deprecated 4.0.0
      */
     public static function getByProduct($id_product, $id_lang)
     {
@@ -201,6 +205,8 @@ class ProductCommentCriterion extends ObjectModel
      * Get Criterions
      *
      * @return array Criterions
+     *
+     * @deprecated 6.0.0
      */
     public static function getCriterions($id_lang, $type = false, $active = false)
     {
@@ -224,6 +230,9 @@ class ProductCommentCriterion extends ObjectModel
         return $criterions;
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public function getProducts()
     {
         $res = Db::getInstance()->executeS('
@@ -240,6 +249,9 @@ class ProductCommentCriterion extends ObjectModel
         return $products;
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public function getCategories()
     {
         $res = Db::getInstance()->executeS('
@@ -256,6 +268,9 @@ class ProductCommentCriterion extends ObjectModel
         return $criterions;
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public function deleteCategories()
     {
         return Db::getInstance()->execute('
@@ -263,6 +278,9 @@ class ProductCommentCriterion extends ObjectModel
 			WHERE `id_product_comment_criterion` = ' . (int) $this->id);
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public function deleteProducts()
     {
         return Db::getInstance()->execute('
@@ -270,6 +288,9 @@ class ProductCommentCriterion extends ObjectModel
 			WHERE `id_product_comment_criterion` = ' . (int) $this->id);
     }
 
+    /**
+     * @deprecated 6.0.0
+     */
     public static function getTypes()
     {
         // Instance of module class for translations
