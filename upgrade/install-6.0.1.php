@@ -27,7 +27,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_5_0_3($object)
+function upgrade_module_6_0_1($object)
 {
     return Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci')
         && Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'product_comment_criterion` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci')
