@@ -20,7 +20,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.repository.name }}
-          path: /home/runner/work
+          path: /home/runner/work/${{ github.event.repository.name }}
   update_release_draft:
     runs-on: ubuntu-latest
     needs: [deploy]
@@ -35,8 +35,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare for Release
-        run: |
-          cd ${{ github.event.repository.name }}
+        run: |          
           zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
       - name: Clean existing assets
         shell: bash
