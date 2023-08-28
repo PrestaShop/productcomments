@@ -1,6 +1,5 @@
-name: Build release
-on:
-  workflow_call
+name: Build
+on: [push, pull_request]
 
 jobs:
   deploy:
