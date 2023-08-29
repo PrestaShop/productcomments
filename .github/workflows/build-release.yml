@@ -30,12 +30,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ github.event.repository.name }}
+          path: ${{ github.event.repository.name }}
       - id: release_info
         uses: toolmantim/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare for Release
-        run: |          
+        run: |
+          cd ${{ github.event.repository.name }}
           zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
       - name: Clean existing assets
         shell: bash
