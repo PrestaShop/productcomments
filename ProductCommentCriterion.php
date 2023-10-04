@@ -48,7 +48,7 @@ class ProductCommentCriterion extends ObjectModel
     ];
 
     /**
-     * @deprecated 6.0.0
+     * @deprecated 6.0.0 - migrated to src/Repository/ProductCommentCriterionRepository
      */
     public function delete()
     {
@@ -100,7 +100,7 @@ class ProductCommentCriterion extends ObjectModel
      *
      * @return bool succeed
      * 
-     * @deprecated 6.0.0
+     * @deprecated 6.0.0 - migrated to src/Repository/ProductCommentCriterionRepository
      */
     public function addProduct($id_product)
     {
@@ -119,7 +119,7 @@ class ProductCommentCriterion extends ObjectModel
      *
      * @return bool succeed
      * 
-     * @deprecated 6.0.0
+     * @deprecated 6.0.0 - migrated to src/Repository/ProductCommentCriterionRepository
      */
     public function addCategory($id_category)
     {
