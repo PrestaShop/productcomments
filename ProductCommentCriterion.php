@@ -99,7 +99,7 @@ class ProductCommentCriterion extends ObjectModel
      * Link a Comment Criterion to a product
      *
      * @return bool succeed
-     * 
+     *
      * @deprecated 6.0.0 - migrated to src/Repository/ProductCommentCriterionRepository
      */
     public function addProduct($id_product)
@@ -118,7 +118,7 @@ class ProductCommentCriterion extends ObjectModel
      * Link a Comment Criterion to a category
      *
      * @return bool succeed
-     * 
+     *
      * @deprecated 6.0.0 - migrated to src/Repository/ProductCommentCriterionRepository
      */
     public function addCategory($id_category)
