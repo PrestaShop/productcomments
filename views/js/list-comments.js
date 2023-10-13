@@ -202,7 +202,7 @@ jQuery(document).ready(function () {
       } else {
         showUpdatePostCommentErrorModal(productCommentUpdatePostErrorMessage);
       }
-    } catch (error) {      
+    } catch (error) {
       showUpdatePostCommentErrorModal(error);
     }
   }
@@ -241,7 +241,7 @@ jQuery(document).ready(function () {
       showReportCommentErrorModal(error);
     }
   }
-  
+
   if (totalPages <= 1)
     $(pagesListId).hide();
     
