@@ -185,9 +185,9 @@ jQuery(document).ready(function () {
       const response = await fetch(updateCommentUsefulnessUrl, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify({id_product_comment: commentId, usefulness: usefulness}),
+        body: "id_product_comment=" + commentId + "&usefulness=" + usefulness,
       });
 
       if (response.status === 200) {        
@@ -222,9 +222,9 @@ jQuery(document).ready(function () {
       const response = await fetch(reportCommentUrl, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({id_product_comment: commentId}),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },        
+        body: "id_product_comment=" + commentId,
       });
 
       if (response.status === 200) {        
