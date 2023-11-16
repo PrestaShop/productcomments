@@ -208,7 +208,7 @@ class ProductComments extends Module implements WidgetInterface
         } elseif (Tools::isSubmit('deleteproductcomments')) {
             $comment = $commentRepository->find($id_product_comment);
 
-            if ($comment ===  null) {
+            if ($comment === null) {
                 $this->_html .= $this->displayError($this->trans('The comment cannot be deleted', [], 'Modules.Productcomments.Admin'));
             } else {
                 $commentRepository->delete($comment);
