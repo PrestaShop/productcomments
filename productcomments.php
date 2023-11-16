@@ -207,7 +207,13 @@ class ProductComments extends Module implements WidgetInterface
             $commentRepository->deleteReports($id_product_comment);
         } elseif (Tools::isSubmit('deleteproductcomments')) {
             $comment = $commentRepository->find($id_product_comment);
-            $commentRepository->delete($comment);
+
+            if ($comment ===  null) {
+                $this->_html .= $this->displayError($this->trans('The comment cannot be deleted', [], 'Modules.Productcomments.Admin'));
+            } else {
+                $commentRepository->delete($comment);
+                Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name]));
+            }
         } elseif (Tools::isSubmit('submitEditCriterion')) {
             $criterion = $criterionRepository->findRelation((int) Tools::getValue('id_product_comment_criterion'));
             $criterion->setType((int) Tools::getValue('id_product_comment_criterion_type'));
