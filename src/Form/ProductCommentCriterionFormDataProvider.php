@@ -74,7 +74,6 @@ class ProductCommentCriterionFormDataProvider implements FormDataProviderInterfa
     {
         $default_name = [];
 
-        //$langIsoIds = Language::getIsoIds();
         $langEntities = $this->langRepository->findBy(['active' => 1]);
         foreach ($langEntities as $langEntity) {
             $default_name[$langEntity->getId()] = $langEntity->getIsoCode();
