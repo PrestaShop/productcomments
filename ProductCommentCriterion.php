@@ -172,13 +172,6 @@ class ProductCommentCriterion extends ObjectModel
             !Validate::isUnsignedId($id_lang)) {
             exit(Tools::displayError());
         }
-        $alias = 'p';
-        $table = '';
-        // check if version > 1.5 to add shop association
-        if (version_compare(_PS_VERSION_, '1.5', '>')) {
-            $table = '_shop';
-            $alias = 'ps';
-        }
 
         $cache_id = 'ProductCommentCriterion::getByProduct_' . $id_product . '-' . $id_lang;
         if (!Cache::isStored($cache_id)) {
@@ -191,7 +184,7 @@ class ProductCommentCriterion extends ObjectModel
 					ON (pcc.`id_product_comment_criterion` = pccp.`id_product_comment_criterion` AND pccp.`id_product` = ' . $id_product . ')
 				LEFT JOIN `' . _DB_PREFIX_ . 'product_comment_criterion_category` pccc
 					ON (pcc.`id_product_comment_criterion` = pccc.`id_product_comment_criterion`)
-				LEFT JOIN `' . _DB_PREFIX_ . 'product' . $table . '` ' . $alias . '
+				LEFT JOIN `' . _DB_PREFIX_ . 'product_shop` ps
 					ON (' . $alias . '.id_category_default = pccc.id_category AND ' . $alias . '.id_product = ' . $id_product . ')
 				WHERE pccl.`id_lang` = ' . $id_lang . '
 				AND (
