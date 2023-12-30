@@ -185,7 +185,7 @@ class ProductCommentCriterion extends ObjectModel
 				LEFT JOIN `' . _DB_PREFIX_ . 'product_comment_criterion_category` pccc
 					ON (pcc.`id_product_comment_criterion` = pccc.`id_product_comment_criterion`)
 				LEFT JOIN `' . _DB_PREFIX_ . 'product_shop` ps
-					ON (' . $alias . '.id_category_default = pccc.id_category AND ' . $alias . '.id_product = ' . $id_product . ')
+					ON (ps.id_category_default = pccc.id_category AND ps.id_product = ' . $id_product . ')
 				WHERE pccl.`id_lang` = ' . $id_lang . '
 				AND (
 					pccp.id_product IS NOT NULL
