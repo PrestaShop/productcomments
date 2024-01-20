@@ -124,6 +124,11 @@ jQuery(document).ready(function () {
       }
     });
 
+    if (!ratingChosen) {
+      showPostErrorModal(productCommentRatingNotChosen);
+      isValid = false;
+    }
+
     return isValid;
   }
 
