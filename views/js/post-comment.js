@@ -41,7 +41,8 @@ jQuery(document).ready(function () {
 
   const criterionsList = $('#criterions_list');
   criterionsList.append('<div id="ratingNotChosen">* ' + productCommentMandatoryMessage + '</div>');
-  $('#ratingNotChosen').hide();
+  const criterionsInfo = $('#ratingNotChosen');
+  criterionsInfo.hide();
 
   function showPostCommentModal() {
     commentPostedModal.modal('hide');
@@ -128,10 +129,10 @@ jQuery(document).ready(function () {
       }
            
       if (!ratingChosen) {
-        $('#ratingNotChosen').show();
+        criterionsInfo.show();
         isValid = false;
       } else {
-        $('#ratingNotChosen').hide();
+        criterionsInfo.hide();
       }
     });  
 
