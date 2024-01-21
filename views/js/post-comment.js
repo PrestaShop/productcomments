@@ -39,6 +39,10 @@ jQuery(document).ready(function () {
   const commentPostedModal = $('#product-comment-posted-modal');
   const commentPostErrorModal = $('#product-comment-post-error');
 
+  const criterionsList = $('#criterions_list');
+  criterionsList.append('<div id="ratingNotChosen">* ' + productCommentMandatoryMessage + '</div>');
+  $('#ratingNotChosen').hide();
+
   function showPostCommentModal() {
     commentPostedModal.modal('hide');
     commentPostErrorModal.modal('hide');
@@ -122,12 +126,14 @@ jQuery(document).ready(function () {
         $(fieldSelector).removeClass('error');
         $(fieldSelector).addClass('valid');
       }
-    });
-
-    if (!ratingChosen) {
-      showPostErrorModal(productCommentRatingNotChosen);
-      isValid = false;
-    }
+           
+      if (!ratingChosen) {
+        $('#ratingNotChosen').show();
+        isValid = false;
+      } else {
+        $('#ratingNotChosen').hide();
+      }
+    });  
 
     return isValid;
   }
