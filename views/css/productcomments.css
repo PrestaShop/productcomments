@@ -293,8 +293,8 @@
 
 #ratingNotChosen {
   font-size: smaller;
-  color: #ff0000;
-  text-align: center;
+  color: #ab4746;
+  text-align: right;
 }
 
 #post-product-comment-form input.error,
