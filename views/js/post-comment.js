@@ -41,13 +41,13 @@ jQuery(document).ready(function () {
 
   const criterionsList = $('#criterions_list');
   criterionsList.append('<div id="ratingNotChosen">* ' + productCommentMandatoryMessage + '</div>');
-  const criterionsInfo = $('#ratingNotChosen');
-  criterionsInfo.hide();
+  const criterionsInfo = $('#ratingNotChosen');  
 
   function showPostCommentModal() {
     commentPostedModal.modal('hide');
     commentPostErrorModal.modal('hide');
     postCommentModal.modal('show');
+    criterionsInfo.hide();
   }
 
   function showCommentPostedModal() {
