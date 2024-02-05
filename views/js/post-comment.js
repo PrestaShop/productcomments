@@ -47,6 +47,7 @@ jQuery(document).ready(function () {
     commentPostedModal.modal('hide');
     commentPostErrorModal.modal('hide');
     postCommentModal.modal('show');
+    ratingChosen = false;
     criterionsInfo.hide();
   }
 
