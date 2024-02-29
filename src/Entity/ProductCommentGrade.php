@@ -37,7 +37,7 @@ class ProductCommentGrade
     /**
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="ProductComment")
-     * @ORM\JoinColumn(name="id_product_comment", referencedColumnName="id_product_comment")
+     * @ORM\JoinColumn(name="id_product_comment", referencedColumnName="id_product_comment", onDelete="CASCADE")
      */
     private $comment;
 
