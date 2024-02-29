@@ -33,8 +33,6 @@ use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class ProductComments extends Module implements WidgetInterface
 {
-    const INSTALL_SQL_FILE = 'install.sql';
-
     private $_html = '';
 
     private $_productCommentsCriterionTypes = [];
@@ -47,7 +45,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '6.0.3';
+        $this->version = '6.0.4';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -70,19 +68,8 @@ class ProductComments extends Module implements WidgetInterface
         }
 
         if ($keep) {
-            if (!file_exists(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
-                return false;
-            } elseif (!$sql = file_get_contents(dirname(__FILE__) . '/' . self::INSTALL_SQL_FILE)) {
-                return false;
-            }
-            $sql = str_replace(['PREFIX_', 'ENGINE_TYPE'], [_DB_PREFIX_, _MYSQL_ENGINE_], $sql);
-            $sql = preg_split("/;\s*[\r\n]+/", trim($sql));
-
-            foreach ($sql as $query) {
-                if (!Db::getInstance()->execute(trim($query))) {
-                    return false;
-                }
-            }
+            $entitySchemaManager = $this->getEntitySchemaManager();
+            $entitySchemaManager->createMultiple($this->getEntitiesList());
         }
 
         if (
@@ -149,16 +136,21 @@ class ProductComments extends Module implements WidgetInterface
 
     public function deleteTables()
     {
-        return Db::getInstance()->execute('
-			DROP TABLE IF EXISTS
-			`' . _DB_PREFIX_ . 'product_comment`,
-			`' . _DB_PREFIX_ . 'product_comment_criterion`,
-			`' . _DB_PREFIX_ . 'product_comment_criterion_product`,
-			`' . _DB_PREFIX_ . 'product_comment_criterion_lang`,
-			`' . _DB_PREFIX_ . 'product_comment_criterion_category`,
-			`' . _DB_PREFIX_ . 'product_comment_grade`,
-			`' . _DB_PREFIX_ . 'product_comment_usefulness`,
-			`' . _DB_PREFIX_ . 'product_comment_report`');
+        $entitySchemaManager = $this->getEntitySchemaManager();
+
+        return $entitySchemaManager->dropMultiple($this->getEntitiesList());
+    }
+
+    /**
+     * Update entities tables schema
+     *
+     * @return bool
+     */
+    public function updateTablesSchema(): bool
+    {
+        $entitySchemaManager = $this->getEntitySchemaManager();
+
+        return $entitySchemaManager->updateMultiple($this->getEntitiesList());
     }
 
     public function getCacheId($id_product = null)
@@ -1103,5 +1095,22 @@ class ProductComments extends Module implements WidgetInterface
           However since Prestashop 1.7.8, modules must implement a listener for all the hooks they register: a check is made
           at module installation.
         */
+    }
+
+    /**
+     * Return array with module Symfony entities list
+     *
+     * @return array
+     */
+    protected function getEntitiesList(): array
+    {
+        return [
+            PrestaShop\Module\ProductComment\Entity\ProductComment::class,
+            PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion::class,
+            PrestaShop\Module\ProductComment\Entity\ProductCommentCriterionLang::class,
+            PrestaShop\Module\ProductComment\Entity\ProductCommentGrade::class,
+            PrestaShop\Module\ProductComment\Entity\ProductCommentReport::class,
+            PrestaShop\Module\ProductComment\Entity\ProductCommentUsefulness::class,
+        ];
     }
 }
