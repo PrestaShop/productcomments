@@ -77,7 +77,7 @@
                         <label>{$criterion.name|escape:'html':'UTF-8'}:</label>
                         <div
                           class="grade-stars"
-                          data-grade="3"
+                          data-grade="5"
                           data-input="criterion[{$criterion.id_product_comment_criterion}]">
                         </div>
                       </div>
