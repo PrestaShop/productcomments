@@ -71,6 +71,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
 
             if ($isLastNameAnonymous) {
                 $productComment['customer_name'] = $this->anonymizeName($productComment['customer_name']);
+                $productComment['lastname']= '...';
             }
 
             $productComment['customer_name'] = htmlentities($productComment['customer_name']);
