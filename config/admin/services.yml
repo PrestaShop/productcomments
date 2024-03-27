@@ -1,2 +1,18 @@
 imports:
   - { resource: ../common.yml }
+
+services:
+    product_comment_criterion_form_data_provider:
+        class: 'PrestaShop\Module\ProductComment\Form\ProductCommentCriterionFormDataProvider'
+        public: true
+        arguments:
+            - '@product_comment_criterion_repository'
+            - '@prestashop.core.admin.lang.repository'
+            
+    product_comment_criterion_form_data_handler:
+        class: 'PrestaShop\Module\ProductComment\Form\ProductCommentCriterionFormDataHandler'
+        public: true
+        arguments:
+            - '@product_comment_criterion_repository'
+            - '@prestashop.core.admin.lang.repository'
+            - '@doctrine.orm.default_entity_manager'

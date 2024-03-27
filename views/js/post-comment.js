@@ -39,10 +39,16 @@ jQuery(document).ready(function () {
   const commentPostedModal = $('#product-comment-posted-modal');
   const commentPostErrorModal = $('#product-comment-post-error');
 
+  const criterionsList = $('#criterions_list');
+  criterionsList.append('<div id="ratingNotChosen">* ' + productCommentMandatoryMessage + '</div>');
+  const criterionsInfo = $('#ratingNotChosen');  
+
   function showPostCommentModal() {
     commentPostedModal.modal('hide');
     commentPostErrorModal.modal('hide');
     postCommentModal.modal('show');
+    ratingChosen = false;
+    criterionsInfo.hide();
   }
 
   function showCommentPostedModal() {
@@ -122,7 +128,14 @@ jQuery(document).ready(function () {
         $(fieldSelector).removeClass('error');
         $(fieldSelector).addClass('valid');
       }
-    });
+           
+      if (!ratingChosen) {
+        criterionsInfo.show();
+        isValid = false;
+      } else {
+        criterionsInfo.hide();
+      }
+    });  
 
     return isValid;
   }

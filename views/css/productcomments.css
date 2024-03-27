@@ -291,6 +291,12 @@
   font-weight: bold;
 }
 
+#ratingNotChosen {
+  font-size: smaller;
+  color: #ab4746;
+  text-align: right;
+}
+
 #post-product-comment-form input.error,
 #post-product-comment-form textarea.error {
   background-color: #f2dede;
