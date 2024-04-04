@@ -180,9 +180,18 @@ jQuery(document).ready(function () {
     commentsList.append($comment);
   }
 
-  function updateCommentUsefulness($comment, commentId, usefulness) {
-    $.post(updateCommentUsefulnessUrl, {id_product_comment: commentId, usefulness: usefulness}, function(jsonData){
-      if (jsonData) {
+  async function updateCommentUsefulness($comment, commentId, usefulness) {
+    try {
+      const response = await fetch(updateCommentUsefulnessUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: "id_product_comment=" + commentId + "&usefulness=" + usefulness,
+      });
+
+      if (response.status === 200) {        
+        const jsonData = await response.json();
         if (jsonData.success) {
           $('.useful-review-value', $comment).html(jsonData.usefulness);
           $('.not-useful-review-value', $comment).html(jsonData.total_usefulness - jsonData.usefulness);
@@ -193,9 +202,9 @@ jQuery(document).ready(function () {
       } else {
         showUpdatePostCommentErrorModal(productCommentUpdatePostErrorMessage);
       }
-    }).fail(function() {
-      showUpdatePostCommentErrorModal(productCommentUpdatePostErrorMessage);
-    });
+    } catch (error) {
+      showUpdatePostCommentErrorModal(error);
+    }
   }
 
   function confirmCommentAbuse(commentId) {
@@ -204,20 +213,33 @@ jQuery(document).ready(function () {
       if (!confirm) {
         return;
       }
-      $.post(reportCommentUrl, {id_product_comment: commentId}, function(jsonData){
-        if (jsonData) {
-          if (jsonData.success) {
-            reportCommentPostedModal.modal('show');
-          } else {
-            showReportCommentErrorModal(jsonData.error);
-          }
-        } else {
-          showReportCommentErrorModal(productCommentAbuseReportErrorMessage);
-        }
-      }).fail(function() {
-        showReportCommentErrorModal(productCommentAbuseReportErrorMessage);
-      });
+      confirmCommentAbuseFetch(commentId);
     })
+  }
+
+  async function confirmCommentAbuseFetch(commentId) {
+    try {
+      const response = await fetch(reportCommentUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },        
+        body: "id_product_comment=" + commentId,
+      });
+
+      if (response.status === 200) {        
+        const jsonData = await response.json();
+        if (jsonData.success) {
+          reportCommentPostedModal.modal('show');
+        } else {
+          showReportCommentErrorModal(jsonData.error);
+        }
+      } else {
+        showReportCommentErrorModal(productCommentAbuseReportErrorMessage);
+      }
+    } catch (error) {
+      showReportCommentErrorModal(error);
+    }
   }
 
   if (totalPages <= 1)
