@@ -67,7 +67,7 @@ class ProductCommentCriterion
     /**
      * @var array
      *
-     * @deprecated 6.0.3 - use criterionLangs instead
+     * @deprecated 7.0.0 - use criterionLangs instead
      */
     private $names;
 
@@ -139,7 +139,7 @@ class ProductCommentCriterion
     /**
      * @return array
      *
-     * @deprecated 6.0.3 - migrated to Form\ProductCommentCriterionFormDataProvider
+     * @deprecated 7.0.0 - migrated to Form\ProductCommentCriterionFormDataProvider
      */
     public function getNames()
     {
@@ -151,7 +151,7 @@ class ProductCommentCriterion
      *
      * @return ProductCommentCriterion
      *
-     * @deprecated 6.0.3
+     * @deprecated 7.0.0
      */
     public function setNames($langNames)
     {
