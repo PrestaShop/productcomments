@@ -89,7 +89,7 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @deprecated 6.0.3 - cascade remove by Entity setting instead
+     * @deprecated 7.0.0 - cascade remove by Entity setting instead
      */
     private function deleteLangs($criterion): int
     {
@@ -167,7 +167,7 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @deprecated 6.0.3 - migrated to Form\ProductCommentCriterionFormDataHandler
+     * @deprecated 7.0.0 - migrated to Form\ProductCommentCriterionFormDataHandler
      */
     private function updateLangs($criterion): int
     {
@@ -346,7 +346,7 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
     /**
      * @return ProductCommentCriterion
      *
-     * @deprecated 6.0.3 - use standard find() instead
+     * @deprecated 7.0.0 - use standard find() instead
      */
     public function findRelation($id_criterion)
     {

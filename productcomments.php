@@ -47,7 +47,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '6.0.3';
+        $this->version = '7.0.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -60,7 +60,7 @@ class ProductComments extends Module implements WidgetInterface
         $this->langId = $this->context->language->id;
         $this->shopId = $this->context->shop->id ? $this->context->shop->id : Configuration::get('PS_SHOP_DEFAULT');
 
-        $this->ps_versions_compliancy = ['min' => '1.7.7', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '1.7.8', 'max' => _PS_VERSION_];
     }
 
     public function install($keep = true)
