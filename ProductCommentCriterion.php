@@ -133,7 +133,6 @@ class ProductCommentCriterion extends ObjectModel
 		');
     }
 
-
     /**
      * Get Criterions
      *
