@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v4
       - name: Install composer dependencies
         run: composer install --no-dev -o
       - name: Clean-up project
@@ -17,7 +17,7 @@ jobs:
       - name: Generate index.php
         run: ~/.composer/vendor/bin/autoindex
       - name: Create & upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}
           path: /home/runner/work/${{ github.event.repository.name }}
@@ -27,7 +27,7 @@ jobs:
     if: github.event_name == 'push' && (github.event.ref == 'refs/heads/main' || github.event.ref == 'refs/heads/master')
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ github.event.repository.name }}
           path: ${{ github.event.repository.name }}
