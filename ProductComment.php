@@ -190,21 +190,6 @@ class ProductComment extends ObjectModel
         return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow($sql);
     }
 
-    /**
-     * @deprecated 4.0.0
-     */
-    public static function getAverageGrade($id_product)
-    {
-        $validate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
-
-        return Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getRow('
-		SELECT AVG(pc.`grade`) AS grade
-		FROM `' . _DB_PREFIX_ . 'product_comment` pc
-		WHERE pc.`id_product` = ' . (int) $id_product . '
-		AND pc.`deleted` = 0' .
-        ($validate == '1' ? ' AND pc.`validate` = 1' : ''));
-    }
-
     public static function getAveragesByProduct($id_product, $id_lang)
     {
         /* Get all grades */
@@ -232,31 +217,6 @@ class ProductComment extends ObjectModel
         }
 
         return $averages;
-    }
-
-    /**
-     * Return number of comments and average grade by products
-     *
-     * @return int|false
-     *
-     * @deprecated 4.0.0
-     */
-    public static function getCommentNumber($id_product)
-    {
-        if (!Validate::isUnsignedId($id_product)) {
-            return false;
-        }
-        $validate = (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE');
-        $cache_id = 'ProductComment::getCommentNumber_' . $id_product . '-' . $validate;
-        if (!Cache::isStored($cache_id)) {
-            $result = (int) Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->getValue('
-			SELECT COUNT(`id_product_comment`) AS "nbr"
-			FROM `' . _DB_PREFIX_ . 'product_comment` pc
-			WHERE `id_product` = ' . $id_product . ($validate ? ' AND `validate` = 1' : ''));
-            Cache::store($cache_id, (string) $result);
-        }
-
-        return (int) Cache::retrieve($cache_id);
     }
 
     /**
@@ -432,66 +392,6 @@ class ProductComment extends ObjectModel
         return Db::getInstance()->execute('
 		DELETE FROM `' . _DB_PREFIX_ . 'product_comment_usefulness`
 		WHERE `id_product_comment` = ' . $id_product_comment);
-    }
-
-    /**
-     * Report comment
-     *
-     * @return bool
-     *
-     * @deprecated 4.0.0 - migrated to controllers/front/ReportComment and src/Entity/ProductCommentReport
-     */
-    public static function reportComment($id_product_comment, $id_customer)
-    {
-        return Db::getInstance()->execute('
-			INSERT INTO `' . _DB_PREFIX_ . 'product_comment_report` (`id_product_comment`, `id_customer`)
-			VALUES (' . (int) $id_product_comment . ', ' . (int) $id_customer . ')');
-    }
-
-    /**
-     * Comment already report
-     *
-     * @return bool
-     *
-     * @deprecated 4.0.0 - migrated to controllers/front/ReportComment and src/Entity/ProductCommentReport
-     */
-    public static function isAlreadyReport($id_product_comment, $id_customer)
-    {
-        return (bool) Db::getInstance()->getValue('
-			SELECT COUNT(*)
-			FROM `' . _DB_PREFIX_ . 'product_comment_report`
-			WHERE `id_customer` = ' . (int) $id_customer . '
-			AND `id_product_comment` = ' . (int) $id_product_comment);
-    }
-
-    /**
-     * Set comment usefulness
-     *
-     * @return bool
-     *
-     * @deprecated 4.0.0 - migrated to controllers/front/UpdateCommentUsefulness and src/Entity/ProductCommentUsefulness
-     */
-    public static function setCommentUsefulness($id_product_comment, $usefulness, $id_customer)
-    {
-        return Db::getInstance()->execute('
-			INSERT INTO `' . _DB_PREFIX_ . 'product_comment_usefulness` (`id_product_comment`, `usefulness`, `id_customer`)
-			VALUES (' . (int) $id_product_comment . ', ' . (int) $usefulness . ', ' . (int) $id_customer . ')');
-    }
-
-    /**
-     * Usefulness already set
-     *
-     * @return bool
-     *
-     * @deprecated 4.0.0 - migrated to controllers/front/UpdateCommentUsefulness and src/Entity/ProductCommentUsefulness
-     */
-    public static function isAlreadyUsefulness($id_product_comment, $id_customer)
-    {
-        return (bool) Db::getInstance()->getValue('
-			SELECT COUNT(*)
-			FROM `' . _DB_PREFIX_ . 'product_comment_usefulness`
-			WHERE `id_customer` = ' . (int) $id_customer . '
-			AND `id_product_comment` = ' . (int) $id_product_comment);
     }
 
     /**
