@@ -1076,11 +1076,19 @@ class ProductComments extends Module implements WidgetInterface
                 case 'quickview':
                     $filePath = $tplHookPath . 'product-additional-info-quickview.tpl';
                     break;
+                case 'refresh':
+                    if (Tools::getValue('quickview') == true) {
+                        $filePath = '';
+                    } else {
+                        $filePath = $tplHookPath . 'product-additional-info.tpl';
+                    }
+                    break;
                 case '':
                     $filePath = $tplHookPath . 'product-additional-info.tpl';
                     break;
-                default:    // 'refresh' and other unpredicted cases
+                default:
                     $filePath = '';
+                    break;
             }
         }
 
