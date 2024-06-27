@@ -24,15 +24,22 @@
  *}
 
 {if $nb_comments != 0}
-  <script type="text/javascript">    
-    $('#product-quickview-{$product.id}').insertAfter($('.quickview #product-description-short'));
-    $('#product-quickview-{$product.id} .grade-stars').rating({ grade: {$average_grade} });
-    $('#product-quickview-{$product.id} .comments-nb').html('({$nb_comments})');
+  <script type="text/javascript">
+    function renderQuickViewNote() {
+      $('#product-quickview-{$product.id}').insertAfter($('.quickview #product-description-short'));
+      $('#product-quickview-{$product.id} .grade-stars').rating({ grade: {$average_grade} });
+      $('#product-quickview-{$product.id} .comments-nb').html('({$nb_comments})');
+    }
+
+    renderQuickViewNote();
+
+    prestashop.on('updatedProduct', function(){
+      renderQuickViewNote();
+    });
   </script>
 
   <div id="product-quickview-{$product.id}" class="product-quickview-review">
     <div class="grade-stars"></div>
     <div class="comments-nb"></div>
   </div>
-</div>
 {/if}
