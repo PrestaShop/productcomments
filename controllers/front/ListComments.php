@@ -63,6 +63,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             $productComment['title'] = htmlentities($productComment['title']);
             $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
+            $productComment['date_add_ISO_8601'] = $dateAdd->format('c');
 
             // The customer has firstname and lastname, for guest we only have customer_name field
             $productComment['customer_name'] = !empty($productComment['customer_name'])

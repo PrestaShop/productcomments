@@ -152,16 +152,17 @@ jQuery(document).ready(function () {
     if (!customerName) {
       customerName = comment.firstname+' '+comment.lastname;
     }
-    commentTemplate = commentTemplate.replace(/@COMMENT_ID@/, comment.id_product_comment);
-    commentTemplate = commentTemplate.replace(/@PRODUCT_ID@/, comment.id_product);
-    commentTemplate = commentTemplate.replace(/@CUSTOMER_NAME@/, customerName);
-    commentTemplate = commentTemplate.replace(/@COMMENT_DATE@/, comment.date_add);
-    commentTemplate = commentTemplate.replace(/@COMMENT_TITLE@/, comment.title);
-    commentTemplate = commentTemplate.replace(/@COMMENT_COMMENT@/, comment.content);
-    commentTemplate = commentTemplate.replace(/@COMMENT_USEFUL_ADVICES@/, comment.usefulness);
-    commentTemplate = commentTemplate.replace(/@COMMENT_GRADE@/, comment.grade);
-    commentTemplate = commentTemplate.replace(/@COMMENT_NOT_USEFUL_ADVICES@/, (comment.total_usefulness - comment.usefulness));
-    commentTemplate = commentTemplate.replace(/@COMMENT_TOTAL_ADVICES@/, comment.total_usefulness);
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_ID@/g, comment.id_product_comment);
+    commentTemplate = commentTemplate.replaceAll(/@PRODUCT_ID@/g, comment.id_product);
+    commentTemplate = commentTemplate.replaceAll(/@CUSTOMER_NAME@/g, customerName);
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_DATE@/g, comment.date_add);
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_DATE_ISO_8601@/g, comment.date_add_ISO_8601);
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_TITLE@/g, comment.title);
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_COMMENT@/g, comment.content);
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_USEFUL_ADVICES@/g, comment.usefulness);
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_GRADE@/g, comment.grade);
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_NOT_USEFUL_ADVICES@/g, (comment.total_usefulness - comment.usefulness));
+    commentTemplate = commentTemplate.replaceAll(/@COMMENT_TOTAL_ADVICES@/g, comment.total_usefulness);
 
     const $comment = $(commentTemplate);
     $('.grade-stars', $comment).rating({
