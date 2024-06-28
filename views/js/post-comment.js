@@ -40,6 +40,8 @@ jQuery(document).ready(function () {
   const commentPostErrorModal = $('#product-comment-post-error');
 
   const criterionsList = $('#criterions_list');
+  if (typeof productCommentMandatoryMessage === 'undefined')
+    productCommentMandatoryMessage = 'Please choose a rating for your review.';
   criterionsList.append('<div id="ratingNotChosen">* ' + productCommentMandatoryMessage + '</div>');
   const criterionsInfo = $('#ratingNotChosen');  
 
@@ -128,7 +130,7 @@ jQuery(document).ready(function () {
         $(fieldSelector).removeClass('error');
         $(fieldSelector).addClass('valid');
       }
-           
+      
       if (!ratingChosen) {
         criterionsInfo.show();
         isValid = false;
