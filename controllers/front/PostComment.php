@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -23,6 +24,7 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
  */
+
 use Doctrine\ORM\EntityManagerInterface;
 use PrestaShop\Module\ProductComment\Entity\ProductComment;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
@@ -60,7 +62,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $comment_title = Tools::getValue('comment_title');
         $comment_content = Tools::getValue('comment_content');
         $customer_name = Tools::getValue('customer_name');
-        $criterions = (array) Tools::getValue('criterion');
+        $criterions =  Tools::getValue('criterion', []);
 
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
@@ -141,19 +143,22 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $criterionRepository = $entityManager->getRepository(ProductCommentCriterion::class);
         $averageGrade = 0;
 
-        foreach ($criterions as $criterionId => $grade) {
-            $criterion = $criterionRepository->findOneBy(['id' => $criterionId]);
-            $criterionGrade = new ProductCommentGrade(
-                $productComment,
-                $criterion,
-                $grade
-            );
+        if (!empty($criterions)) {
+            foreach ($criterions as $criterionId => $grade) {
+                $criterion = $criterionRepository->findOneBy(['id' => $criterionId]);
+                $criterionGrade = new ProductCommentGrade(
+                    $productComment,
+                    $criterion,
+                    $grade
+                );
 
-            $entityManager->persist($criterionGrade);
-            $averageGrade += $grade;
+                $entityManager->persist($criterionGrade);
+                $averageGrade += $grade;
+            }
+
+            $averageGrade /= count($criterions);
         }
 
-        $averageGrade /= count($criterions);
         $productComment->setGrade($averageGrade);
     }
 
@@ -199,7 +204,6 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         /** @var EntityManagerInterface $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
         $criterionRepository = $entityManager->getRepository(ProductCommentCriterion::class);
-
         foreach ($criterions as $criterionId => $grade) {
             // @todo manage validation for criterion restricted on categories or products
             $criterion = $criterionRepository->findOneBy(['id' => $criterionId]);
