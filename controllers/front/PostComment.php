@@ -62,7 +62,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
         $comment_title = Tools::getValue('comment_title');
         $comment_content = Tools::getValue('comment_content');
         $customer_name = Tools::getValue('customer_name');
-        $criterions =  Tools::getValue('criterion', []);
+        $criterions = Tools::getValue('criterion', []);
 
         /** @var ProductCommentRepository $productCommentRepository */
         $productCommentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
