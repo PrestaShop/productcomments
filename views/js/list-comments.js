@@ -45,10 +45,6 @@ jQuery(document).ready(function () {
     $('.product-comments-additional-info .grade-stars').rating();
   })
 
-  document.addEventListener('updateRating', function() {
-    $('.grade-stars').rating();
-  });
-
   const updateCommentPostErrorModal = $('#update-comment-usefulness-post-error');
 
   const confirmAbuseModal = $('#report-comment-confirmation');
