@@ -455,7 +455,7 @@ class ProductComments extends Module implements WidgetInterface
             $helper->table = $this->name;
             $helper->table_id = 'waiting-approval-productcomments-list';
             $helper->token = Tools::getAdminTokenLite('AdminModules');
-            $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+            $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', true) . '&configure=' . $this->name;
             $helper->no_link = true;
 
             $return .= $helper->generateList($comments, $fields_list);
