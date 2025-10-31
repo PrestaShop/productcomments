@@ -65,13 +65,6 @@ class ProductCommentCriterion
     private $active = false;
 
     /**
-     * @var array
-     *
-     * @deprecated 7.0.0 - use criterionLangs instead
-     */
-    private $names;
-
-    /**
      * @ORM\OneToMany(targetEntity="PrestaShop\Module\ProductComment\Entity\ProductCommentCriterionLang", cascade={"persist", "remove"}, mappedBy="productcommentcriterion")
      */
     private $criterionLangs;
@@ -134,30 +127,6 @@ class ProductCommentCriterion
         $criterionLang = $this->criterionLangs->first();
 
         return $criterionLang->getName();
-    }
-
-    /**
-     * @return array
-     *
-     * @deprecated 7.0.0 - migrated to Form\ProductCommentCriterionFormDataProvider
-     */
-    public function getNames()
-    {
-        return $this->names;
-    }
-
-    /**
-     * @param array $langNames
-     *
-     * @return ProductCommentCriterion
-     *
-     * @deprecated 7.0.0
-     */
-    public function setNames($langNames)
-    {
-        $this->names = $langNames;
-
-        return $this;
     }
 
     /**
