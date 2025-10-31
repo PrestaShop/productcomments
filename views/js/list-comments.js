@@ -39,14 +39,16 @@ jQuery(document).ready(function () {
   const nextCount = totalPages + 1;
   const gapText = '&hellip;';
 
-  $('.grade-stars').rating();
+  $('#product-comments-list .grade-stars').rating();
+  $('.product-comments-additional-info .grade-stars').rating();
 
   prestashop.on('updatedProduct', function() {
     $('.product-comments-additional-info .grade-stars').rating();
   })
 
   document.addEventListener('updateRating', function() {
-    $('.grade-stars').rating();
+    $('#product-comments-list .grade-stars').rating();
+    $('.product-comments-additional-info .grade-stars').rating();
   });
 
   const updateCommentPostErrorModal = $('#update-comment-usefulness-post-error');
