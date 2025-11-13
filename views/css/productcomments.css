@@ -195,17 +195,17 @@
   margin-top: 30px;
 }
 
-.modal-header .material-icons {
+.product-comment-modal .modal-header .material-icons {
   color: #40a85f;
   font-size: 30px;
   line-height: 25px;
 }
 
-.modal-header .material-icons.error {
+.product-comment-modal .modal-header .material-icons.error {
   color: #a94442;
 }
 
-.modal-header .material-icons.feedback {
+.product-comment-modal .modal-header .material-icons.feedback {
   color: #f39d72;
 }
 

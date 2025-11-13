@@ -56,6 +56,10 @@ var productListingComments = (function () {
         prestashop.on('updateProductList', function() {
             addProductsIDs();
         });
+
+        prestashop.on("updatedProduct", function () {
+            updateRatings();
+        });
     }
 
 
@@ -138,6 +142,56 @@ var productListingComments = (function () {
         });
     }
 
+    function updateRatings() {
+        // Collect all product IDs that need to be updated
+        var productIDs = [];
+        var $productsList = $(DOMStrings.productContainer);
+
+        $productsList.each(function () {
+            var productID = $(this).find(DOMStrings.productListReviewsContainer).data("id");
+            if (productID) {
+                productIDs.push(productID);
+            }
+        });
+
+        if (productIDs.length > 0) {
+            $.get(
+                data.ajaxUrl,
+                { id_products: productIDs },
+                function (jsonData) {
+                    if (jsonData && jsonData.products.length > 0) {
+                        // Create a map of product data
+                        var productDataMap = {};
+                        jsonData.products.forEach(function (product) {
+                            productDataMap[product.id_product] = product;
+                        });
+
+                        // Update each product's ratings
+                        $productsList.each(function () {
+                            var $self = $(this);
+                            var productID = $self.find(DOMStrings.productListReviewsContainer).data("id");
+
+                            if (productDataMap[productID]) {
+                                var productData = productDataMap[productID];
+                                var $productReviewContainer = $self.find(DOMStrings.productListReviewsContainer);
+
+                                if (productData.comments_nb > 0) {
+                                    $productReviewContainer
+                                        .find(DOMStrings.productListReviewsStarsContainer)
+                                        .rating({ grade: productData.average_grade, starWidth: 16 });
+                                    $productReviewContainer
+                                        .find(DOMStrings.productListReviewsNumberOfComments)
+                                        .text("(" + productData.comments_nb + ")");
+                                    $self.addClass(DOMClasses.hasReviews);
+                                    $productReviewContainer.css("visibility", "visible");
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        }
+    }
 
     return {
         load: function () {

@@ -88,16 +88,6 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @deprecated 7.0.0 - cascade remove by Entity setting instead
-     */
-    private function deleteLangs($criterion): int
-    {
-        return $this->connection->executeUpdate('
-            DELETE FROM `' . _DB_PREFIX_ . 'product_comment_criterion_lang`
-            WHERE `id_product_comment_criterion` = ' . $criterion->getId());
-    }
-
     private function deleteCategories($criterion): int
     {
         return $this->connection->executeUpdate('
@@ -163,34 +153,6 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
         }
 
         // todo: return void, and use try catch Exception instead
-        return $res;
-    }
-
-    /**
-     * @deprecated 7.0.0 - migrated to Form\ProductCommentCriterionFormDataHandler
-     */
-    private function updateLangs($criterion): int
-    {
-        $res = 0;
-        $criterionId = $criterion->getId();
-        foreach ($criterion->getNames() as $key => $value) {
-            $qb = $this->connection->createQueryBuilder();
-            $qb
-            ->insert(_DB_PREFIX_ . 'product_comment_criterion_lang')
-            ->values(
-                [
-                    'id_product_comment_criterion' => '?',
-                    'id_lang' => '?',
-                    'name' => '?',
-                ]
-            )
-            ->setParameter(0, $criterionId)
-            ->setParameter(1, $key)
-            ->setParameter(2, $value)
-            ;
-            $res += $this->connection->executeUpdate($qb->getSQL(), $qb->getParameters(), $qb->getParameterTypes());
-        }
-
         return $res;
     }
 
@@ -341,21 +303,5 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
             2 => $sfTranslator->trans('Restricted to some categories', [], 'Modules.Productcomments.Admin'),
             3 => $sfTranslator->trans('Restricted to some products', [], 'Modules.Productcomments.Admin'),
         ];
-    }
-
-    /**
-     * @return ProductCommentCriterion
-     *
-     * @deprecated 7.0.0 - use standard find() instead
-     */
-    public function findRelation($id_criterion)
-    {
-        if ($id_criterion > 0) {
-            $criterion = $this->find($id_criterion);
-        } else {
-            $criterion = new ProductCommentCriterion();
-        }
-
-        return $criterion;
     }
 }

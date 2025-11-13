@@ -34,7 +34,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
     public function display()
     {
         header('Content-Type: application/json');
-        if (!(int) $this->context->cookie->id_customer && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')) {
+        if (!$this->context->customer->isLogged() && !Configuration::get('PRODUCT_COMMENTS_ALLOW_GUESTS')) {
             $this->ajaxRender(
                 json_encode(
                     [

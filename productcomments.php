@@ -47,7 +47,7 @@ class ProductComments extends Module implements WidgetInterface
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '7.0.0';
+        $this->version = '8.0.0';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -455,7 +455,7 @@ class ProductComments extends Module implements WidgetInterface
             $helper->table = $this->name;
             $helper->table_id = 'waiting-approval-productcomments-list';
             $helper->token = Tools::getAdminTokenLite('AdminModules');
-            $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+            $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'module_name' => $this->name]);
             $helper->no_link = true;
 
             $return .= $helper->generateList($comments, $fields_list);
@@ -480,7 +480,7 @@ class ProductComments extends Module implements WidgetInterface
         $helper->table = $this->name;
         $helper->table_id = 'reported-productcomments-list';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'module_name' => $this->name]);
         $helper->no_link = true;
 
         $return .= $helper->generateList($comments, $fields_list);
@@ -564,7 +564,7 @@ class ProductComments extends Module implements WidgetInterface
         $helper->title = $this->trans('Review Criteria', [], 'Modules.Productcomments.Admin');
         $helper->table = $this->name . 'criterion';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'module_name' => $this->name]);
 
         return $helper->generateList($criterions, $fields_list);
     }
@@ -585,7 +585,7 @@ class ProductComments extends Module implements WidgetInterface
         $helper->table = $this->name;
         $helper->table_id = 'approved-productcomments-list';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'module_name' => $this->name]);
         $helper->no_link = true;
 
         $page = ($page = Tools::getValue('submitFilter' . $helper->list_id)) ? (int) $page : 1;
@@ -1076,11 +1076,19 @@ class ProductComments extends Module implements WidgetInterface
                 case 'quickview':
                     $filePath = $tplHookPath . 'product-additional-info-quickview.tpl';
                     break;
+                case 'refresh':
+                    if (Tools::getValue('quickview') == true) {
+                        $filePath = '';
+                    } else {
+                        $filePath = $tplHookPath . 'product-additional-info.tpl';
+                    }
+                    break;
                 case '':
                     $filePath = $tplHookPath . 'product-additional-info.tpl';
                     break;
-                default:    // 'refresh' and other unpredicted cases
+                default:
                     $filePath = '';
+                    break;
             }
         }
 
