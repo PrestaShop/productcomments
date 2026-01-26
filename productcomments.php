@@ -984,11 +984,11 @@ class ProductComments extends Module implements WidgetInterface
             2 => ['count' => 0, 'percent' => 0],
             1 => ['count' => 0, 'percent' => 0],
         ];
-        
-        foreach($summaryGrades as $grade) {
+
+        foreach ($summaryGrades as $grade) {
             $summary[(int) $grade['grade']] = [
                 'count' => (int) $grade['count'],
-                'percent' => (100 / $commentsNb) * (int) $grade['count']
+                'percent' => (100 / $commentsNb) * (int) $grade['count'],
             ];
         }
 
