@@ -1098,7 +1098,7 @@ class ProductComments extends Module implements WidgetInterface
 
         $this->smarty->assign($variables);
 
-        return $this->fetch($filePath);
+        return $this->fetch($filePath, $this->getCacheId($idProduct));
     }
 
     /**
