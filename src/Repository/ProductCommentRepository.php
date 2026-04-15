@@ -307,6 +307,7 @@ class ProductCommentRepository extends ServiceEntityRepository
         $sql = 'SELECT';
 
         $count = count($productIds);
+		$productIds = array_values($productIds);
 
         foreach ($productIds as $index => $id) {
             $esqID = (int) $id;
@@ -372,6 +373,7 @@ class ProductCommentRepository extends ServiceEntityRepository
         $sql = 'SELECT';
 
         $count = count($productIds);
+		$productIds = array_values($productIds);
 
         foreach ($productIds as $index => $id) {
             $esqID = (int) $id;
