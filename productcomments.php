@@ -43,11 +43,23 @@ class ProductComments extends Module implements WidgetInterface
     private $langId;
     private $shopId;
 
+    public const HOOKS = [
+        'displayFooterProduct',
+        'displayHeader',
+        'displayProductListReviews',
+        'displayProductAdditionalInfo',
+        'filterProductContent',
+        'registerGDPRConsent',
+        'actionDeleteGDPRCustomer',
+        'actionExportGDPRData',
+        'actionFrontControllerSetVariables',
+    ];
+
     public function __construct()
     {
         $this->name = 'productcomments';
         $this->tab = 'front_office_features';
-        $this->version = '8.0.0';
+        $this->version = '8.0.1';
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
@@ -85,66 +97,30 @@ class ProductComments extends Module implements WidgetInterface
             }
         }
 
-        if (
-            parent::install() == false ||
-            !$this->registerHook('displayFooterProduct') || //Product page footer
-            !$this->registerHook('displayHeader') || //Adds css and javascript on front
-            !$this->registerHook('displayProductListReviews') || //Product list miniature
-            !$this->registerHook('displayProductAdditionalInfo') || //Display info in checkout column
-            !$this->registerHook('filterProductContent') || // Add infos to Product page
-            !$this->registerHook('registerGDPRConsent') ||
-            !$this->registerHook('actionDeleteGDPRCustomer') ||
-            !$this->registerHook('actionExportGDPRData') ||
-
-            !Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) ||
-            !Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) ||
-            !Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', 1) ||
-            !Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5) ||
-            !Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', 0) ||
-            !Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1)
-        ) {
-            return false;
-        }
-
-        return true;
+        return parent::install() && $this->registerHook(self::HOOKS) &&
+            Configuration::updateValue('PRODUCT_COMMENTS_MINIMAL_TIME', 30) &&
+            Configuration::updateValue('PRODUCT_COMMENTS_ALLOW_GUESTS', 0) &&
+            Configuration::updateValue('PRODUCT_COMMENTS_USEFULNESS', 1) &&
+            Configuration::updateValue('PRODUCT_COMMENTS_COMMENTS_PER_PAGE', 5) &&
+            Configuration::updateValue('PRODUCT_COMMENTS_ANONYMISATION', 0) &&
+            Configuration::updateValue('PRODUCT_COMMENTS_MODERATE', 1);
     }
 
     public function uninstall($keep = true)
     {
-        if (
-            !parent::uninstall() || ($keep && !$this->deleteTables()) ||
-            !Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') ||
-            !Configuration::deleteByName('PRODUCT_COMMENTS_COMMENTS_PER_PAGE') ||
-            !Configuration::deleteByName('PRODUCT_COMMENTS_ANONYMISATION') ||
-            !Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') ||
-            !Configuration::deleteByName('PRODUCT_COMMENTS_USEFULNESS') ||
-            !Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME') ||
-
-            !$this->unregisterHook('registerGDPRConsent') ||
-            !$this->unregisterHook('actionDeleteGDPRCustomer') ||
-            !$this->unregisterHook('actionExportGDPRData') ||
-
-            !$this->unregisterHook('displayProductAdditionalInfo') ||
-            !$this->unregisterHook('displayHeader') ||
-            !$this->unregisterHook('displayFooterProduct') ||
-            !$this->unregisterHook('displayProductListReviews')
-        ) {
-            return false;
-        }
-
-        return true;
+        return parent::uninstall() &&
+            ($keep && !$this->deleteTables()) &&
+            Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') &&
+            Configuration::deleteByName('PRODUCT_COMMENTS_COMMENTS_PER_PAGE') &&
+            Configuration::deleteByName('PRODUCT_COMMENTS_ANONYMISATION') &&
+            Configuration::deleteByName('PRODUCT_COMMENTS_ALLOW_GUESTS') &&
+            Configuration::deleteByName('PRODUCT_COMMENTS_USEFULNESS') &&
+            Configuration::deleteByName('PRODUCT_COMMENTS_MINIMAL_TIME');
     }
 
     public function reset()
     {
-        if (!$this->uninstall(false)) {
-            return false;
-        }
-        if (!$this->install(false)) {
-            return false;
-        }
-
-        return true;
+        return $this->uninstall(false) && $this->install(false);
     }
 
     public function deleteTables()
@@ -935,7 +911,7 @@ class ProductComments extends Module implements WidgetInterface
     }
 
     /**
-     * Inject data about productcomments in the product object for frontoffice
+     * Inject data about productcomments in the product object for frontoffice. This is the older way of adding the data before PrestaShop 9.2.
      *
      * @param array $params
      *
@@ -1111,5 +1087,42 @@ class ProductComments extends Module implements WidgetInterface
           However since Prestashop 1.7.8, modules must implement a listener for all the hooks they register: a check is made
           at module installation.
         */
+    }
+
+    /**
+     * This hook adds reviews into structured data on PrestaShop 9.2 and newer.
+     * On lower versions, it doesn't do anything.
+     */
+    public function hookActionFrontControllerSetVariables($params)
+    {
+        // Check if the current page is a product page and if structured data for the product is available
+        if ($this->context->controller->php_self !== 'product' || !isset($params['templateVars']['structured_data']['product'])) {
+            return;
+        }
+
+        // Get product ID, check for pages where the product is not loaded (e.g., 404 pages)
+        $product = $this->context->controller->getProduct();
+        if (empty($product) || !Validate::isLoadedObject($product)) {
+            return;
+        }
+
+        // Get the rating and append it to the array
+        $commentRepository = $this->get('product_comment_repository');
+        $averageRating = $commentRepository->getAverageGrade($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $nbComments = $commentRepository->getCommentsNumber($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+
+        // If no rating or no comments, don't add the structured data
+        if (empty($averageRating) || empty($nbComments)) {
+            return;
+        }
+
+        $params['templateVars']['structured_data']['product']['aggregateRating'] = [
+            '@type' => 'AggregateRating',
+            'ratingValue' => $averageRating,
+            'reviewCount' => $nbComments,
+            // Constant values for best and worst rating, as per schema.org specifications, so the bot knows what the scale is.
+            'bestRating' => 5,
+            'worstRating' => 1,
+        ];
     }
 }
