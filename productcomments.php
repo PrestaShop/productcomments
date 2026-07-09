@@ -1111,6 +1111,11 @@ class ProductComments extends Module implements WidgetInterface
         $averageRating = $commentRepository->getAverageGrade($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $nbComments = $commentRepository->getCommentsNumber($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
 
+        // If no rating or no comments, don't add the structured data
+        if (empty($averageRating) || empty($nbComments)) {
+            return;
+        }
+
         $params['templateVars']['structured_data']['product']['aggregateRating'] = [
             '@type' => 'AggregateRating',
             'ratingValue' => $averageRating,
