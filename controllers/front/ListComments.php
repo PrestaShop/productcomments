@@ -29,6 +29,8 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
 {
     public function display()
     {
+        header('Content-Type: application/json');
+
         $idProduct = (int) Tools::getValue('id_product');
         $page = (int) Tools::getValue('page', 1);
         $isLastNameAnonymous = Configuration::get('PRODUCT_COMMENTS_ANONYMISATION');
@@ -85,7 +87,6 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             $responseArray['comments'][] = $productComment;
         }
 
-        header('Content-Type: application/json');
         $this->ajaxRender(
             json_encode(
                 $responseArray

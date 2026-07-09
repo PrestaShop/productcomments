@@ -44,7 +44,7 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
                 )
             );
 
-            return false;
+            return;
         }
 
         $id_product_comment = (int) Tools::getValue('id_product_comment');
@@ -65,7 +65,7 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
                 )
             );
 
-            return false;
+            return;
         }
 
         $productCommentAbuseRepository = $entityManager->getRepository(ProductCommentReport::class);
@@ -85,7 +85,7 @@ class ProductCommentsReportCommentModuleFrontController extends ModuleFrontContr
                 )
             );
 
-            return false;
+            return;
         }
 
         $productCommentAbuse = new ProductCommentReport(

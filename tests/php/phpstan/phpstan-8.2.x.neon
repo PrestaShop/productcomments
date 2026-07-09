@@ -1,0 +1,18 @@
+includes:
+	- %currentWorkingDirectory%/tests/php/phpstan/phpstan.neon
+
+parameters:
+	ignoreErrors:
+		- '#Method ProductCommentsCommentGradeModuleFrontController::display\(\) should return bool but empty return statement found.#'
+		- '#Method ProductCommentsPostCommentModuleFrontController::display\(\) should return bool but empty return statement found.#'
+		- '#Method ProductCommentsReportCommentModuleFrontController::display\(\) should return bool but empty return statement found.#'
+		- '#Method ProductCommentsUpdateCommentUsefulnessModuleFrontController::display\(\) should return bool but empty return statement found.#'
+		- '#Method ProductCommentsCommentGradeModuleFrontController::display\(\) should return bool but return statement is missing.#'
+		- '#Method ProductCommentsListCommentsModuleFrontController::display\(\) should return bool but return statement is missing.#'
+		- '#Method ProductCommentsPostCommentModuleFrontController::display\(\) should return bool but return statement is missing.#'
+		- '#Method ProductCommentsReportCommentModuleFrontController::display\(\) should return bool but return statement is missing.#'
+		- '#Method ProductCommentsUpdateCommentUsefulnessModuleFrontController::display\(\) should return bool but return statement is missing.#'
+		- '#Property [a-zA-Z0-9\\_]+::\$id is never written, only read.#'
+		- '#Call to an undefined method AdminController\|FrontController\|PrestaShopBundle\\Bridge\\AdminController\\LegacyControllerBridgeInterface::getProduct\(\).#'
+		- '#Cannot call method getAverageGrade\(\) on object\|false.#'
+		- '#Cannot call method getCommentsNumber\(\) on object\|false.#'

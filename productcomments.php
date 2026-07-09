@@ -29,17 +29,24 @@ if (!defined('_PS_VERSION_')) {
 }
 
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
+use PrestaShop\Module\ProductComment\Form\ProductCommentCriterionFormDataHandler;
+use PrestaShop\Module\ProductComment\Form\ProductCommentCriterionFormDataProvider;
+use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
+use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class ProductComments extends Module implements WidgetInterface
 {
     const INSTALL_SQL_FILE = 'install.sql';
 
+    /**
+     * @var string
+     */
     private $_html = '';
-
-    private $_productCommentsCriterionTypes = [];
+    /**
+     * @var string
+     */
     private $_baseUrl;
-
     private $langId;
     private $shopId;
 
@@ -170,8 +177,11 @@ class ProductComments extends Module implements WidgetInterface
     {
         $id_product_comment = (int) Tools::getValue('id_product_comment');
         $id_product_comment_criterion = (int) Tools::getValue('id_product_comment_criterion');
+        /** @var ProductCommentRepository $commentRepository */
         $commentRepository = $this->get('product_comment_repository');
+        /** @var ProductCommentCriterionRepository $criterionRepository */
         $criterionRepository = $this->get('product_comment_criterion_repository');
+        /** @var ProductCommentCriterionFormDataHandler $criterionFormHandler */
         $criterionFormHandler = $this->get('product_comment_criterion_form_data_handler');
 
         if (Tools::isSubmit('submitModerate')) {
@@ -287,7 +297,6 @@ class ProductComments extends Module implements WidgetInterface
         }
 
         $this->_setBaseUrl();
-        $this->_productCommentsCriterionTypes = $this->get('product_comment_criterion_repository')->getTypes();
 
         $this->context->controller->addJs($this->_path . 'js/moderate.js');
 
@@ -433,6 +442,7 @@ class ProductComments extends Module implements WidgetInterface
     public function renderModerateLists()
     {
         $return = null;
+        /** @var ProductCommentRepository $commentRepository */
         $commentRepository = $this->get('product_comment_repository');
 
         if (Configuration::get('PRODUCT_COMMENTS_MODERATE')) {
@@ -528,7 +538,9 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderCriterionList()
     {
-        $criterions = $this->get('product_comment_criterion_repository')->getCriterions($this->langId, false, false);
+        /** @var ProductCommentCriterionRepository $criterionRepository */
+        $criterionRepository = $this->get('product_comment_criterion_repository');
+        $criterions = $criterionRepository->getCriterions($this->langId, false, false);
 
         $fields_list = [
             'id_product_comment_criterion' => [
@@ -592,6 +604,7 @@ class ProductComments extends Module implements WidgetInterface
         $pagination = ($pagination = Tools::getValue($helper->list_id . '_pagination')) ? (int) $pagination : 50;
 
         $moderate = Configuration::get('PRODUCT_COMMENTS_MODERATE');
+        /** @var ProductCommentRepository $commentRepository */
         $commentRepository = $this->get('product_comment_repository');
         if (empty($moderate)) {
             $comments = $commentRepository->getByValidate($this->langId, $this->shopId, 0, false, $page, $pagination, true);
@@ -620,7 +633,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function getCriterionFieldsValues(int $id = 0)
     {
-        $criterionRepos = $this->get('product_comment_criterion_repository');
+        /** @var ProductCommentCriterionFormDataProvider $criterionFormProvider */
         $criterionFormProvider = $this->get('product_comment_criterion_form_data_provider');
 
         if ($id > 0) {
@@ -713,7 +726,10 @@ class ProductComments extends Module implements WidgetInterface
 
     public function renderCriterionForm($id_criterion = 0)
     {
-        $types = $this->get('product_comment_criterion_repository')->getTypes();
+        /** @var ProductCommentCriterionRepository $criterionRepository */
+        $criterionRepository = $this->get('product_comment_criterion_repository');
+
+        $types = $criterionRepository->getTypes();
         $query = [];
         foreach ($types as $key => $value) {
             $query[] = [
@@ -721,8 +737,6 @@ class ProductComments extends Module implements WidgetInterface
                 'label' => $value,
             ];
         }
-
-        $criterionRepository = $this->get('product_comment_criterion_repository');
 
         $criterion = $criterionRepository->find($id_criterion);
         $selected_categories = $criterionRepository->getCategories($id_criterion);
@@ -859,9 +873,9 @@ class ProductComments extends Module implements WidgetInterface
         if ($id_criterion == 0) {
             $selected_cat = [];
         } else {
+            /** @var ProductCommentCriterionRepository $criterionRepository */
             $criterionRepository = $this->get('product_comment_criterion_repository');
-            $criterion = $criterionRepository->find((int) $id_criterion);
-            $selected_cat = $criterionRepository->getCategories($criterion);
+            $selected_cat = $criterionRepository->getCategories((int) $id_criterion);
         }
 
         if (Shop::getContext() == Shop::CONTEXT_SHOP && Tools::isSubmit('id_shop')) {
@@ -879,8 +893,9 @@ class ProductComments extends Module implements WidgetInterface
     public function hookActionDeleteGDPRCustomer($customer)
     {
         if (isset($customer['id'])) {
-            $productCommentRepository = $this->get('product_comment_repository');
-            $productCommentRepository->cleanCustomerData($customer['id']);
+            /** @var ProductCommentRepository $commentRepository */
+            $commentRepository = $this->get('product_comment_repository');
+            $commentRepository->cleanCustomerData($customer['id']);
         }
 
         return true;
@@ -889,10 +904,11 @@ class ProductComments extends Module implements WidgetInterface
     public function hookActionExportGDPRData($customer)
     {
         if (isset($customer['id'])) {
-            $productCommentRepository = $this->get('product_comment_repository');
+            /** @var ProductCommentRepository $commentRepository */
+            $commentRepository = $this->get('product_comment_repository');
             $langId = isset($customer['id_lang']) ? $customer['id_lang'] : $this->langId;
 
-            return json_encode($productCommentRepository->getCustomerData($customer['id'], $langId));
+            return json_encode($commentRepository->getCustomerData($customer['id'], $langId));
         }
     }
 
@@ -946,6 +962,7 @@ class ProductComments extends Module implements WidgetInterface
         if (empty($params['object']->id)) {
             return $params;
         }
+        /** @var ProductCommentRepository $commentRepository */
         $commentRepository = $this->get('product_comment_repository');
         $averageRating = $commentRepository->getAverageGrade($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $nbComments = $commentRepository->getCommentsNumber($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
@@ -971,6 +988,7 @@ class ProductComments extends Module implements WidgetInterface
      */
     private function renderProductCommentsList($product)
     {
+        /** @var ProductCommentRepository $commentRepository */
         $commentRepository = $this->get('product_comment_repository');
         $averageGrade = $commentRepository->getAverageGrade($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $commentsNb = $commentRepository->getCommentsNumber($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
@@ -1019,6 +1037,7 @@ class ProductComments extends Module implements WidgetInterface
      */
     private function renderProductCommentModal($product)
     {
+        /** @var ProductCommentCriterionRepository $criterionRepository */
         $criterionRepository = $this->get('product_comment_criterion_repository');
         $criterions = $criterionRepository->getByProduct($product->id, $this->langId);
 
@@ -1040,6 +1059,7 @@ class ProductComments extends Module implements WidgetInterface
 
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
+        /** @var ProductCommentRepository $commentRepository */
         $commentRepository = $this->get('product_comment_repository');
         $averageGrade = $commentRepository->getAverageGrade($configuration['id_product'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $commentsNb = $commentRepository->getCommentsNumber($configuration['id_product'], Configuration::get('PRODUCT_COMMENTS_MODERATE'));
@@ -1057,6 +1077,9 @@ class ProductComments extends Module implements WidgetInterface
         $variables = [];
         $tplHookPath = 'module:productcomments/views/templates/hook/';
 
+        /** @var \ProductControllerCore $controller */
+        $controller = $this->context->controller;
+
         if ('displayProductListReviews' === $hookName || isset($configuration['type']) && 'product_list' === $configuration['type']) {
             $product = $configuration['product'];
             $idProduct = $product['id_product'];
@@ -1068,8 +1091,8 @@ class ProductComments extends Module implements WidgetInterface
             ]);
 
             $filePath = $tplHookPath . 'product-list-reviews.tpl';
-        } elseif ($this->context->controller instanceof ProductControllerCore) {
-            $idProduct = $this->context->controller->getProduct()->id;
+        } elseif ($controller instanceof ProductControllerCore) {
+            $idProduct = $controller->getProduct()->id;
             $variables = $this->getWidgetVariables($hookName, ['id_product' => $idProduct]);
 
             switch (Tools::getValue('action')) {
