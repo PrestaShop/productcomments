@@ -27,7 +27,6 @@ class ProductCommentCriterion extends ObjectModel
 {
     const NAME_MAX_LENGTH = 64;
 
-    public $id;
     public $id_product_comment_criterion_type;
     public $name;
     public $active = true;

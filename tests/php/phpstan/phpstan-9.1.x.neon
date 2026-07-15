@@ -1,0 +1,6 @@
+includes:
+	- %currentWorkingDirectory%/tests/php/phpstan/phpstan.neon
+
+parameters:
+	ignoreErrors:
+	 - '#Call to an undefined method AdminController\|FrontController\|PrestaShop\\PrestaShop\\Core\\Context\\LegacyControllerContext::getProduct\(\).#'
