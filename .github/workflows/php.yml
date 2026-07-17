@@ -1,13 +1,12 @@
 name: PHP tests
 on: [push, pull_request]
 jobs:
-  # Check there is no syntax errors in the project
   php-linter:
-    name: PHP Syntax check 7.2 => 8.2
+    name: PHP Syntax check 7.2 => 8.5
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: PHP syntax checker 7.2
         uses: prestashop/github-action-php-lint/7.2@master
@@ -25,7 +24,16 @@ jobs:
         uses: prestashop/github-action-php-lint/8.1@master
 
       - name: PHP syntax checker 8.2
-        uses: prestashop/github-action-php-lint/8.2@master        
+        uses: prestashop/github-action-php-lint/8.2@master
+
+      - name: PHP syntax checker 8.3
+        uses: prestashop/github-action-php-lint/8.3@master
+
+      - name: PHP syntax checker 8.4
+        uses: prestashop/github-action-php-lint/8.4@master
+
+      - name: PHP syntax checker 8.5
+        uses: prestashop/github-action-php-lint/8.5@master
 
   # Check the PHP code follow the coding standards
   php-cs-fixer:
@@ -35,7 +43,7 @@ jobs:
       - name: Run PHP-CS-Fixer
         uses: PrestaShop/.github/.github/actions/php-ci/php-cs@master
         with:
-              php-version: '7.4'
+          php-version: '7.4'
 
   # Run PHPStan against the module (PHP 7.4 – PS 8.2)
   phpstan-74-81:
