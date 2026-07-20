@@ -6,7 +6,7 @@ Allow users to post reviews on your products and/or rate them based on specific 
 
 ## Compatibility
 
-PrestaShop: `1.7.8` or newer
+PrestaShop: `8.2.0` or newer
 
 ## Multistore compatibility
 
