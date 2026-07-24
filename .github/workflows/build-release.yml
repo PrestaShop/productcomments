@@ -32,7 +32,7 @@ jobs:
           name: ${{ github.event.repository.name }}
           path: ${{ github.event.repository.name }}
       - id: release_info
-        uses: toolmantim/release-drafter@v5
+        uses: toolmantim/release-drafter@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Prepare for Release
