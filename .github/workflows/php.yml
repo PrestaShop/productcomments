@@ -58,7 +58,7 @@ jobs:
       PHPRC: ${{ github.workspace }}/${{ github.event.repository.name }}/.phpstan-php-ini
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: ${{ github.event.repository.name }}
 
@@ -94,7 +94,7 @@ jobs:
       PHPRC: ${{ github.workspace }}/${{ github.event.repository.name }}/.phpstan-php-ini
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: ${{ github.event.repository.name }}
 
@@ -128,7 +128,7 @@ jobs:
       PHPRC: ${{ github.workspace }}/${{ github.event.repository.name }}/.phpstan-php-ini
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: ${{ github.event.repository.name }}
 
