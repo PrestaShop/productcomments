@@ -11,7 +11,7 @@ jobs:
       - name: Install composer dependencies
         run: composer install --no-dev -o
       - name: Clean-up project
-        uses: PrestaShopCorp/github-action-clean-before-deploy@v1.0
+        uses: PrestaShopCorp/github-action-clean-before-deploy@v2.0
       - name: Prepare auto-index tool
         run: composer global require prestashop/autoindex
       - name: Generate index.php
