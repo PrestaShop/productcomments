@@ -154,12 +154,13 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
     private function updateCategories($criterion): int
     {
         $res = 0;
-        $criterionId = $criterion->getId();
+        $criterionId = (int) $criterion->getId();
         foreach ($criterion->getCategories() as $id_category) {
             $res += $this->connection->executeUpdate(
                 'INSERT INTO `' .
                 _DB_PREFIX_ . 'product_comment_criterion_category` (`id_product_comment_criterion`, `id_category`)
-                VALUES(' . $criterionId . ',' . $id_category . ')'
+                VALUES(?, ?)',
+                [$criterionId, (int) $id_category]
             );
         }
 
@@ -169,12 +170,13 @@ class ProductCommentCriterionRepository extends ServiceEntityRepository
     private function updateProducts($criterion): int
     {
         $res = 0;
-        $criterionId = $criterion->getId();
+        $criterionId = (int) $criterion->getId();
         foreach ($criterion->getProducts() as $id_product) {
             $res += $this->connection->executeUpdate(
                 'INSERT INTO `' .
                 _DB_PREFIX_ . 'product_comment_criterion_product` (`id_product_comment_criterion`, `id_product`)
-                VALUES(' . $criterionId . ',' . $id_product . ')'
+                VALUES(?, ?)',
+                [$criterionId, (int) $id_product]
             );
         }
 
