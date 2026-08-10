@@ -107,11 +107,14 @@ class ProductCommentRepository extends ServiceEntityRepository
     {
         $entityId = $entity->getId();
 
-        $this->remove($entity, true);
-
+        // The rows below reference the comment, so they have to go first. Without the foreign keys the
+        // order does not matter, but a shop that applied the schema this module declares does have them,
+        // and removing the comment first fails with "Cannot delete or update a parent row".
         $this->deleteGrades($entityId);
         $this->deleteReports($entityId);
         $this->deleteUsefulness($entityId);
+
+        $this->remove($entity, true);
     }
 
     /**
