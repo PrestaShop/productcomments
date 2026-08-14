@@ -101,7 +101,6 @@
 {/if}
 
 {include file='module:productcomments/views/templates/hook/product-comment-item-prototype.tpl' assign="comment_prototype"}
-{include file='module:productcomments/views/templates/hook/empty-product-comment.tpl'}
 
 <div id="product-comments-list"
   data-list-comments-url="{$list_comments_url nofilter}"
