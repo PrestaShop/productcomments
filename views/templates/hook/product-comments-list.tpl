@@ -28,9 +28,7 @@
 </script>
 
 <div id="product-comments-list-header">
-  <h2>
-    {l s='Comments' d='Modules.Productcomments.Shop'}
-  </h2>
+  <h2>{l s='Comments' d='Modules.Productcomments.Shop'}</h2>
 
   {if $nb_comments > 0 && $post_allowed}
     <div id="product-comments-list-btn-group">
@@ -41,7 +39,7 @@
     </div>
   {/if}
 </div>
- 
+
 {if $nb_comments > 0}
   <div class="product-comments-summary">
 
@@ -57,9 +55,9 @@
 
       <div class="product-comments-summary__count-info text-muted small">
         {if $nb_comments > 1}
-          {l s='Based on %s opinions' sprintf=[$nb_comments] d='Modules.Productcomments.Shop'}
+          {l s='Based on %s reviews' sprintf=[$nb_comments] d='Modules.Productcomments.Shop'}
         {else}
-          {l s='Based on %s opinion' sprintf=[$nb_comments] d='Modules.Productcomments.Shop'}
+          {l s='Based on %s review' sprintf=[$nb_comments] d='Modules.Productcomments.Shop'}
         {/if}
       </div>
     </div>
@@ -71,12 +69,12 @@
             <div class="product-comments-summary__grade-label">
               <span class="product-comments-summary__grade-value">{$grade}</span>
               <div class="product-comments-summary__star-icon">
-                <div class="star-content" role="img">
+                <div class="star-content" aria-hidden="true">
                   <div class="star-on"></div>
                 </div>
               </div>
             </div>
-            
+
             <div
               class="product-comments-summary__progress progress"
               role="progressbar"
@@ -87,8 +85,8 @@
             >
               <div class="product-comments-summary__progress-bar progress-bar bg-primary" style="width: {$details.percent|number_format:2}%;"></div>
             </div>
-            
-            <div class="product-comments-summary__stats small">
+
+            <div class="product-comments-summary__stats small" aria-hidden="true">
               <span class="product-comments-summary__count">{$details.count}</span>
             </div>
           </div>
