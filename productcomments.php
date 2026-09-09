@@ -33,6 +33,7 @@ use PrestaShop\Module\ProductComment\Form\ProductCommentCriterionFormDataHandler
 use PrestaShop\Module\ProductComment\Form\ProductCommentCriterionFormDataProvider;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\Module\ProductComment\Repository\ProductCommentRepository;
+use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class ProductComments extends Module implements WidgetInterface
@@ -929,7 +930,7 @@ class ProductComments extends Module implements WidgetInterface
     /**
      * Inject data about productcomments in the product object for frontoffice. This is the older way of adding the data before PrestaShop 9.2.
      *
-     * @param array $params
+     * @param array{object: ProductLazyArray} $params
      *
      * @return array
      */
@@ -943,7 +944,10 @@ class ProductComments extends Module implements WidgetInterface
         $averageRating = $commentRepository->getAverageGrade($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $nbComments = $commentRepository->getCommentsNumber($params['object']->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
 
-        /* @phpstan-ignore-next-line */
+        /*
+         * @phpstan-ignore-next-line
+         * Needs #[AllowDynamicProperties] on ProductLazyArray class to avoid error in PHP 8.2+
+         */
         $params['object']->productComments = [
             'averageRating' => $averageRating,
             'nbComments' => $nbComments,
