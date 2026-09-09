@@ -41,7 +41,7 @@ class ProductCommentsCommentGradeModuleFrontController extends ModuleFrontContro
 
         $idProducts = array_unique(array_map('intval', $idProducts));
 
-        /** @var ProductCommentRepository $commentRepository */
+        /** @var ProductCommentRepository|null $commentRepository */
         $commentRepository = $this->context->controller->getContainer()->get('product_comment_repository');
 
         if (!$commentRepository instanceof ProductCommentRepository) {
