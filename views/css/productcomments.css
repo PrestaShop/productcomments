@@ -321,15 +321,6 @@
   justify-content: space-between;
 }
 
-#product-comments-list-header .comments-nb {
-  padding-left: 0;
-  padding-top: 3px;
-}
-
-#product-comments-list-header .comments-nb .material-icons {
-  margin-right: 3px;
-}
-
 #product-comments-list .btn-comment {
   margin: 0 auto;
   display: block;
@@ -674,4 +665,80 @@
 
 #product-comments-list-pagination ul li.hidden {
   display: none;
+}
+
+/**
+ *  Product comments summary
+ */
+
+.product-comments-summary {
+  background: #fff;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.product-comments-summary__left {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-comments-summary__average-score {
+  font-size: 50px;
+  font-weight: 700;
+}
+
+.product-comments-summary__stars {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.product-comments-summary__stars .star-content {
+  margin: 0!important;
+}
+
+.product-comments-summary__star-icon {
+  display: inline-block;
+  height: 1.25rem;
+  min-width: 1.5rem;
+  position: relative;
+}
+
+.product-comments-summary__grade-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: .5rem;
+}
+
+.product-comments-summary__grade-label {
+  display: flex;
+  justify-content: center;
+  margin-right: .5rem;
+  width: 40px;
+}
+
+.product-comments-summary__grade-value {
+  font-weight: 600;
+}
+
+.product-comments-summary__progress {
+  flex-grow: 1;
+  height: 10px;
+  margin-bottom: 0;
+}
+
+.product-comments-summary__stats {
+  text-align: right;
+  width: 50px;
+  margin-left: 1rem;
+}
+
+@media (min-width: 768px) {
+  .product-comments-summary {
+    grid-template-columns: 4fr 8fr; 
+  }
 }

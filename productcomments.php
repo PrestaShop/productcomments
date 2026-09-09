@@ -972,7 +972,23 @@ class ProductComments extends Module implements WidgetInterface
         $commentRepository = $this->get('product_comment_repository');
         $averageGrade = $commentRepository->getAverageGrade($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $commentsNb = $commentRepository->getCommentsNumber($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
+        $summaryGrades = $commentRepository->getSummaryGrades($product->id, (bool) Configuration::get('PRODUCT_COMMENTS_MODERATE'));
         $isPostAllowed = $commentRepository->isPostAllowed($product->id, (int) $this->context->cookie->id_customer, (int) $this->context->cookie->id_guest);
+
+        $summary = [
+            5 => ['count' => 0, 'percent' => 0],
+            4 => ['count' => 0, 'percent' => 0],
+            3 => ['count' => 0, 'percent' => 0],
+            2 => ['count' => 0, 'percent' => 0],
+            1 => ['count' => 0, 'percent' => 0],
+        ];
+
+        foreach ($summaryGrades as $grade) {
+            $summary[(int) $grade['grade']] = [
+                'count' => (int) $grade['count'],
+                'percent' => (100 / $commentsNb) * (int) $grade['count'],
+            ];
+        }
 
         /* configure pagination */
         $commentsTotalPages = 0;
@@ -984,6 +1000,7 @@ class ProductComments extends Module implements WidgetInterface
         $this->context->smarty->assign([
             'post_allowed' => $isPostAllowed,
             'usefulness_enabled' => Configuration::get('PRODUCT_COMMENTS_USEFULNESS'),
+            'summary' => $summary,
             'average_grade' => $averageGrade,
             'nb_comments' => $commentsNb,
             'list_comments_url' => $this->context->link->getModuleLink(

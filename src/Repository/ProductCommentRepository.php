@@ -218,6 +218,36 @@ class ProductCommentRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param int $productId
+     * @param bool $validatedOnly
+     *
+     * @return array
+     */
+    public function getSummaryGrades($productId, $validatedOnly)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('pc.grade, COUNT(*) as count')
+            ->from($this->databasePrefix . 'product_comment', 'pc')
+            ->andWhere('pc.id_product = :id_product')
+            ->andWhere('pc.deleted = :deleted')
+            ->setParameter('deleted', 0)
+            ->setParameter('id_product', $productId)
+            ->groupBy('pc.grade')
+        ;
+
+        if ($validatedOnly) {
+            $qb
+                ->andWhere('pc.validate = :validate')
+                ->setParameter('validate', 1)
+            ;
+        }
+
+        return $qb->execute()->fetchAll();
+    }
+
+    /**
      * @param int $langId
      * @param int $shopId
      * @param int $validate
