@@ -27,7 +27,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_8_0_1($object)
+function upgrade_module_9_0_0($object)
 {
     return $object->registerHook('actionFrontControllerSetVariables');
 }
