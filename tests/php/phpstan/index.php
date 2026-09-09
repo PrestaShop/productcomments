@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,30 +22,13 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
- *}
+ */
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 
-{extends file="helpers/form/form.tpl"}
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
 
-{block name="input"}
-	{if $input.type == 'products'}
-		<table id="{$input.name}">
-			<tr>
-				<th></th>
-				<th>ID</th>
-				<th width="80%">{l s='Product Name' d='Modules.Productcomments.Admin'}</th>
-			</tr>
-			{foreach $input.values as $value}
-				<tr>
-					<td>
-						<input type="checkbox" name="{$input.name}[]" value="{$value.id_product}" 
-						{if isset($value.selected) && $value.selected == 1} checked {/if} />
-					</td>
-					<td>{$value.id_product}</td>
-					<td width="80%">{$value.name}</td>
-				</tr>
-			{/foreach}
-		</table>
-	{else}
-		{$smarty.block.parent}
-	{/if}
-{/block}
+header('Location: ../');
+exit;

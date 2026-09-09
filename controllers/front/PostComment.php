@@ -53,7 +53,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
                 )
             );
 
-            return false;
+            return;
         }
 
         $id_product = (int) Tools::getValue('id_product');
@@ -79,7 +79,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
                 )
             );
 
-            return false;
+            return;
         }
 
         /** @var EntityManagerInterface $entityManager */
@@ -110,7 +110,7 @@ class ProductCommentsPostCommentModuleFrontController extends ModuleFrontControl
                 )
             );
 
-            return false;
+            return;
         }
 
         $entityManager->persist($productComment);

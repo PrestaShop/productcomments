@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,30 +22,12 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License 3.0 (AFL-3.0)
- *}
+ */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
 
-{extends file="helpers/form/form.tpl"}
-
-{block name="input"}
-	{if $input.type == 'products'}
-		<table id="{$input.name}">
-			<tr>
-				<th></th>
-				<th>ID</th>
-				<th width="80%">{l s='Product Name' d='Modules.Productcomments.Admin'}</th>
-			</tr>
-			{foreach $input.values as $value}
-				<tr>
-					<td>
-						<input type="checkbox" name="{$input.name}[]" value="{$value.id_product}" 
-						{if isset($value.selected) && $value.selected == 1} checked {/if} />
-					</td>
-					<td>{$value.id_product}</td>
-					<td width="80%">{$value.name}</td>
-				</tr>
-			{/foreach}
-		</table>
-	{else}
-		{$smarty.block.parent}
-	{/if}
-{/block}
+function upgrade_module_9_0_0($object)
+{
+    return $object->registerHook('actionFrontControllerSetVariables');
+}

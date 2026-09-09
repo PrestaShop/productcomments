@@ -71,7 +71,7 @@ class ProductCommentGrade
     }
 
     /**
-     * @return mixed
+     * @return ProductComment
      */
     public function getComment()
     {
@@ -79,10 +79,15 @@ class ProductCommentGrade
     }
 
     /**
-     * @return mixed
+     * @return ProductCommentCriterion
      */
     public function getCriterion()
     {
         return $this->criterion;
+    }
+
+    public function getGrade(): int
+    {
+        return $this->grade;
     }
 }

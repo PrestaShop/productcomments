@@ -30,9 +30,6 @@ if (!defined('_PS_VERSION_')) {
 class ProductComment extends ObjectModel
 {
     /** @var int */
-    public $id;
-
-    /** @var int */
     public $id_product;
 
     /** @var int */

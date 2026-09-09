@@ -24,17 +24,11 @@ namespace PrestaShop\Module\ProductComment\Form;
 use Doctrine\ORM\EntityManagerInterface;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterion;
 use PrestaShop\Module\ProductComment\Entity\ProductCommentCriterionLang;
-use PrestaShop\Module\ProductComment\Repository\ProductCommentCriterionRepository;
 use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataHandler\FormDataHandlerInterface;
 use PrestaShopBundle\Entity\Repository\LangRepository;
 
 class ProductCommentCriterionFormDataHandler implements FormDataHandlerInterface
 {
-    /**
-     * @var ProductCommentCriterionRepository
-     */
-    private $pccriterionRepository;
-
     /**
      * @var LangRepository
      */
@@ -46,16 +40,13 @@ class ProductCommentCriterionFormDataHandler implements FormDataHandlerInterface
     private $entityManager;
 
     /**
-     * @param ProductCommentCriterionRepository $pccriterionRepository
      * @param LangRepository $langRepository
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
-        ProductCommentCriterionRepository $pccriterionRepository,
         LangRepository $langRepository,
         EntityManagerInterface $entityManager
     ) {
-        $this->pccriterionRepository = $pccriterionRepository;
         $this->langRepository = $langRepository;
         $this->entityManager = $entityManager;
     }

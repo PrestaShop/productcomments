@@ -44,7 +44,7 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
                 )
             );
 
-            return false;
+            return;
         }
 
         $customerId = (int) $this->context->cookie->id_customer;
@@ -67,7 +67,7 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
                 )
             );
 
-            return false;
+            return;
         }
 
         $id_product_comment = (int) Tools::getValue('id_product_comment');
@@ -89,7 +89,7 @@ class ProductCommentsUpdateCommentUsefulnessModuleFrontController extends Module
                 )
             );
 
-            return false;
+            return;
         }
 
         $productCommentUsefulnesRepository = $entityManager->getRepository(ProductCommentUsefulness::class);
