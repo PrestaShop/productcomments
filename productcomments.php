@@ -71,6 +71,7 @@ class ProductComments extends Module implements WidgetInterface
         $this->author = 'PrestaShop';
         $this->need_instance = 0;
         $this->bootstrap = true;
+        $this->module_key = 'e699ddd0ac2d61593ec594e82b719da6';
 
         parent::__construct();
 
