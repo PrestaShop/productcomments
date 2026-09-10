@@ -39,6 +39,7 @@ jQuery(document).ready(function () {
   const nextCount = totalPages + 1;
   const gapText = '&hellip;';
 
+  $('#product-comments-list-header .grade-stars').rating();
   $('#product-comments-list .grade-stars').rating();
   $('.product-comments-additional-info .grade-stars').rating();
 
@@ -47,6 +48,7 @@ jQuery(document).ready(function () {
   })
 
   document.addEventListener('updateRating', function() {
+    $('#product-comments-list-header .grade-stars').rating();
     $('#product-comments-list .grade-stars').rating();
     $('.product-comments-additional-info .grade-stars').rating();
   });
