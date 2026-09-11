@@ -128,12 +128,15 @@ jQuery(document).ready(function () {
         $(fieldSelector).removeClass('error');
         $(fieldSelector).addClass('valid');
       }
-           
-      if (!ratingChosen) {
-        criterionsInfo.show();
-        isValid = false;
-      } else {
-        criterionsInfo.hide();
+      const fieldCriterion = $('#criterions_list').length;
+
+      if (fieldCriterion) {
+        if (!ratingChosen) {
+          criterionsInfo.show();
+          isValid = false;
+        } else {
+          criterionsInfo.hide();
+        }
       }
     });  
 
