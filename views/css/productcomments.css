@@ -675,3 +675,49 @@
 #product-comments-list-pagination ul li.hidden {
   display: none;
 }
+
+.comments-sorting {
+  justify-content: end;
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.comments-sorting__label {
+  color: #7a7a7a;
+  font-size: .875rem;
+  text-align: end;
+}
+
+.comments-sorting__btn {
+	display: inline-block;
+	width: 100%;
+	padding: .625rem;
+	color: #232323;
+	cursor: pointer;
+	background: #fff;
+	border: 1px solid rgba(0,0,0,.25);
+}
+
+.comments-sorting__menu {
+  left: auto;
+  width: calc(100% - 30px);
+  margin: 0;
+  background: #f6f6f6;
+  border: 0;
+  border-radius: 0;
+  -webkit-box-shadow: 2px 2px 4px 0 rgba(0,0,0,.1);
+  box-shadow: 2px 2px 4px 0 rgba(0,0,0,.1);
+}
+
+.comments-sorting__item {
+	display: block;
+	padding: .625rem 1.25rem;
+	color: #232323;
+}
+
+.comments-sorting__item:hover {
+	color: #fff;
+	text-decoration: none;
+	background: #24b9d7;
+}

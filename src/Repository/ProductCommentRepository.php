@@ -125,8 +125,22 @@ class ProductCommentRepository extends ServiceEntityRepository
      *
      * @return array
      */
-    public function paginate($productId, $page, $commentsPerPage, $validatedOnly)
+    public function paginate($productId, $page, $commentsPerPage, $validatedOnly, $orderBy = 'date_add', $orderWay = 'desc', $usefulnessEnabled = false)
     {
+        $allowedOrderBy = ['date_add', 'grade'];
+        $allowedOrderWay = ['asc', 'desc'];
+
+        if ($usefulnessEnabled) {
+            $allowedOrderBy[] = 'usefulness';
+        }
+
+        if (!in_array($orderBy, $allowedOrderBy)) {
+            $orderBy = 'date_add';
+        }
+        if (!in_array($orderWay, $allowedOrderWay)) {
+            $orderWay = 'desc';
+        }
+
         if (empty($commentsPerPage)) {
             $commentsPerPage = self::DEFAULT_COMMENTS_PER_PAGE;
         }
@@ -144,8 +158,17 @@ class ProductCommentRepository extends ServiceEntityRepository
             ->setMaxResults($commentsPerPage)
             ->setFirstResult(($page - 1) * $commentsPerPage)
             ->addGroupBy('pc.id_product_comment')
-            ->addOrderBy('pc.date_add', 'DESC')
         ;
+
+        if ($orderBy == 'usefulness' && $usefulnessEnabled) {
+            $qb
+                ->addSelect('pcu.usefulness')
+                ->leftJoin('pc', $this->databasePrefix . 'product_comment_usefulness', 'pcu', 'pc.id_product_comment = pcu.id_product_comment')
+                ->addOrderBy('pcu.' . $orderBy, $orderWay)
+            ;
+        } else {
+            $qb->addOrderBy('pc.' . $orderBy, $orderWay);
+        }
 
         if ($validatedOnly) {
             $qb

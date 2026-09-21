@@ -69,14 +69,30 @@ jQuery(document).ready(function () {
     reportCommentPostErrorModal.modal('show');
   }
 
-  async function fetchComments(page) {  
-    let response = await fetch(commentsListUrl + "&page=" + page);
+  async function fetchComments(page, sortBy = 'date_add', sortWay = 'DESC') {
+    let response = await fetch(commentsListUrl + "&page=" + page + '&sort_by=' + sortBy + '&sort_way=' + sortWay);
 
     if (response.status === 200) {
         let data = await response.text();
         populateComments((JSON.parse(data)).comments);
     }
   }
+
+  $(document).on('click', '.comments-sorting__item', function() {
+      let [sortBy, sortWay] = $(this).data('sort').split('.');
+      let sortText = $(this).text();
+      let currentPage = commentsList.data('current-page');
+
+      $('.comments-sorting__item').removeClass('current');
+      $(this).addClass('current');
+
+      $('#comment-sort-btn').html(sortText + ' <i class="comments-sorting__icon material-icons float-xs-right">&#xE5C5;</i>');
+
+      commentsList.data('current-sort-by', sortBy);
+      commentsList.data('current-sort-way', sortWay);
+
+      fetchComments(currentPage, sortBy, sortWay);
+  });
   
   $(pagesListId + ' li').on('click',
     function() {
@@ -95,7 +111,10 @@ jQuery(document).ready(function () {
       $(`${pageIdPrefix}${oldCount} span`).removeClass('current');
       $(`${pageIdPrefix}${oldCount}`).removeClass('active');
       
-      fetchComments(newCount); // fetch new page's comments                  
+      let currentSortBy = commentsList.data('current-sort-by');
+      let currentSortWay = commentsList.data('current-sort-way');
+
+      fetchComments(newCount, currentSortBy, currentSortWay); // fetch new page's comments
 
       $(`${pageIdPrefix}${newCount}`).addClass('active');
       $(`${pageIdPrefix}${newCount} span`).addClass('current');

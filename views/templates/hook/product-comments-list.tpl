@@ -38,12 +38,35 @@
 {include file='module:productcomments/views/templates/hook/product-comment-item-prototype.tpl' assign="comment_prototype"}
 {include file='module:productcomments/views/templates/hook/empty-product-comment.tpl'}
 
+<div class="comments-sorting mb-2 row">
+  <span class="comments-sorting__label col-sm-4 hidden-xs-down">{l s='Sort by:' d='Modules.Productcomments.Shop'}</span>
+
+  <div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+    <button class="comments-sorting__btn btn btn-unstyle select-title dropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="comment-sort-btn">
+      {l s='Newest' d='Modules.Productcomments.Shop'} <i class="comments-sorting__icon material-icons float-xs-right">&#xE5C5;</i>
+    </button>
+
+    <div class="comments-sorting__menu dropdown-menu" aria-labelledby="comment-sort-btn">
+      <button class="comments-sorting__item dropdown-item current" type="button" data-sort="date_add.desc">{l s='Newest' d='Modules.Productcomments.Shop'}</button>
+      <button class="comments-sorting__item dropdown-item" type="button" data-sort="date_add.asc">{l s='Oldest' d='Modules.Productcomments.Shop'}</button>
+      <button class="comments-sorting__item dropdown-item" type="button" data-sort="grade.desc">{l s='Rating, high to low' d='Modules.Productcomments.Shop'}</button>
+      <button class="comments-sorting__item dropdown-item" type="button" data-sort="grade.asc">{l s='Rating, low to high' d='Modules.Productcomments.Shop'}</button>
+      {if $usefulness_enabled}
+        <button class="comments-sorting__item dropdown-item" type="button" data-sort="usefulness.desc">{l s='Usefulness, high to low' d='Modules.Productcomments.Shop'}</button>
+        <button class="comments-sorting__item dropdown-item" type="button" data-sort="usefulness.asc">{l s='Usefulness, low to high' d='Modules.Productcomments.Shop'}</button>
+      {/if}
+    </div>
+  </div>
+</div>
+
 <div id="product-comments-list"
   data-list-comments-url="{$list_comments_url nofilter}"
   data-update-comment-usefulness-url="{$update_comment_usefulness_url nofilter}"
   data-report-comment-url="{$report_comment_url nofilter}"
   data-comment-item-prototype="{$comment_prototype|escape:'html'}"
   data-current-page="1"
+  data-current-sort-by="date_add"
+  data-current-sort-way="desc"
   data-total-pages="{$list_total_pages}">
 </div>
 
