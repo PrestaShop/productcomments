@@ -118,7 +118,7 @@ class ProductComments extends Module implements WidgetInterface
     public function uninstall($keep = true)
     {
         return parent::uninstall() &&
-            ($keep && !$this->deleteTables()) &&
+            (!$keep || $this->deleteTables()) &&
             Configuration::deleteByName('PRODUCT_COMMENTS_MODERATE') &&
             Configuration::deleteByName('PRODUCT_COMMENTS_COMMENTS_PER_PAGE') &&
             Configuration::deleteByName('PRODUCT_COMMENTS_ANONYMISATION') &&
