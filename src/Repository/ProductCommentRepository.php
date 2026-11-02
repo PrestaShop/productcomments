@@ -63,6 +63,11 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     private $commentsMinimalTime;
 
+    /**
+     * @var array<string, array<int, array{averageGrade: float|null, commentsNumber: string}>>
+     */
+    private $gradeSummariesByProducts = [];
+
     const DEFAULT_COMMENTS_PER_PAGE = 5;
 
     /**
@@ -88,6 +93,7 @@ class ProductCommentRepository extends ServiceEntityRepository
 
     public function add(ProductComment $entity, bool $flush = false): void
     {
+        $this->gradeSummariesByProducts = [];
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {
@@ -302,33 +308,9 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     public function getAverageGrades(array $productIds, $validatedOnly)
     {
-        $sql = 'SELECT';
-
-        $count = count($productIds);
-        $productIds = array_values($productIds);
-
-        foreach ($productIds as $index => $id) {
-            $esqID = (int) $id;
-
-            $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
-            if ($validatedOnly) {
-                $sql .= ' AND validate = 1';
-            }
-            $sql .= ',grade, 0))';
-            $sql .= ' / SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
-            if ($validatedOnly) {
-                $sql .= ' AND validate = 1';
-            }
-            $sql .= ',1, 0)) AS "' . $esqID . '"';
-
-            if ($count - 1 > $index) {
-                $sql .= ',';
-            }
-        }
-
-        $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
-
-        return $this->connection->executeQuery($sql)->fetch();
+        return array_map(static function (array $summary) {
+            return $summary['averageGrade'];
+        }, $this->getGradeSummaries($productIds, (bool) $validatedOnly));
     }
 
     /**
@@ -368,28 +350,47 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     public function getCommentsNumberForProducts(array $productIds, $validatedOnly)
     {
-        $sql = 'SELECT';
+        return array_map(static function (array $summary) {
+            return $summary['commentsNumber'];
+        }, $this->getGradeSummaries($productIds, (bool) $validatedOnly));
+    }
 
-        $count = count($productIds);
-        $productIds = array_values($productIds);
-
-        foreach ($productIds as $index => $id) {
-            $esqID = (int) $id;
-
-            $sql .= ' SUM(IF(id_product = ' . $esqID . ' AND deleted = 0';
-            if ($validatedOnly) {
-                $sql .= ' AND validate = 1';
-            }
-            $sql .= ' ,1, 0)) AS "' . $esqID . '"';
-
-            if ($count - 1 > $index) {
-                $sql .= ',';
-            }
+    /**
+     * Average grade and number of comments of each product, read through the id_product index.
+     *
+     * @param int[] $productIds
+     * @param bool $validatedOnly
+     *
+     * @return array<int, array{averageGrade: float|null, commentsNumber: string}>
+     */
+    private function getGradeSummaries(array $productIds, bool $validatedOnly): array
+    {
+        $summaries = [];
+        foreach ($productIds as $productId) {
+            $summaries[(int) $productId] = ['averageGrade' => null, 'commentsNumber' => '0'];
+        }
+        if (empty($summaries)) {
+            return [];
+        }
+        $cacheKey = (int) $validatedOnly . ':' . implode(',', array_keys($summaries));
+        if (isset($this->gradeSummariesByProducts[$cacheKey])) {
+            return $this->gradeSummariesByProducts[$cacheKey];
         }
 
-        $sql .= ' FROM ' . $this->databasePrefix . 'product_comment';
+        $sql = 'SELECT id_product, SUM(grade) / COUNT(*) AS averageGrade, COUNT(*) AS commentsNumber
+            FROM ' . $this->databasePrefix . 'product_comment
+            WHERE id_product IN (' . implode(',', array_keys($summaries)) . ') AND deleted = 0'
+            . ($validatedOnly ? ' AND validate = 1' : '') . '
+            GROUP BY id_product';
 
-        return (array) $this->connection->executeQuery($sql)->fetch();
+        foreach ($this->connection->executeQuery($sql)->fetchAll() as $row) {
+            $summaries[(int) $row['id_product']] = [
+                'averageGrade' => $row['averageGrade'],
+                'commentsNumber' => (string) $row['commentsNumber'],
+            ];
+        }
+
+        return $this->gradeSummariesByProducts[$cacheKey] = $summaries;
     }
 
     /**
