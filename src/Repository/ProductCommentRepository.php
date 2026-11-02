@@ -63,6 +63,11 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     private $commentsMinimalTime;
 
+    /**
+     * @var array<string, array{averageGrade: float, commentsNumber: int}>
+     */
+    private $gradeSummaries = [];
+
     const DEFAULT_COMMENTS_PER_PAGE = 5;
 
     /**
@@ -88,6 +93,7 @@ class ProductCommentRepository extends ServiceEntityRepository
 
     public function add(ProductComment $entity, bool $flush = false): void
     {
+        $this->gradeSummaries = [];
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {
@@ -196,25 +202,7 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     public function getAverageGrade($productId, $validatedOnly)
     {
-        /** @var QueryBuilder $qb */
-        $qb = $this->connection->createQueryBuilder();
-        $qb
-            ->select('AVG(pc.grade) AS averageGrade')
-            ->from($this->databasePrefix . 'product_comment', 'pc')
-            ->andWhere('pc.id_product = :id_product')
-            ->andWhere('pc.deleted = :deleted')
-            ->setParameter('deleted', 0)
-            ->setParameter('id_product', $productId)
-        ;
-
-        if ($validatedOnly) {
-            $qb
-                ->andWhere('pc.validate = :validate')
-                ->setParameter('validate', 1)
-            ;
-        }
-
-        return (float) $qb->execute()->fetch(\PDO::FETCH_COLUMN);
+        return $this->getGradeSummary((int) $productId, (bool) $validatedOnly)['averageGrade'];
     }
 
     /**
@@ -339,25 +327,45 @@ class ProductCommentRepository extends ServiceEntityRepository
      */
     public function getCommentsNumber($productId, $validatedOnly)
     {
-        /** @var QueryBuilder $qb */
-        $qb = $this->connection->createQueryBuilder();
-        $qb
-            ->select('COUNT(pc.id_product_comment) AS commentNb')
-            ->from($this->databasePrefix . 'product_comment', 'pc')
-            ->andWhere('pc.id_product = :id_product')
-            ->andWhere('pc.deleted = :deleted')
-            ->setParameter('deleted', 0)
-            ->setParameter('id_product', $productId)
-        ;
+        return $this->getGradeSummary((int) $productId, (bool) $validatedOnly)['commentsNumber'];
+    }
 
-        if ($validatedOnly) {
+    /**
+     * Average grade and number of comments of a product, read together and kept for the request:
+     * a page asks for both, often for the same product from several hooks.
+     *
+     * @return array{averageGrade: float, commentsNumber: int}
+     */
+    private function getGradeSummary(int $productId, bool $validatedOnly): array
+    {
+        $key = $productId . '-' . (int) $validatedOnly;
+        if (!isset($this->gradeSummaries[$key])) {
+            /** @var QueryBuilder $qb */
+            $qb = $this->connection->createQueryBuilder();
             $qb
-                ->andWhere('pc.validate = :validate')
-                ->setParameter('validate', 1)
+                ->select('AVG(pc.grade) AS averageGrade', 'COUNT(pc.id_product_comment) AS commentsNumber')
+                ->from($this->databasePrefix . 'product_comment', 'pc')
+                ->andWhere('pc.id_product = :id_product')
+                ->andWhere('pc.deleted = :deleted')
+                ->setParameter('deleted', 0)
+                ->setParameter('id_product', $productId)
             ;
+
+            if ($validatedOnly) {
+                $qb
+                    ->andWhere('pc.validate = :validate')
+                    ->setParameter('validate', 1)
+                ;
+            }
+
+            $row = $qb->execute()->fetch(\PDO::FETCH_ASSOC);
+            $this->gradeSummaries[$key] = [
+                'averageGrade' => (float) ($row['averageGrade'] ?? 0),
+                'commentsNumber' => (int) ($row['commentsNumber'] ?? 0),
+            ];
         }
 
-        return (int) $qb->execute()->fetch(\PDO::FETCH_COLUMN);
+        return $this->gradeSummaries[$key];
     }
 
     /**
