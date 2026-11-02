@@ -1062,14 +1062,11 @@ class ProductComments extends Module implements WidgetInterface
         $controller = $this->context->controller;
 
         if ('displayProductListReviews' === $hookName || isset($configuration['type']) && 'product_list' === $configuration['type']) {
-            $product = $configuration['product'];
-            $idProduct = $product['id_product'];
-            $variables = $this->getWidgetVariables($hookName, ['id_product' => $idProduct]);
-
-            $variables = array_merge($variables, [
-                'product' => $product,
+            // The grade and the number of comments are loaded by the template from the CommentGrade controller.
+            $variables = [
+                'product' => $configuration['product'],
                 'product_comment_grade_url' => $this->context->link->getModuleLink('productcomments', 'CommentGrade'),
-            ]);
+            ];
 
             $filePath = $tplHookPath . 'product-list-reviews.tpl';
         } elseif ($controller instanceof ProductControllerCore) {
