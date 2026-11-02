@@ -189,6 +189,45 @@ class ProductCommentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Same values as getProductCommentUsefulness(), for several comments in one query.
+     *
+     * @param int[] $productCommentIds
+     *
+     * @return array<int, array{usefulness: int, total_usefulness: int}> indexed by comment id
+     */
+    public function getProductCommentsUsefulness(array $productCommentIds)
+    {
+        $usefulnessByComment = [];
+        foreach ($productCommentIds as $productCommentId) {
+            $usefulnessByComment[(int) $productCommentId] = [
+                'usefulness' => 0,
+                'total_usefulness' => 0,
+            ];
+        }
+        if (empty($usefulnessByComment)) {
+            return [];
+        }
+
+        /** @var QueryBuilder $qb */
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('pcu.id_product_comment, SUM(pcu.usefulness <> 0) AS usefulness, COUNT(*) AS total_usefulness')
+            ->from($this->databasePrefix . 'product_comment_usefulness', 'pcu')
+            ->andWhere('pcu.id_product_comment IN (' . implode(',', array_keys($usefulnessByComment)) . ')')
+            ->addGroupBy('pcu.id_product_comment')
+        ;
+
+        foreach ($qb->execute()->fetchAll() as $row) {
+            $usefulnessByComment[(int) $row['id_product_comment']] = [
+                'usefulness' => (int) $row['usefulness'],
+                'total_usefulness' => (int) $row['total_usefulness'],
+            ];
+        }
+
+        return $usefulnessByComment;
+    }
+
+    /**
      * @param int $productId
      * @param bool $validatedOnly
      *

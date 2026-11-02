@@ -54,14 +54,20 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
             'comments' => [],
         ];
 
+        $usefulnessByComment = $productCommentRepository->getProductCommentsUsefulness(
+            array_column($productComments, 'id_product_comment')
+        );
+        $utc = new \DateTimeZone('UTC');
+        $shopTimezone = new \DateTimeZone(date_default_timezone_get());
+        $dateFormatter = new \IntlDateFormatter(
+            $this->context->language->locale,
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::SHORT
+        );
+
         foreach ($productComments as $productComment) {
-            $dateAdd = new \DateTime($productComment['date_add'], new \DateTimeZone('UTC'));
-            $dateAdd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-            $dateFormatter = new \IntlDateFormatter(
-                $this->context->language->locale,
-                \IntlDateFormatter::SHORT,
-                \IntlDateFormatter::SHORT
-            );
+            $dateAdd = new \DateTime($productComment['date_add'], $utc);
+            $dateAdd->setTimezone($shopTimezone);
             $productComment['title'] = htmlentities($productComment['title']);
             $productComment['content'] = htmlentities($productComment['content']);
             $productComment['date_add'] = $dateFormatter->format($dateAdd);
@@ -78,8 +84,7 @@ class ProductCommentsListCommentsModuleFrontController extends ModuleFrontContro
 
             $productComment['customer_name'] = htmlentities($productComment['customer_name']);
 
-            $usefulness = $productCommentRepository->getProductCommentUsefulness($productComment['id_product_comment']);
-            $productComment = array_merge($productComment, $usefulness);
+            $productComment = array_merge($productComment, $usefulnessByComment[(int) $productComment['id_product_comment']]);
             if (empty($productComment['customer_name'])) {
                 $productComment['customer_name'] = $this->trans('Deleted account', [], 'Modules.Productcomments.Shop');
             }
